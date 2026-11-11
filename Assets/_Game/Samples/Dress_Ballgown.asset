@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Dress_Ballgown
+  m_EditorClassIdentifier: 
+  displayName: Dress Ballgown
+  slot: 4
+  prefab: {fileID: 7328817052072326478, guid: cb229391719d7497594452c8504b0774, type: 3}
+  icon: {fileID: 0}
+  styleScore: 3
+  alsoClears: 0200000003000000

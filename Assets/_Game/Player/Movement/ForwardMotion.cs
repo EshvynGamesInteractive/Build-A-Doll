@@ -14,6 +14,11 @@ namespace Game.Player.Movement
             return CurrentSpeed * deltaTime;
         }
 
+        public void ClampSpeed(float maxSpeed)
+        {
+            CurrentSpeed = Mathf.Min(CurrentSpeed, maxSpeed);
+        }
+
         public void Reset()
         {
             CurrentSpeed = 0f;

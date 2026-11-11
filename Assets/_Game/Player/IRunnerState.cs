@@ -7,5 +7,10 @@ namespace Game.Player
 
         /// <summary>Current forward speed, 0..1 of the configured max.</summary>
         float NormalizedSpeed { get; }
+
+        /// <summary>False while jumping.</summary>
+        bool IsGrounded { get; }
+
+        bool IsSliding { get; }
     }
 }

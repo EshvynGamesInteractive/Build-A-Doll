@@ -15,6 +15,18 @@ namespace Core._GameEvent
 
             /// <summary>Notification: the run has started. Hide "Tap to play", start timers, etc.</summary>
             public static readonly GameEvent RunStarted = new();
+
+            /// <summary>Notification: the doll put on an item (e.g. after running through a gate).</summary>
+            public static readonly GameEvent<Game.Outfit.OutfitItem> OutfitItemEquipped = new();
+
+            /// <summary>Notification: coins collected this run changed. Arg: new total.</summary>
+            public static readonly GameEvent<int> CoinsChanged = new();
+
+            /// <summary>Notification: run score changed (pickups, penalties, outfit style). Arg: new total.</summary>
+            public static readonly GameEvent<int> ScoreChanged = new();
+
+            /// <summary>Notification: the player hit a minus item. Arg: points lost. Use for screen shake, red flash, etc.</summary>
+            public static readonly GameEvent<int> PenaltyTaken = new();
         }
     }
 }

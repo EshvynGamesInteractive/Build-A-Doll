@@ -26,6 +26,22 @@ namespace Game.Player.Config
         [Tooltip("Time to catch up with the finger. Lower is snappier.")]
         [SerializeField, Min(0f)] private float lateralSmoothTime = 0.06f;
 
+        [Header("Jump (swipe up)")]
+        [Tooltip("How high her feet go, in world units. Must clear the jump-over obstacles.")]
+        [SerializeField, Min(0f)] private float jumpHeight = 1.6f;
+        [Tooltip("Seconds from take-off to landing.")]
+        [SerializeField, Min(0.05f)] private float jumpAirTime = 0.7f;
+
+        [Header("Slide (swipe down)")]
+        [SerializeField, Min(0.05f)] private float slideDuration = 0.8f;
+        [Tooltip("Hitbox height while sliding. Must be lower than the bottom of slide-under bars.")]
+        [SerializeField, Min(0.1f)] private float slideHitboxHeight = 0.9f;
+        [Tooltip("Downward speed when sliding in mid-air.")]
+        [SerializeField, Min(0f)] private float fastFallSpeed = 12f;
+        [Tooltip("Squash the model while sliding. For the placeholder; turn off once there's a slide animation.")]
+        [SerializeField] private bool squashVisualOnSlide = true;
+        [SerializeField, Range(0.1f, 1f)] private float slideVisualScale = 0.45f;
+
         [Header("Turning visual")]
         [Tooltip("Degrees of yaw per unit of sideways speed.")]
         [SerializeField, Min(0f)] private float turnAnglePerSpeed = 4f;
@@ -39,6 +55,13 @@ namespace Game.Player.Config
         public float DragSensitivity => dragSensitivity;
         public float TrackHalfWidth => trackHalfWidth;
         public float LateralSmoothTime => lateralSmoothTime;
+        public float JumpHeight => jumpHeight;
+        public float JumpAirTime => jumpAirTime;
+        public float SlideDuration => slideDuration;
+        public float SlideHitboxHeight => slideHitboxHeight;
+        public float FastFallSpeed => fastFallSpeed;
+        public bool SquashVisualOnSlide => squashVisualOnSlide;
+        public float SlideVisualScale => slideVisualScale;
         public float TurnAnglePerSpeed => turnAnglePerSpeed;
         public float MaxTurnAngle => maxTurnAngle;
         public float TurnLerpSpeed => turnLerpSpeed;
