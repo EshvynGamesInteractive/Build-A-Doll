@@ -27,6 +27,42 @@ namespace Core._GameEvent
 
             /// <summary>Notification: the player hit a minus item. Arg: points lost. Use for screen shake, red flash, etc.</summary>
             public static readonly GameEvent<int> PenaltyTaken = new();
+
+            /// <summary>Notification: the player crossed the finish line.</summary>
+            public static readonly GameEvent FinishReached = new();
+
+            /// <summary>Notification: a level was built and the player is at the start. Args: level, 1-based level number.</summary>
+            public static readonly GameEvent<Game.Level.LevelData, int> LevelLoaded = new();
+
+            /// <summary>Notification: finish reached with enough score. Rewards are already saved.</summary>
+            public static readonly GameEvent<Game.Level.LevelResult> LevelCompleted = new();
+
+            /// <summary>Notification: finish reached without enough score.</summary>
+            public static readonly GameEvent<Game.Level.LevelResult> LevelFailed = new();
+
+            /// <summary>Request: load the next level (e.g. "Next" button on Level Complete).</summary>
+            public static readonly GameEvent RequestNextLevel = new();
+
+            /// <summary>Request: play the current level again (e.g. "Retry" button).</summary>
+            public static readonly GameEvent RequestRestartLevel = new();
+
+            /// <summary>Notification: saved coin total changed. Arg: new total.</summary>
+            public static readonly GameEvent<int> WalletChanged = new();
+
+            /// <summary>Notification: the Gameplay scene has loaded and hands over its scene references.</summary>
+            public static readonly GameEvent<Game.Level.GameplayScene> GameplaySceneReady = new();
+
+            /// <summary>Notification: a player was spawned (first load, or a level with a different doll).</summary>
+            public static readonly GameEvent<_Core._Player.RunnerController> PlayerSpawned = new();
+
+            /// <summary>Notification: the target look is on show at level start ("Make this look!"). Arg: the level.</summary>
+            public static readonly GameEvent<Game.Level.LevelData> TargetLookShown = new();
+
+            /// <summary>Notification: the target look was hidden; the player can start running.</summary>
+            public static readonly GameEvent TargetLookHidden = new();
+
+            /// <summary>Notification: at the finish, the demo stands next to the player. Arg: how well she matched.</summary>
+            public static readonly GameEvent<Game.Outfit.OutfitMatch> ComparisonStarted = new();
         }
     }
 }
