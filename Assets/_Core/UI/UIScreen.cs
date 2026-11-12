@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Core.UI
+namespace _Core.UI
 {
     public abstract class UIScreen : MonoBehaviour, IUIScreen
     {
