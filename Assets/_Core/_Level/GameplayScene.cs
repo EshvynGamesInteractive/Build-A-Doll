@@ -19,6 +19,9 @@ namespace Game.Level
 
         [SerializeField] private CameraFollow cameraFollow;
 
+        [Tooltip("Optional: where the target-look demo doll stands at level start. Empty = a few metres down the track, facing the player.")]
+        [SerializeField] private Transform demoPoint;
+
         [Tooltip("Optional: a player already placed in THIS scene (not a prefab). Used only when no player prefab is set on the level or database.")]
         [SerializeField] private _Core._Player.RunnerController scenePlayer;
 
@@ -34,6 +37,7 @@ namespace Game.Level
         }
 
         public CameraFollow CameraFollow => cameraFollow;
+        public Transform DemoPoint => demoPoint;
 
         /// <summary>The scene player, or null. A prefab asset put in the field by mistake is ignored.</summary>
         public _Core._Player.RunnerController ScenePlayer =>

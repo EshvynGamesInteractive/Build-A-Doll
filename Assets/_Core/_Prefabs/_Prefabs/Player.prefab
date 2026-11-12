@@ -98,7 +98,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 6daf6d480c5924e2ead1348260c67fd8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -285,6 +285,7 @@ MonoBehaviour:
     anchor: {fileID: 6514324348321501041}
   defaultAnchor: {fileID: 4773700801875926372}
   skeletonRoot: {fileID: 0}
+  raiseEvents: 1
   startingItems: []
 --- !u!114 &7515976912112840458
 MonoBehaviour:

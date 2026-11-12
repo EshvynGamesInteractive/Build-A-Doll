@@ -45,17 +45,8 @@ namespace Game.Level
         [SerializeField] private GameObject playerPrefab;
 
         [Header("Target look")]
-        [Tooltip("The look the player has to copy. Shown on the demo doll at the start and compared at the finish. Empty = no comparison (score decides).")]
-        [SerializeField] private OutfitItem[] targetOutfit;
-
-        [Tooltip("Optional: a different demo doll for this level. Empty = the database's default.")]
-        [SerializeField] private GameObject demoPrefab;
-
-        [Tooltip("Match % needed to win (when there's a target look).")]
-        [SerializeField, Range(0, 100)] private int passPercent = 60;
-
-        [Tooltip("Match % for 1, 2 and 3 stars (when there's a target look).")]
-        [SerializeField] private int[] starPercents = { 50, 75, 100 };
+        [Tooltip("The look to copy: shown on the demo doll at the start and compared at the finish. Empty = no comparison (run score decides).")]
+        [SerializeField] private TargetLook targetLook;
 
         [Header("Start")]
         [Tooltip("What she wears when the level starts.")]
@@ -78,24 +69,26 @@ namespace Game.Level
         public float FinishDistance => finishDistance;
         public GameObject FinishLinePrefab => finishLinePrefab;
         public GameObject PlayerPrefab => playerPrefab;
-        public IReadOnlyList<OutfitItem> TargetOutfit => targetOutfit;
-        public bool HasTarget => targetOutfit != null && targetOutfit.Length > 0;
-        public GameObject DemoPrefab => demoPrefab;
-        public int PassPercent => passPercent;
+        public TargetLook TargetLook => targetLook;
+        public bool HasTarget => targetLook != null && targetLook.HasItems;
+        public IReadOnlyList<OutfitItem> TargetOutfit => HasTarget ? targetLook.Items : null;
+        public GameObject DemoPrefab => targetLook != null ? targetLook.DemoPrefab : null;
         public IReadOnlyList<OutfitItem> StartingOutfit => startingOutfit;
         public IReadOnlyList<Entry> Entries => entries;
         public int ScoreToPass => scoreToPass;
         public int CompletionCoins => completionCoins;
 
-        /// <summary>With a target look 'score' is the match % and uses Star Percents, otherwise Star Scores.</summary>
+        /// <summary>With a target look 'score' is the match % and the look judges it; otherwise Star Scores.</summary>
         public int GetStars(int score)
         {
-            var thresholds = HasTarget ? starPercents : starScores;
+            if (HasTarget)
+                return targetLook.GetStars(score);
+
             var stars = 0;
-            if (thresholds == null)
+            if (starScores == null)
                 return stars;
 
-            foreach (var threshold in thresholds)
+            foreach (var threshold in starScores)
             {
                 if (score >= threshold)
                     stars++;
@@ -104,7 +97,7 @@ namespace Game.Level
             return stars;
         }
 
-        public bool IsPass(int score) => score >= (HasTarget ? passPercent : scoreToPass);
+        public bool IsPass(int score) => HasTarget ? targetLook.IsPass(score) : score >= scoreToPass;
 
         [ContextMenu("Sort Entries By Distance")]
         private void SortEntries() => entries.Sort((a, b) => a.distance.CompareTo(b.distance));

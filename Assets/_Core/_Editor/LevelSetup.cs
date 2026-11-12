@@ -48,10 +48,11 @@ namespace Game.EditorTools
             var jumpWall = Prefab("Obstacle_JumpWall", BuildJumpWall);
             var slideBar = Prefab("Obstacle_SlideBar", BuildSlideBar);
             var finish = Prefab("FinishLine", BuildFinishLine);
+            var demoDoll = Prefab("DemoDoll", BuildDemoDoll, EditorPaths.Prefabs);
 
             var levels = new List<LevelData>
             {
-                Level("Level_01", "First Steps", 70f, new[] { 4, 10, 16 }, new[]
+                Level("Level_01", "First Steps", 70f, new[] { 4, 10, 16 }, Look("Look_01", "Pink Princess", hairGood, dressGood, shoesGood), new[]
                 {
                     E(coinLine, 8f),
                     E(gatePair, 20f, 0f, hairGood, hairBad),
@@ -60,7 +61,7 @@ namespace Game.EditorTools
                     E(coinLine, 50f, -1.2f),
                     E(gatePair, 60f, 0f, shoesGood, shoesOk),
                 }),
-                Level("Level_02", "Jump & Slide", 110f, new[] { 5, 12, 20 }, new[]
+                Level("Level_02", "Jump & Slide", 110f, new[] { 5, 12, 20 }, Look("Look_02", "Party Rebel", hairBad, dressGood, shoesOk), new[]
                 {
                     E(coinLine, 6f),
                     E(jumpWall, 18f),
@@ -73,7 +74,7 @@ namespace Game.EditorTools
                     E(movingGatePair, 88f, 0f, shoesOk, shoesGood),
                     E(wideMud, 100f),
                 }),
-                Level("Level_03", "Scissors Street", 130f, new[] { 5, 12, 20 }, new[]
+                Level("Level_03", "Scissors Street", 130f, new[] { 5, 12, 20 }, Look("Look_03", "Country Walk", hairGood, dressBad, shoesOk), new[]
                 {
                     E(gatePair, 15f, 0f, hairGood, hairBad),
                     E(mud, 24f, -1.2f),
@@ -91,6 +92,7 @@ namespace Game.EditorTools
             };
 
             var database = CreateDatabase(levels, finish);
+            SetIfEmpty(database, "defaultDemoPrefab", demoDoll);
 
             AssetDatabase.SaveAssets();
             EditorGUIUtility.PingObject(database);
@@ -99,9 +101,11 @@ namespace Game.EditorTools
 
         // ---------- Prefab builders ----------
 
-        private static GameObject Prefab(string name, System.Action<Transform> build)
+        private static GameObject Prefab(string name, System.Action<Transform> build, string folder = null)
         {
-            var path = $"{PrefabFolder}/{name}.prefab";
+            folder ??= PrefabFolder;
+            EditorPaths.EnsureFolder(folder);
+            var path = $"{folder}/{name}.prefab";
             var existing = FindByName<GameObject>(name);
             if (existing != null)
                 return existing;
@@ -248,13 +252,18 @@ namespace Game.EditorTools
         private static EntrySpec E(GameObject prefab, float distance, float lateral = 0f, params OutfitItem[] items) =>
             new() { Prefab = prefab, Distance = distance, Lateral = lateral, Items = items };
 
-        private static LevelData Level(string fileName, string displayName, float finishDistance, int[] stars, EntrySpec[] entries)
+        private static LevelData Level(string fileName, string displayName, float finishDistance, int[] stars, TargetLook look, EntrySpec[] entries)
         {
             // Keep a level that's already set up (it may have your edits). Refill it only if its
             // prefab/item references are broken, e.g. after the files they pointed to were deleted.
             var level = FindByName<LevelData>(fileName);
             if (level != null && !HasBrokenReferences(level))
+            {
+                // Older sample levels had no target look; give them one, leave everything else alone.
+                SetIfEmpty(level, "targetLook", look);
+
                 return level;
+            }
 
             if (level == null)
             {
@@ -269,6 +278,7 @@ namespace Game.EditorTools
             var so = new SerializedObject(level);
             so.FindProperty("displayName").stringValue = displayName;
             so.FindProperty("finishDistance").floatValue = finishDistance;
+            so.FindProperty("targetLook").objectReferenceValue = look;
 
             var starProp = so.FindProperty("starScores");
             starProp.arraySize = stars.Length;
@@ -324,6 +334,62 @@ namespace Game.EditorTools
             }
 
             return false;
+        }
+
+        // A TargetLook asset in _Data/_TargetLooks. Kept if it already exists and isn't broken.
+        private static TargetLook Look(string fileName, string displayName, params OutfitItem[] items)
+        {
+            var look = FindByName<TargetLook>(fileName);
+            if (look != null && !HasBrokenReferences(look) && look.HasItems)
+                return look;
+
+            if (look == null)
+            {
+                EditorPaths.EnsureFolder(EditorPaths.TargetLooks);
+                look = ScriptableObject.CreateInstance<TargetLook>();
+                AssetDatabase.CreateAsset(look, $"{EditorPaths.TargetLooks}/{fileName}.asset");
+            }
+
+            var so = new SerializedObject(look);
+            so.FindProperty("displayName").stringValue = displayName;
+            SetObjectArray(so.FindProperty("items"), items);
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(look);
+            return look;
+        }
+
+        private static void SetIfEmpty(Object asset, string property, Object value)
+        {
+            var so = new SerializedObject(asset);
+            var prop = so.FindProperty(property);
+            if (prop == null || prop.objectReferenceValue != null)
+                return;
+
+            prop.objectReferenceValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(asset);
+        }
+
+        // Display-only doll for the target look: same attach points as the placeholder player,
+        // no controller or collider, and its outfit doesn't raise player events.
+        private static void BuildDemoDoll(Transform root)
+        {
+            var body = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            body.name = "Visual";
+            Object.DestroyImmediate(body.GetComponent<Collider>());
+            body.transform.SetParent(root, false);
+            body.transform.localPosition = Vector3.up;
+            body.GetComponent<MeshRenderer>().sharedMaterial = ItemGateSetup.CreateMaterial("DemoDoll", new Color(1f, 0.85f, 0.75f));
+
+            var outfit = root.gameObject.AddComponent<DollOutfit>();
+            var so = new SerializedObject(outfit);
+            var anchors = so.FindProperty("anchors");
+            ItemGateSetup.AddAnchor(anchors, body.transform, OutfitSlot.Hair, new Vector3(0f, 0.8f, 0f));
+            ItemGateSetup.AddAnchor(anchors, body.transform, OutfitSlot.Dress, new Vector3(0f, -0.35f, 0f));
+            ItemGateSetup.AddAnchor(anchors, body.transform, OutfitSlot.Shoes, new Vector3(0f, -0.95f, 0.1f));
+            so.FindProperty("defaultAnchor").objectReferenceValue = body.transform;
+            so.FindProperty("raiseEvents").boolValue = false;
+            so.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static LevelDatabase CreateDatabase(List<LevelData> levels, GameObject finish)

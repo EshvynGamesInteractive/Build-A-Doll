@@ -35,6 +35,13 @@ namespace Game.Level
         private RunnerController player;
         private GameObject _playerSource;
         private GameplayScene _scene;
+        private GameObject _demo;
+        private OutfitMatch _match;
+
+        // Where the demo stands at the start: this far down the track, facing the player.
+        private const float DemoDistance = 4f;
+        // How far to the side of the player the demo stands at the finish.
+        private const float ComparisonSideOffset = 1.6f;
 
         public LevelData CurrentLevel => _current;
         public int CurrentLevelNumber => _currentIndex + 1;
@@ -86,7 +93,8 @@ namespace Game.Level
 
         public void LoadLevel(int index)
         {
-            CancelInvoke(nameof(LoadCurrent));
+            // Drop any pending demo / result / auto-continue timers from the previous level.
+            CancelInvoke();
 
             var level = database.GetLevel(index);
             if (level == null)
@@ -120,6 +128,8 @@ namespace Game.Level
             // Puts the player, her outfit, score and any hurdles back to their start state.
             GameEvents.GameplayEvents.ResetRun.Raise();
             GameEvents.GameplayEvents.LevelLoaded.Raise(level, CurrentLevelNumber);
+
+            ShowTargetLook(level);
         }
 
         // Uses the level's doll if it has one, else the default. Keeps the current player when it's
@@ -229,6 +239,58 @@ namespace Game.Level
             }
         }
 
+        // ---------- Target look ----------
+
+        // Level start: the demo doll shows the look to copy; the run can't start until it's hidden.
+        private void ShowTargetLook(LevelData level)
+        {
+            _demo = null; // the old one went with the previous level root
+
+            var prefab = level.DemoPrefab != null ? level.DemoPrefab : database.DefaultDemoPrefab;
+            if (!level.HasTarget || prefab == null)
+            {
+                if (level.HasTarget)
+                    Debug.LogWarning($"'{level.name}' has a target look but no demo doll prefab (set Default Demo Prefab on the {nameof(LevelDatabase)}).", level);
+
+                player.StartLocked = false;
+                return;
+            }
+
+            var point = _scene.DemoPoint;
+            var position = point != null ? point.position : _levelRoot.TransformPoint(new Vector3(0f, 0f, DemoDistance));
+            var rotation = point != null ? point.rotation : _rotation * Quaternion.Euler(0f, 180f, 0f);
+
+            // Child of the level root, so it's cleaned up with the level.
+            _demo = Instantiate(prefab, position, rotation, _levelRoot);
+            _demo.name = "TargetLook";
+            if (!_demo.activeSelf)
+                _demo.SetActive(true);
+
+            var demoOutfit = _demo.GetComponentInChildren<DollOutfit>();
+            if (demoOutfit != null)
+                demoOutfit.SetStartingItems(level.TargetOutfit); // worn in its Start
+            else
+                Debug.LogWarning($"Demo prefab '{prefab.name}' has no {nameof(DollOutfit)}, so it can't show the look.", prefab);
+
+            player.StartLocked = true;
+            GameEvents.GameplayEvents.TargetLookShown.Raise(level);
+            Invoke(nameof(HideTargetLook), database.DemoShowTime);
+        }
+
+        private void HideTargetLook()
+        {
+            if (_demo != null)
+                _demo.SetActive(false);
+
+            if (player != null)
+                player.StartLocked = false;
+
+            GameEvents.GameplayEvents.TargetLookHidden.Raise();
+        }
+
+        // ---------- Finish ----------
+
+        // Finish: stop, put the demo next to the player, compare, then show the result.
         private void OnFinishReached()
         {
             if (_finished || _current == null)
@@ -242,15 +304,41 @@ namespace Game.Level
                 Debug.LogError($"{nameof(LevelManager)}: no player assigned on ReferenceManager.", this);
                 return;
             }
-            
+
+            _match = OutfitComparer.Compare(_current.TargetOutfit, player.DollOutfit);
+
+            if (!_current.HasTarget || _demo == null)
+            {
+                ShowResult();
+                return;
+            }
+
+            // Stand the demo just past the finish, on the side of the track the player isn't on.
+            var playerLocal = _levelRoot.InverseTransformPoint(player.transform.position);
+            var side = playerLocal.x > 0f ? -1f : 1f;
+            var demoLocal = new Vector3(playerLocal.x + side * ComparisonSideOffset, 0f, _current.FinishDistance + 1f);
+            _demo.transform.SetPositionAndRotation(_levelRoot.TransformPoint(demoLocal), _rotation * Quaternion.Euler(0f, 180f, 0f));
+            _demo.SetActive(true);
+
+            GameEvents.GameplayEvents.ComparisonStarted.Raise(_match);
+            Invoke(nameof(ShowResult), database.ComparisonTime);
+        }
+
+        private void ShowResult()
+        {
+            if (player == null || _current == null)
+                return;
+
             var runScore = player.Score;
-            var score = runScore != null ? runScore.Score : 0;
             var coins = runScore != null ? runScore.Coins : 0;
-            var passed = score >= _current.ScoreToPass;
+
+            // With a target look the score is how well she copied it (0..100); otherwise the run score.
+            var score = _current.HasTarget ? _match.Percent : (runScore != null ? runScore.Score : 0);
+            var passed = _current.IsPass(score);
 
             if (passed)
             {
-                var result = new LevelResult(_current, CurrentLevelNumber, true, score, _current.GetStars(score), coins, _current.CompletionCoins);
+                var result = new LevelResult(_current, CurrentLevelNumber, true, score, _current.GetStars(score), coins, _current.CompletionCoins, _match);
                 LevelProgress.AddCoins(result.TotalCoins);
                 if (testLevelNumber == 0)
                     LevelProgress.CurrentLevelIndex = _currentIndex + 1;
@@ -260,7 +348,7 @@ namespace Game.Level
             }
             else
             {
-                var result = new LevelResult(_current, CurrentLevelNumber, false, score, 0, coins, 0);
+                var result = new LevelResult(_current, CurrentLevelNumber, false, score, 0, coins, 0, _match);
                 GameEvents.GameplayEvents.LevelFailed.Raise(result);
                 GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelFailed);
             }

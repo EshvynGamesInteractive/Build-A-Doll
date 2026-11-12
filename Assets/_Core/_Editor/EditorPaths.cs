@@ -16,8 +16,10 @@ namespace Game.EditorTools
         public static string Root => _root ??= FindRoot();
         public static string Data => Root + "/_Data";
         public static string Levels => Data + "/_Levels";
+        public static string TargetLooks => Data + "/_TargetLooks";
         public static string Samples => Root + "/_Samples";
-        public static string HurdlePrefabs => Root + "/_Prefabs/_Hurdles";
+        public static string Prefabs => Root + "/_Prefabs";
+        public static string HurdlePrefabs => Prefabs + "/_Hurdles";
 
         /// <summary>First asset of this type anywhere in the project, or null.</summary>
         public static T FindAsset<T>() where T : Object

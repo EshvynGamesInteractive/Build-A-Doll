@@ -17,6 +17,7 @@ MonoBehaviour:
   finishDistance: 110
   finishLinePrefab: {fileID: 0}
   playerPrefab: {fileID: 0}
+  targetLook: {fileID: 11400000, guid: d843499f27c9e4f9c9daf5994710e380, type: 2}
   startingOutfit: []
   entries:
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
