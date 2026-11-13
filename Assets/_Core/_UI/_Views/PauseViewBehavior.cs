@@ -1,3 +1,4 @@
+using Core._GameEvent;
 using _Core.UI;
 using Core.Utilities;
 using UnityEngine;
@@ -23,24 +24,12 @@ namespace _Core._UI._Views
             UIPanelButtonUtility.Bind(settingsButton, OnSettingsButtonClick);
         }
 
-        private void OnResumeButtonClick()
-        {
-            
-        }
+        private void OnResumeButtonClick() => GameEvents.UIEvents.ShowByType.Raise(ScreenType.Gameplay);
 
-        private void OnLevelRestartButtonClick()
-        {
-            
-        }
+        private void OnLevelRestartButtonClick() => GameEvents.GameplayEvents.RequestRestartLevel.Raise();
 
-        private void OnHomeButtonClick()
-        {
-            
-        }
+        private void OnHomeButtonClick() => GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
 
-        private void OnSettingsButtonClick()
-        {
-            
-        }
+        private void OnSettingsButtonClick() => GameEvents.UIEvents.ShowByType.Raise(ScreenType.Settings);
     }
 }

@@ -43,6 +43,8 @@ namespace Core._GameEvent
             /// <summary>Request: load the next level (e.g. "Next" button on Level Complete).</summary>
             public static readonly GameEvent RequestNextLevel = new();
 
+            public static readonly GameEvent RequestPlaySavedLevel = new();
+
             /// <summary>Request: play the current level again (e.g. "Retry" button).</summary>
             public static readonly GameEvent RequestRestartLevel = new();
 

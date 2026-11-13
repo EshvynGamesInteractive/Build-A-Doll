@@ -1099,6 +1099,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenType: 5
   container: {fileID: 3169327651514512965}
+  retryButton: {fileID: 7530771152017625026}
+  homeButton: {fileID: 7454251386075880471}
+  nextLevelButton: {fileID: 531584352066444578}
 --- !u!1 &8723349531000372828
 GameObject:
   m_ObjectHideFlags: 0

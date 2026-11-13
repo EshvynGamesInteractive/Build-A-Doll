@@ -137,7 +137,7 @@ MonoBehaviour:
   redVisual: {fileID: 902039369665500912}
   greenVisual: {fileID: 3191499780592441983}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 4be8e7410b184f079dac50b00f8c0d5b, type: 3}
   item: {fileID: 11400000, guid: 88720c17928f14911ba39769e7852023, type: 2}
   iconRenderer: {fileID: 0}
   previewAnchor: {fileID: 8000000000000000000}

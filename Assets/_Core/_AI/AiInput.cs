@@ -54,7 +54,7 @@ namespace Game.AI
             SlideRequested = false;
             HorizontalDelta = 0f;
 
-            if (!IsHolding || _runner == null || _profile == null)
+            if (Time.timeScale == 0f || !IsHolding || _runner == null || _profile == null)
                 return;
 
             // One step per frame at most; steps are sorted by distance.

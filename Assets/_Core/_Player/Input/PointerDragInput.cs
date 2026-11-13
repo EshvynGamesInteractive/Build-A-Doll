@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Core._GameEvent;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 namespace Game.Player.Input
 {
@@ -25,6 +27,8 @@ namespace Game.Player.Input
         public bool JumpRequested { get; private set; }
         public bool SlideRequested { get; private set; }
 
+        private readonly List<RaycastResult> _uiHits = new();
+        private bool _blockedPress;
         private Vector2 _lastPosition;
         private Vector2 _swipeStart;
         private float _swipeStartTime;
@@ -44,6 +48,18 @@ namespace Game.Player.Input
             var isPressed = pointer.press.isPressed;
             var position = pointer.position.ReadValue();
 
+            if (!isPressed)
+                _blockedPress = false;
+            else if (pointer.press.wasPressedThisFrame && IsOverUI(position))
+                _blockedPress = true;
+
+            if (Time.timeScale == 0f || _blockedPress)
+            {
+                if (IsHolding)
+                    EndHold();
+                return;
+            }
+
             if (isPressed && !IsHolding)
                 BeginHold(position);
             else if (!isPressed && IsHolding)
@@ -59,6 +75,18 @@ namespace Game.Player.Input
         {
             if (IsHolding)
                 EndHold();
+        }
+
+        private bool IsOverUI(Vector2 position)
+        {
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+                return false;
+
+            eventSystem.RaycastAll(new PointerEventData(eventSystem) { position = position }, _uiHits);
+            var isOverUI = _uiHits.Count > 0;
+            _uiHits.Clear();
+            return isOverUI;
         }
 
         private void ReadKeyboard()

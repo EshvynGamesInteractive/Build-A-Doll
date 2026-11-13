@@ -169,6 +169,9 @@ namespace _Core._Player
 
         private void Update()
         {
+            if (Time.timeScale == 0f)
+                return;
+
             if (_phase == Phase.Idle)
             {
                 if (startOnFirstTouch && !StartLocked && _input.IsHolding)

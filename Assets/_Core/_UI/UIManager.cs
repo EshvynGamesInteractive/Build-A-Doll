@@ -5,16 +5,14 @@ using UnityEngine;
 
 namespace Core.UI
 {
-    /// <summary>
-    /// Shows one screen at a time: on UIEvents.ShowByType the screen of that type is shown
-    /// and the others are hidden. Screens are built in the Editor and listed here.
-    /// A type with no screen (e.g. Gameplay) just hides them all.
-    /// </summary>
     public class UIManager : MonoBehaviour
     {
         public static UIManager Instance { get; private set; }
 
         [SerializeField] private UIScreen[] screens;
+
+        private ScreenType _settingsReturn = ScreenType.MainMenu;
+        private float? _resumeTimeScale;
 
         public ScreenType? Current { get; private set; }
 
@@ -27,11 +25,21 @@ namespace Core.UI
             }
 
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
-        private void OnEnable() => GameEvents.UIEvents.ShowByType.Register(Show);
+        private void OnEnable()
+        {
+            GameEvents.UIEvents.ShowByType.Register(Show);
+            GameEvents.UIEvents.CloseSettings.Register(CloseSettings);
+        }
 
-        private void OnDisable() => GameEvents.UIEvents.ShowByType.Unregister(Show);
+        private void OnDisable()
+        {
+            GameEvents.UIEvents.ShowByType.Unregister(Show);
+            GameEvents.UIEvents.CloseSettings.Unregister(CloseSettings);
+            SetPaused(false);
+        }
 
         private void OnDestroy()
         {
@@ -41,7 +49,11 @@ namespace Core.UI
 
         public void Show(ScreenType type)
         {
+            if (type == ScreenType.Settings && Current != ScreenType.Settings)
+                _settingsReturn = Current ?? ScreenType.MainMenu;
+
             Current = type;
+            SetPaused(type is ScreenType.PausePanel or ScreenType.Settings or ScreenType.MainMenu);
 
             foreach (var screen in screens)
             {
@@ -52,6 +64,22 @@ namespace Core.UI
                     screen.Show();
                 else
                     screen.Hide();
+            }
+        }
+
+        private void CloseSettings() => Show(_settingsReturn);
+
+        private void SetPaused(bool paused)
+        {
+            if (paused && !_resumeTimeScale.HasValue)
+            {
+                _resumeTimeScale = Time.timeScale;
+                Time.timeScale = 0f;
+            }
+            else if (!paused && _resumeTimeScale.HasValue)
+            {
+                Time.timeScale = _resumeTimeScale.Value;
+                _resumeTimeScale = null;
             }
         }
     }

@@ -6,6 +6,7 @@ namespace Core._GameEvent
     {
         public class AudioEvents
         {
+            public static readonly GameEvent ButtonClicked = new();
             public static readonly GameEvent<AudioClip> PlaySfx = new();
             public static readonly GameEvent<AudioClip, float> PlayLoopingSfx = new();
             public static readonly GameEvent<AudioClip> PlayVoiceOver = new();

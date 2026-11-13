@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVisual: {fileID: 8497996906976629771}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 29d6d0a2446447f09e69ddc21c503a08, type: 3}
   coins: 1
   points: 1
 --- !u!114 &5171809677456807400
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVisual: {fileID: 5413463170489121736}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 29d6d0a2446447f09e69ddc21c503a08, type: 3}
   coins: 1
   points: 1
 --- !u!114 &3535660750016484281
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVisual: {fileID: 7040494791936039497}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 29d6d0a2446447f09e69ddc21c503a08, type: 3}
   coins: 1
   points: 1
 --- !u!114 &1813455012265789278
@@ -518,7 +518,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVisual: {fileID: 103234509648647680}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 29d6d0a2446447f09e69ddc21c503a08, type: 3}
   coins: 1
   points: 1
 --- !u!114 &4992958694421194322
@@ -610,7 +610,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVisual: {fileID: 8173007470485649478}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 29d6d0a2446447f09e69ddc21c503a08, type: 3}
   coins: 1
   points: 1
 --- !u!114 &3856987944739810847
@@ -702,7 +702,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVisual: {fileID: 7952015671958743566}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 29d6d0a2446447f09e69ddc21c503a08, type: 3}
   coins: 1
   points: 1
 --- !u!114 &5759267192037094059

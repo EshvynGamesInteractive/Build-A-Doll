@@ -69,7 +69,7 @@ namespace Game.Hurdles
             if (hitEffect != null)
                 Instantiate(hitEffect, other.ClosestPoint(transform.position), Quaternion.identity).Play();
 
-            if (hitSound != null)
+            if (!player.IsAI && hitSound != null)
                 GameEvents.AudioEvents.PlaySfx.Raise(hitSound);
         }
 

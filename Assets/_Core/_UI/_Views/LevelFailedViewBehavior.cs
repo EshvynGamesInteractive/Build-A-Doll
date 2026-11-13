@@ -1,3 +1,4 @@
+using Core._GameEvent;
 using _Core.UI;
 using Core.Utilities;
 using UnityEngine;
@@ -19,14 +20,8 @@ namespace _Core._UI._Views
             UIPanelButtonUtility.Bind(homeButton, OnHomeButtonClick);
         }
 
-        private void OnRetryCurrentLevelButtonClick()
-        {
-            
-        }
+        private void OnRetryCurrentLevelButtonClick() => GameEvents.GameplayEvents.RequestRestartLevel.Raise();
 
-        private void OnHomeButtonClick()
-        {
-            
-        }
+        private void OnHomeButtonClick() => GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
     }
 }

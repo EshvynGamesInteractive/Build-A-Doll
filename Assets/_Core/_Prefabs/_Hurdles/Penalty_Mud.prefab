@@ -155,7 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVisual: {fileID: 0}
   hitEffect: {fileID: 0}
-  hitSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 38cd490058d849b59e218424f0ed7d36, type: 3}
   pointsLost: 2
   coinsLost: 0
   stumbleDuration: 0.6

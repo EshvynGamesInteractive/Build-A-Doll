@@ -11,7 +11,7 @@ namespace _Core.Boot
     /// Lives in the Bootstrap scene. Shows the splash, loads the Gameplay scene in the background
     /// and switches to it once BOTH the minimum loading time has passed and the scene is ready.
     /// Progress goes out through UIEvents.LoadingProgress for the splash bar.
-    /// The level and player are set up by LevelManager when the Gameplay scene reports in.
+    /// Once the scene is ready, Home lets the player start the saved level.
     /// </summary>
     public class BootLoader : MonoBehaviour
     {
@@ -67,8 +67,8 @@ namespace _Core.Boot
             operation.allowSceneActivation = true;
             yield return operation;
 
-            GameEvents.UIEvents.ShowByType.Raise(ScreenType.Gameplay);
             _isLoading = false;
+            GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
         }
     }
 }

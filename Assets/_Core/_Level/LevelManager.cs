@@ -24,7 +24,7 @@ namespace Game.Level
         [SerializeField] private LevelDatabase database;
 
         [Tooltip("Seconds after the finish before the next level / retry loads on its own. 0 = wait for the UI to raise RequestNextLevel / RequestRestartLevel.")]
-        [SerializeField, Min(0f)] private float autoContinueDelay = 2.5f;
+        [SerializeField, Min(0f)] private float autoContinueDelay;
 
         [Header("Testing")]
         [Tooltip("Play this level number (1-based) instead of the saved one. 0 = use saved progress.")]
@@ -61,20 +61,22 @@ namespace Game.Level
         private void OnEnable()
         {
             GameEvents.GameplayEvents.FinishReached.Register(OnFinishReached);
-            GameEvents.GameplayEvents.RequestNextLevel.Register(LoadCurrent);
-            GameEvents.GameplayEvents.RequestRestartLevel.Register(LoadCurrent);
+            GameEvents.GameplayEvents.RequestNextLevel.Register(LoadNext);
+            GameEvents.GameplayEvents.RequestPlaySavedLevel.Register(LoadCurrent);
+            GameEvents.GameplayEvents.RequestRestartLevel.Register(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Register(OnGameplaySceneReady);
         }
 
         private void OnDisable()
         {
             GameEvents.GameplayEvents.FinishReached.Unregister(OnFinishReached);
-            GameEvents.GameplayEvents.RequestNextLevel.Unregister(LoadCurrent);
-            GameEvents.GameplayEvents.RequestRestartLevel.Unregister(LoadCurrent);
+            GameEvents.GameplayEvents.RequestNextLevel.Unregister(LoadNext);
+            GameEvents.GameplayEvents.RequestPlaySavedLevel.Unregister(LoadCurrent);
+            GameEvents.GameplayEvents.RequestRestartLevel.Unregister(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Unregister(OnGameplaySceneReady);
         }
 
-        // The Gameplay scene has loaded: take its references and start the current level.
+        // Cache scene references so the Home screen can start the saved level on demand.
         private void OnGameplaySceneReady(GameplayScene scene)
         {
             if (database == null)
@@ -90,17 +92,18 @@ namespace Game.Level
             var spawn = scene.PlayerSpawnPoint;
             _origin = spawn.position;
             _rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(spawn.forward, Vector3.up), Vector3.up);
-
-            LoadCurrent();
         }
 
-        /// <summary>Loads the saved level. Progress only moves on when a level is passed,
-        /// so this is both "next level" after a win and "retry" after a fail.</summary>
+        /// <summary>Starts the saved level from Home, or the configured test level.</summary>
         public void LoadCurrent()
         {
             var index = testLevelNumber > 0 ? testLevelNumber - 1 : LevelProgress.CurrentLevelIndex;
             LoadLevel(index);
         }
+
+        private void RestartCurrent() => LoadLevel(_currentIndex);
+
+        private void LoadNext() => LoadLevel(_currentIndex + 1);
 
         public void LoadLevel(int index)
         {
@@ -142,6 +145,7 @@ namespace Game.Level
             GameEvents.GameplayEvents.ResetRun.Raise();
             GameEvents.GameplayEvents.LevelLoaded.Raise(level, CurrentLevelNumber);
 
+            GameEvents.UIEvents.ShowByType.Raise(ScreenType.Gameplay);
             ShowTargetLook(level);
         }
 
@@ -464,9 +468,12 @@ namespace Game.Level
             if (passed)
             {
                 var result = new LevelResult(_current, CurrentLevelNumber, true, score, _current.GetStars(score), coins, _current.CompletionCoins, _match, hasAi, aiScore, _aiMatch);
-                LevelProgress.AddCoins(result.TotalCoins);
-                if (testLevelNumber == 0)
-                    LevelProgress.CurrentLevelIndex = _currentIndex + 1;
+                if (testLevelNumber > 0 || _currentIndex >= LevelProgress.CurrentLevelIndex)
+                {
+                    LevelProgress.AddCoins(result.TotalCoins);
+                    if (testLevelNumber == 0)
+                        LevelProgress.CurrentLevelIndex = _currentIndex + 1;
+                }
 
                 GameEvents.GameplayEvents.LevelCompleted.Raise(result);
                 GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelCompletePanel);
@@ -479,7 +486,7 @@ namespace Game.Level
             }
 
             if (autoContinueDelay > 0f)
-                Invoke(nameof(LoadCurrent), autoContinueDelay);
+                Invoke(passed ? nameof(LoadNext) : nameof(RestartCurrent), autoContinueDelay);
         }
 
         private int GetAiScore()
