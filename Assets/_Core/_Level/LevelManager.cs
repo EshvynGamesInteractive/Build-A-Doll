@@ -460,10 +460,10 @@ namespace Game.Level
             // With a target look the score is how well she copied it (0..100); otherwise the run score.
             var score = _current.HasTarget ? _match.Percent : (runScore != null ? runScore.Score : 0);
 
-            // Against an AI the player must score HIGHER than it; a draw is a loss. Without an AI, the pass mark decides.
+            // The level pass mark applies in every race. Against AI, ties also fail.
             var hasAi = _ai != null;
             var aiScore = hasAi ? GetAiScore() : 0;
-            var passed = hasAi ? score > aiScore : _current.IsPass(score);
+            var passed = _current.IsPass(score) && (!hasAi || score > aiScore);
 
             if (passed)
             {

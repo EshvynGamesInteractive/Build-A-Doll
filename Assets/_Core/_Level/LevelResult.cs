@@ -22,7 +22,7 @@ namespace Game.Level
         /// <summary>Player's outfit vs the target look. Percent is 100 for levels without a target.</summary>
         public readonly OutfitMatch Match;
 
-        /// <summary>True when an AI raced this level; then Passed means the player beat it.</summary>
+        /// <summary>True when an AI raced this level.</summary>
         public readonly bool HasAi;
 
         /// <summary>AI's score, same scale as Score.</summary>

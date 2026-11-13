@@ -1,6 +1,8 @@
 using Core._GameEvent;
 using _Core.UI;
 using Core.Utilities;
+using Game.Level;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,8 +13,22 @@ namespace _Core._UI._Views
         [SerializeField] private Button retryButton;
         [SerializeField] private Button homeButton;
         [SerializeField] private Button nextLevelButton;
-        
-        
+        [SerializeField] private TMP_Text outfitMatchText;
+
+        private void OnEnable() => GameEvents.GameplayEvents.LevelCompleted.Register(SetOutfitMatch);
+
+        private void OnDisable() => GameEvents.GameplayEvents.LevelCompleted.Unregister(SetOutfitMatch);
+
+        private void SetOutfitMatch(LevelResult result)
+        {
+            if (outfitMatchText == null)
+                return;
+
+            outfitMatchText.gameObject.SetActive(result.Level.HasTarget);
+            if (result.Level.HasTarget)
+                outfitMatchText.text = $"Outfit Match {result.Match.Percent}%";
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
