@@ -125,6 +125,7 @@ MonoBehaviour:
   activeVisual: {fileID: 0}
   hitEffect: {fileID: 0}
   hitSound: {fileID: 0}
+  aiAvoid: 0
   pointsLost: 3
   coinsLost: 0
   stumbleDuration: 0.4
@@ -143,7 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ad01c15ef6774bcab2d617172eecb27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slideDistance: 1.8
+  slideDistance: 4
   slideSpeed: 0.4
   slideAxis: {x: 1, y: 0, z: 0}
   bobHeight: 0

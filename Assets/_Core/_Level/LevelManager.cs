@@ -2,7 +2,10 @@ using _Core;
 using _Core._Player;
 using _Core.UI;
 using Core._GameEvent;
+using System.Collections.Generic;
+using Game.AI;
 using Game.Hurdles;
+using Game.Player.Input;
 using Game.Outfit;
 using Game.Score;
 using UnityEngine;
@@ -37,6 +40,13 @@ namespace Game.Level
         private GameplayScene _scene;
         private GameObject _demo;
         private OutfitMatch _match;
+
+        // AI opponent on its own ramp next to the player's.
+        private Transform _aiRamp;
+        private List<GameObject> _aiHurdles = new();
+        private RunnerController _ai;
+        private AiInput _aiInput;
+        private OutfitMatch _aiMatch;
 
         // Where the demo stands at the start: this far down the track, facing the player.
         private const float DemoDistance = 4f;
@@ -125,6 +135,8 @@ namespace Game.Level
             if (outfit != null)
                 outfit.SetStartingItems(level.StartingOutfit);
 
+            SpawnAi(level);
+
             // Puts the player, her outfit, score and any hurdles back to their start state.
             GameEvents.GameplayEvents.ResetRun.Raise();
             GameEvents.GameplayEvents.LevelLoaded.Raise(level, CurrentLevelNumber);
@@ -194,6 +206,37 @@ namespace Game.Level
             if (level.EnvironmentPrefab != null)
                 Instantiate(level.EnvironmentPrefab, _levelRoot, false);
 
+            // Player's ramp is the level root itself.
+            BuildRamp(level, _levelRoot, database.SpawnPlayerRamp, true);
+
+            // AI's ramp: the same hurdles, off to the side. Its hurdles are kept for the AI's plan.
+            _aiRamp = null;
+            _aiHurdles = new List<GameObject>();
+            if (GetAiProfile(level) == null)
+                return;
+
+            _aiRamp = new GameObject("AI Ramp").transform;
+            _aiRamp.SetParent(_levelRoot, false);
+            _aiRamp.localPosition = new Vector3(database.AiRampOffset, 0f, 0f);
+            _aiHurdles = BuildRamp(level, _aiRamp, true, false);
+        }
+
+        // Spawns one ramp's ground, hurdles and finish line under 'root'. Returns the hurdles in entry order.
+        private List<GameObject> BuildRamp(LevelData level, Transform root, bool spawnGround, bool warnMissing)
+        {
+            if (spawnGround && database.RampPrefab != null)
+            {
+                // 1 unit long from z = 0 → stretch from a bit behind the start to past the finish.
+                var zAxisScale = level.FinishDistance / 4;
+                const float behindStart = 5f;
+                const float pastFinish = 15f;
+                var ground = Instantiate(database.RampPrefab, root, false);
+                ground.transform.localPosition = new Vector3(0f, 0f, zAxisScale + zAxisScale);
+                ground.transform.localScale = new Vector3(1f, 1f, zAxisScale);
+                // ground.transform.localScale = new Vector3(1f, 1f, level.FinishDistance + behindStart + pastFinish);
+            }
+
+            var hurdles = new List<GameObject>();
             var missing = 0;
             foreach (var entry in level.Entries)
             {
@@ -203,27 +246,97 @@ namespace Game.Level
                     continue;
                 }
 
-                var instance = Spawn(entry.prefab, entry.distance, entry.lateral);
+                var instance = Spawn(root, entry.prefab, entry.distance, entry.lateral);
                 ApplyGateItems(instance, entry.gateItems);
+                hurdles.Add(instance);
             }
 
-            if (missing > 0)
+            if (missing > 0 && warnMissing)
                 Debug.LogWarning($"'{level.name}': {missing} of {level.Entries.Count} entries have no prefab (deleted or never set), so they were skipped.", level);
 
             var finish = level.FinishLinePrefab != null ? level.FinishLinePrefab : database.DefaultFinishLine;
             if (finish != null)
-                Spawn(finish, level.FinishDistance, 0f);
-            else
+                Spawn(root, finish, level.FinishDistance, 0f);
+            else if (warnMissing)
                 Debug.LogWarning($"No finish line prefab for '{level.name}'. Set one on the level or the database.", level);
+
+            return hurdles;
         }
 
-        private GameObject Spawn(GameObject prefab, float distance, float lateral)
+        private static GameObject Spawn(Transform root, GameObject prefab, float distance, float lateral)
         {
             // Spawn straight at the final pose: movers remember where they were in Awake.
             var local = new Vector3(lateral, 0f, distance) + prefab.transform.localPosition;
-            var position = _levelRoot.TransformPoint(local);
-            var rotation = _levelRoot.rotation * prefab.transform.localRotation;
-            return Instantiate(prefab, position, rotation, _levelRoot);
+            var position = root.TransformPoint(local);
+            var rotation = root.rotation * prefab.transform.localRotation;
+            return Instantiate(prefab, position, rotation, root);
+        }
+
+        // ---------- AI ----------
+
+        private AiProfile GetAiProfile(LevelData level)
+        {
+            if (!level.HasAiOpponent)
+                return null;
+            return level.AiProfile != null ? level.AiProfile : database.DefaultAiProfile;
+        }
+
+        // The AI is a copy of the player's doll (or the AI prefab) driven by AiInput instead of touch.
+        private void SpawnAi(LevelData level)
+        {
+            _ai = null; // the previous one went with the old level root
+            _aiInput = null;
+
+            var profile = GetAiProfile(level);
+            if (profile == null || _aiRamp == null)
+                return;
+
+            var prefab = database.AiPrefab != null ? database.AiPrefab
+                : level.PlayerPrefab != null ? level.PlayerPrefab
+                : database.DefaultPlayerPrefab;
+            if (prefab == null)
+            {
+                Debug.LogWarning($"No doll for the AI. Set an AI Prefab or Default Player Prefab on the {nameof(LevelDatabase)}.", database);
+                return;
+            }
+
+            var instance = Instantiate(prefab, _aiRamp.position, _aiRamp.rotation, _aiRamp);
+            instance.name = "AI";
+            if (!instance.activeSelf)
+                instance.SetActive(true);
+
+            if (!instance.TryGetComponent(out _ai))
+            {
+                Debug.LogError($"AI doll '{prefab.name}' has no {nameof(RunnerController)}.", prefab);
+                Destroy(instance);
+                return;
+            }
+
+            // No touch input on the AI.
+            if (instance.TryGetComponent<PointerDragInput>(out var touch))
+            {
+                touch.enabled = false;
+                Destroy(touch);
+            }
+
+            if (!instance.TryGetComponent(out _aiInput))
+                _aiInput = instance.AddComponent<AiInput>();
+
+            _ai.SetAI(true);
+            _ai.SetInput(_aiInput, _aiInput);
+            _ai.SetConfig(profile.MovementConfig);
+
+            if (_ai.DollOutfit != null)
+                _ai.DollOutfit.SetStartingItems(level.StartingOutfit);
+
+            var trackWidth = player.Config != null ? player.Config.TrackHalfWidth * 2f : 4.4f;
+            _aiInput.Init(_ai, _aiRamp, profile, AiPlanner.Plan(_aiHurdles, _aiRamp, level.TargetLook, profile, trackWidth));
+        }
+
+        private void StartAi()
+        {
+            if (_aiInput != null)
+                _aiInput.Go();
         }
 
         private static void ApplyGateItems(GameObject instance, OutfitItem[] items)
@@ -253,6 +366,7 @@ namespace Game.Level
                     Debug.LogWarning($"'{level.name}' has a target look but no demo doll prefab (set Default Demo Prefab on the {nameof(LevelDatabase)}).", level);
 
                 player.StartLocked = false;
+                StartAi();
                 return;
             }
 
@@ -285,14 +399,22 @@ namespace Game.Level
             if (player != null)
                 player.StartLocked = false;
 
+            StartAi();
             GameEvents.GameplayEvents.TargetLookHidden.Raise();
         }
 
         // ---------- Finish ----------
 
-        // Finish: stop, put the demo next to the player, compare, then show the result.
-        private void OnFinishReached()
+        // Finish: stop, put the demo next to the player, compare both dolls, then show the result.
+        private void OnFinishReached(RunnerController runner)
         {
+            // The AI crossing its own finish line just stops the AI.
+            if (runner != null && runner.IsAI)
+            {
+                runner.Stop();
+                return;
+            }
+
             if (_finished || _current == null)
                 return;
 
@@ -306,6 +428,7 @@ namespace Game.Level
             }
 
             _match = OutfitComparer.Compare(_current.TargetOutfit, player.DollOutfit);
+            _aiMatch = _ai != null ? OutfitComparer.Compare(_current.TargetOutfit, _ai.DollOutfit) : default;
 
             if (!_current.HasTarget || _demo == null)
             {
@@ -320,7 +443,7 @@ namespace Game.Level
             _demo.transform.SetPositionAndRotation(_levelRoot.TransformPoint(demoLocal), _rotation * Quaternion.Euler(0f, 180f, 0f));
             _demo.SetActive(true);
 
-            GameEvents.GameplayEvents.ComparisonStarted.Raise(_match);
+            GameEvents.GameplayEvents.ComparisonStarted.Raise(_match, _aiMatch);
             Invoke(nameof(ShowResult), database.ComparisonTime);
         }
 
@@ -334,11 +457,15 @@ namespace Game.Level
 
             // With a target look the score is how well she copied it (0..100); otherwise the run score.
             var score = _current.HasTarget ? _match.Percent : (runScore != null ? runScore.Score : 0);
-            var passed = _current.IsPass(score);
+
+            // Against an AI the player must score HIGHER than it; a draw is a loss. Without an AI, the pass mark decides.
+            var hasAi = _ai != null;
+            var aiScore = hasAi ? GetAiScore() : 0;
+            var passed = hasAi ? score > aiScore : _current.IsPass(score);
 
             if (passed)
             {
-                var result = new LevelResult(_current, CurrentLevelNumber, true, score, _current.GetStars(score), coins, _current.CompletionCoins, _match);
+                var result = new LevelResult(_current, CurrentLevelNumber, true, score, _current.GetStars(score), coins, _current.CompletionCoins, _match, hasAi, aiScore, _aiMatch);
                 LevelProgress.AddCoins(result.TotalCoins);
                 if (testLevelNumber == 0)
                     LevelProgress.CurrentLevelIndex = _currentIndex + 1;
@@ -348,13 +475,20 @@ namespace Game.Level
             }
             else
             {
-                var result = new LevelResult(_current, CurrentLevelNumber, false, score, 0, coins, 0, _match);
+                var result = new LevelResult(_current, CurrentLevelNumber, false, score, 0, coins, 0, _match, hasAi, aiScore, _aiMatch);
                 GameEvents.GameplayEvents.LevelFailed.Raise(result);
                 GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelFailed);
             }
 
             if (autoContinueDelay > 0f)
                 Invoke(nameof(LoadCurrent), autoContinueDelay);
+        }
+
+        private int GetAiScore()
+        {
+            if (_current.HasTarget)
+                return _aiMatch.Percent;
+            return _ai.Score != null ? _ai.Score.Score : 0;
         }
 
         [ContextMenu("Reset Saved Progress")]

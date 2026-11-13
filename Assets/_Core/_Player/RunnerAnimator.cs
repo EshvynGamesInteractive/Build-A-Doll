@@ -37,6 +37,7 @@ namespace Game.Player
         private bool _hasIsGrounded, _hasIsSliding, _hasJump, _hasSlide;
         private bool _wasGrounded = true;
         private bool _wasSliding;
+        private bool _wasStumbling;
 
         private void Awake()
         {
@@ -68,16 +69,6 @@ namespace Game.Player
             _hasSlide = HasParameter(_slideHash, AnimatorControllerParameterType.Trigger);
         }
 
-        private void OnEnable() => GameEvents.GameplayEvents.PenaltyTaken.Register(OnPenalty);
-
-        private void OnDisable() => GameEvents.GameplayEvents.PenaltyTaken.Unregister(OnPenalty);
-
-        private void OnPenalty(int _)
-        {
-            if (_hasStumble)
-                animator.SetTrigger(_stumbleHash);
-        }
-
         private void Update()
         {
             if (_hasSpeed)
@@ -98,8 +89,14 @@ namespace Game.Player
             if (_hasSlide && !_wasSliding && sliding)
                 animator.SetTrigger(_slideHash);
 
+            // Stumble when THIS doll starts stumbling (not on any penalty anywhere, e.g. the AI's).
+            var stumbling = _state.IsStumbling;
+            if (_hasStumble && !_wasStumbling && stumbling)
+                animator.SetTrigger(_stumbleHash);
+
             _wasGrounded = grounded;
             _wasSliding = sliding;
+            _wasStumbling = stumbling;
         }
 
         private bool HasParameter(int hash, AnimatorControllerParameterType type)

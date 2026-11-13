@@ -1,3 +1,5 @@
+using Game.Outfit;
+
 namespace Game.Level
 {
     /// <summary>How the level went. Sent with LevelCompleted / LevelFailed for the result screens.</summary>
@@ -9,17 +11,28 @@ namespace Game.Level
         public readonly int LevelNumber;
 
         public readonly bool Passed;
+
+        /// <summary>Player's score: match % with a target look, otherwise the run score.</summary>
         public readonly int Score;
+
         public readonly int Stars;
         public readonly int CoinsCollected;
         public readonly int CompletionCoins;
 
-        /// <summary>Outfit vs target look. Percent is 100 for levels without a target.</summary>
-        public readonly Game.Outfit.OutfitMatch Match;
+        /// <summary>Player's outfit vs the target look. Percent is 100 for levels without a target.</summary>
+        public readonly OutfitMatch Match;
 
-        public LevelResult(LevelData level, int levelNumber, bool passed, int score, int stars, int coinsCollected, int completionCoins, Game.Outfit.OutfitMatch match)
+        /// <summary>True when an AI raced this level; then Passed means the player beat it.</summary>
+        public readonly bool HasAi;
+
+        /// <summary>AI's score, same scale as Score.</summary>
+        public readonly int AiScore;
+
+        public readonly OutfitMatch AiMatch;
+
+        public LevelResult(LevelData level, int levelNumber, bool passed, int score, int stars, int coinsCollected,
+            int completionCoins, OutfitMatch match, bool hasAi, int aiScore, OutfitMatch aiMatch)
         {
-            Match = match;
             Level = level;
             LevelNumber = levelNumber;
             Passed = passed;
@@ -27,6 +40,10 @@ namespace Game.Level
             Stars = stars;
             CoinsCollected = coinsCollected;
             CompletionCoins = completionCoins;
+            Match = match;
+            HasAi = hasAi;
+            AiScore = aiScore;
+            AiMatch = aiMatch;
         }
 
         public int TotalCoins => CoinsCollected + CompletionCoins;

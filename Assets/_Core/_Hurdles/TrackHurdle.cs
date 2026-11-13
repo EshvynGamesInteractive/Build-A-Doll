@@ -16,6 +16,9 @@ namespace Game.Hurdles
         [Tooltip("Shown while the hurdle can still be hit. Leave empty to keep everything visible.")]
         [SerializeField] private GameObject activeVisual;
 
+        [SerializeField] private GameObject redVisual;
+        [SerializeField] private GameObject greenVisual;
+
         [Tooltip("Optional effect spawned where the player hit it.")]
         [SerializeField] private ParticleSystem hitEffect;
 

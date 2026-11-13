@@ -17,6 +17,7 @@ namespace Game.EditorTools
         public static string Data => Root + "/_Data";
         public static string Levels => Data + "/_Levels";
         public static string TargetLooks => Data + "/_TargetLooks";
+        public static string AiProfiles => Data + "/_AI";
         public static string Samples => Root + "/_Samples";
         public static string Prefabs => Root + "/_Prefabs";
         public static string HurdlePrefabs => Prefabs + "/_Hurdles";

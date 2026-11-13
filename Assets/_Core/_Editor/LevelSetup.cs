@@ -49,6 +49,8 @@ namespace Game.EditorTools
             var slideBar = Prefab("Obstacle_SlideBar", BuildSlideBar);
             var finish = Prefab("FinishLine", BuildFinishLine);
             var demoDoll = Prefab("DemoDoll", BuildDemoDoll, EditorPaths.Prefabs);
+            var ramp = Prefab("Ramp", BuildRampGround, EditorPaths.Prefabs);
+            var aiProfile = AiProfileAsset("AiProfile_Normal");
 
             var levels = new List<LevelData>
             {
@@ -93,6 +95,8 @@ namespace Game.EditorTools
 
             var database = CreateDatabase(levels, finish);
             SetIfEmpty(database, "defaultDemoPrefab", demoDoll);
+            SetIfEmpty(database, "rampPrefab", ramp);
+            SetIfEmpty(database, "defaultAiProfile", aiProfile);
 
             AssetDatabase.SaveAssets();
             EditorGUIUtility.PingObject(database);
@@ -356,6 +360,30 @@ namespace Game.EditorTools
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(look);
             return look;
+        }
+
+        // Ground for one ramp, 1 unit long from z = 0; LevelManager stretches it to the level length.
+        private static void BuildRampGround(Transform root)
+        {
+            var ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            ground.name = "Ground";
+            Object.DestroyImmediate(ground.GetComponent<Collider>());
+            ground.transform.SetParent(root, false);
+            ground.transform.localPosition = new Vector3(0f, -0.1f, 0.5f);
+            ground.transform.localScale = new Vector3(ItemGateSetup.TrackWidth(), 0.2f, 1f);
+            ground.GetComponent<MeshRenderer>().sharedMaterial = ItemGateSetup.CreateMaterial("Ramp", new Color(0.92f, 0.9f, 0.95f));
+        }
+
+        private static Game.AI.AiProfile AiProfileAsset(string fileName)
+        {
+            var profile = FindByName<Game.AI.AiProfile>(fileName);
+            if (profile != null)
+                return profile;
+
+            EditorPaths.EnsureFolder(EditorPaths.AiProfiles);
+            profile = ScriptableObject.CreateInstance<Game.AI.AiProfile>();
+            AssetDatabase.CreateAsset(profile, $"{EditorPaths.AiProfiles}/{fileName}.asset");
+            return profile;
         }
 
         private static void SetIfEmpty(Object asset, string property, Object value)

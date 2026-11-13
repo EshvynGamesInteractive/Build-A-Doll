@@ -28,8 +28,8 @@ namespace Core._GameEvent
             /// <summary>Notification: the player hit a minus item. Arg: points lost. Use for screen shake, red flash, etc.</summary>
             public static readonly GameEvent<int> PenaltyTaken = new();
 
-            /// <summary>Notification: the player crossed the finish line.</summary>
-            public static readonly GameEvent FinishReached = new();
+            /// <summary>Notification: a runner (player or AI) crossed its finish line.</summary>
+            public static readonly GameEvent<_Core._Player.RunnerController> FinishReached = new();
 
             /// <summary>Notification: a level was built and the player is at the start. Args: level, 1-based level number.</summary>
             public static readonly GameEvent<Game.Level.LevelData, int> LevelLoaded = new();
@@ -61,8 +61,8 @@ namespace Core._GameEvent
             /// <summary>Notification: the target look was hidden; the player can start running.</summary>
             public static readonly GameEvent TargetLookHidden = new();
 
-            /// <summary>Notification: at the finish, the demo stands next to the player. Arg: how well she matched.</summary>
-            public static readonly GameEvent<Game.Outfit.OutfitMatch> ComparisonStarted = new();
+            /// <summary>Notification: at the finish, the demo stands next to the player. Args: player match, AI match.</summary>
+            public static readonly GameEvent<Game.Outfit.OutfitMatch, Game.Outfit.OutfitMatch> ComparisonStarted = new();
         }
     }
 }

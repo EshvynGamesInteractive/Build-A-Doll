@@ -18,6 +18,8 @@ MonoBehaviour:
   finishLinePrefab: {fileID: 0}
   playerPrefab: {fileID: 0}
   targetLook: {fileID: 11400000, guid: 26ef90389cebd43c19c63e0baa46d98f, type: 2}
+  hasAiOpponent: 1
+  aiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
   startingOutfit: []
   entries:
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}

@@ -20,6 +20,9 @@ namespace Game.Score
 
         private int _points;
 
+        /// <summary>Off for the AI, so its coins and score don't show on the player's HUD.</summary>
+        public bool RaiseEvents { get; set; } = true;
+
         public int Coins { get; private set; }
         public int Score => Mathf.Max(minimumScore, _points + (outfit != null ? outfit.StyleScore : 0));
 
@@ -47,7 +50,8 @@ namespace Game.Score
                 return;
 
             Coins = Mathf.Max(0, Coins + amount);
-            GameEvents.GameplayEvents.CoinsChanged.Raise(Coins);
+            if (RaiseEvents)
+                GameEvents.GameplayEvents.CoinsChanged.Raise(Coins);
         }
 
         public void AddPoints(int amount)
@@ -56,15 +60,22 @@ namespace Game.Score
                 return;
 
             _points += amount;
-            GameEvents.GameplayEvents.ScoreChanged.Raise(Score);
+            if (RaiseEvents)
+                GameEvents.GameplayEvents.ScoreChanged.Raise(Score);
         }
 
-        private void OnOutfitChanged(OutfitItem _) => GameEvents.GameplayEvents.ScoreChanged.Raise(Score);
+        private void OnOutfitChanged(OutfitItem _)
+        {
+            if (RaiseEvents)
+                GameEvents.GameplayEvents.ScoreChanged.Raise(Score);
+        }
 
         private void ResetScore()
         {
             _points = 0;
             Coins = 0;
+            if (!RaiseEvents)
+                return;
             GameEvents.GameplayEvents.CoinsChanged.Raise(Coins);
             GameEvents.GameplayEvents.ScoreChanged.Raise(Score);
         }

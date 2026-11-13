@@ -17,8 +17,15 @@ MonoBehaviour:
   acceleration: 20
   deceleration: 25
   dragSensitivity: 8
-  trackHalfWidth: 2.2
+  trackHalfWidth: 4
   lateralSmoothTime: 0.06
+  jumpHeight: 1.6
+  jumpAirTime: 0.7
+  slideDuration: 0.8
+  slideHitboxHeight: 0.9
+  fastFallSpeed: 12
+  squashVisualOnSlide: 1
+  slideVisualScale: 0.45
   turnAnglePerSpeed: 4
   maxTurnAngle: 35
   turnLerpSpeed: 12

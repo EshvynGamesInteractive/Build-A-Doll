@@ -25,6 +25,23 @@ namespace Game.Level
         [Tooltip("Seconds the demo stands next to the player at the finish before the result.")]
         [SerializeField, Min(0f)] private float comparisonTime = 2f;
 
+        [Header("Ramps")]
+        [Tooltip("Optional: ground for each ramp. Build it 1 unit long from z = 0; it's stretched to the level's length.")]
+        [SerializeField] private GameObject rampPrefab;
+
+        [Tooltip("Spawn the ramp ground under the player too. Turn off if the Gameplay scene already has a track.")]
+        [SerializeField] private bool spawnPlayerRamp = true;
+
+        [Header("AI opponent")]
+        [Tooltip("AI difficulty for levels that don't set their own. Empty = no AI.")]
+        [SerializeField] private Game.AI.AiProfile defaultAiProfile;
+
+        [Tooltip("Optional: the AI's doll. Empty = a copy of the player's doll, driven by AI input.")]
+        [SerializeField] private GameObject aiPrefab;
+
+        [Tooltip("How far to the side of the player's ramp the AI's ramp is (negative = left).")]
+        [SerializeField] private float aiRampOffset = 10f;
+
         [Tooltip("Used when a level doesn't set its own finish line.")]
         [SerializeField] private GameObject defaultFinishLine;
 
@@ -35,6 +52,11 @@ namespace Game.Level
         public GameObject DefaultFinishLine => defaultFinishLine;
         public GameObject DefaultPlayerPrefab => defaultPlayerPrefab;
         public GameObject DefaultDemoPrefab => defaultDemoPrefab;
+        public GameObject RampPrefab => rampPrefab;
+        public bool SpawnPlayerRamp => spawnPlayerRamp;
+        public Game.AI.AiProfile DefaultAiProfile => defaultAiProfile;
+        public GameObject AiPrefab => aiPrefab;
+        public float AiRampOffset => aiRampOffset;
         public float DemoShowTime => demoShowTime;
         public float ComparisonTime => comparisonTime;
 

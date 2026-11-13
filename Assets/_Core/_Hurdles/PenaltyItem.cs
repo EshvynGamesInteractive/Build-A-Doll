@@ -13,6 +13,18 @@ namespace Game.Hurdles
     /// </summary>
     public class PenaltyItem : TrackHurdle
     {
+        public enum AiAvoidance
+        {
+            [Tooltip("Decide from the shape: high = slide, track-wide = jump, small = steer around.")]
+            Auto,
+            SteerAround,
+            Jump,
+            Slide
+        }
+
+        [Tooltip("How the AI gets past this.")]
+        [SerializeField] private AiAvoidance aiAvoid = AiAvoidance.Auto;
+
         [SerializeField, Min(0)] private int pointsLost = 2;
         [SerializeField, Min(0)] private int coinsLost = 0;
 
@@ -25,6 +37,8 @@ namespace Game.Hurdles
         [Tooltip("Take an item off the doll when hit.")]
         [SerializeField] private bool removesItem;
         [SerializeField] private OutfitSlot slotToRemove = OutfitSlot.Dress;
+
+        public AiAvoidance AiAvoid => aiAvoid;
 
         protected override void OnPlayerHit(RunnerController player)
         {
@@ -46,7 +60,8 @@ namespace Game.Hurdles
             if (stumbleDuration > 0f)
                 player.Stumble(stumbleDuration, stumbleSpeedFactor);
 
-            GameEvents.GameplayEvents.PenaltyTaken.Raise(pointsLost);
+            if (!player.IsAI)
+                GameEvents.GameplayEvents.PenaltyTaken.Raise(pointsLost);
         }
     }
 }

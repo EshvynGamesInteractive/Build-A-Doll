@@ -11,6 +11,9 @@ namespace Game.Player.Movement
         public float Offset { get; private set; }
         public float Velocity => _velocity;
 
+        /// <summary>Where the doll is heading sideways (before smoothing).</summary>
+        public float TargetOffset => _targetOffset;
+
         private float _targetOffset;
         private float _velocity;
 

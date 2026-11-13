@@ -48,6 +48,13 @@ namespace Game.Level
         [Tooltip("The look to copy: shown on the demo doll at the start and compared at the finish. Empty = no comparison (run score decides).")]
         [SerializeField] private TargetLook targetLook;
 
+        [Header("AI opponent")]
+        [Tooltip("Race an AI on a second ramp. The player wins only by matching the target look better than the AI.")]
+        [SerializeField] private bool hasAiOpponent = true;
+
+        [Tooltip("Optional: AI difficulty for this level. Empty = the database's default.")]
+        [SerializeField] private Game.AI.AiProfile aiProfile;
+
         [Header("Start")]
         [Tooltip("What she wears when the level starts.")]
         [SerializeField] private OutfitItem[] startingOutfit;
@@ -70,6 +77,8 @@ namespace Game.Level
         public GameObject FinishLinePrefab => finishLinePrefab;
         public GameObject PlayerPrefab => playerPrefab;
         public TargetLook TargetLook => targetLook;
+        public bool HasAiOpponent => hasAiOpponent;
+        public Game.AI.AiProfile AiProfile => aiProfile;
         public bool HasTarget => targetLook != null && targetLook.HasItems;
         public IReadOnlyList<OutfitItem> TargetOutfit => HasTarget ? targetLook.Items : null;
         public GameObject DemoPrefab => targetLook != null ? targetLook.DemoPrefab : null;

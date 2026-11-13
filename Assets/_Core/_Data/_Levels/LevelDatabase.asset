@@ -20,5 +20,10 @@ MonoBehaviour:
   defaultDemoPrefab: {fileID: 7866513120635556711, guid: f5a4dad8c9f104806989a095d5f710b4, type: 3}
   demoShowTime: 3
   comparisonTime: 2
+  rampPrefab: {fileID: 328580801334476994, guid: 3a7003fd209904b2fb39d394248a5ec0, type: 3}
+  spawnPlayerRamp: 1
+  defaultAiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
+  aiPrefab: {fileID: 0}
+  aiRampOffset: 10
   defaultFinishLine: {fileID: 3436351116473820346, guid: 92724c4b9b5f34ba6ae35951d32acb5b, type: 3}
   loopFromLevel: 2

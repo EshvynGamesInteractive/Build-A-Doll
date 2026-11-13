@@ -35,6 +35,13 @@ namespace Game.Outfit
         [Tooltip("Worn at the start (and after a reset).")]
         [SerializeField] private OutfitItem[] startingItems;
 
+        /// <summary>Off for display dolls and the AI, so their items don't count as the player's.</summary>
+        public bool RaiseEvents
+        {
+            get => raiseEvents;
+            set => raiseEvents = value;
+        }
+
         private readonly Dictionary<OutfitSlot, OutfitItem> _worn = new();
         private readonly Dictionary<OutfitSlot, GameObject> _spawned = new();
         private Dictionary<string, Transform> _bonesByName;

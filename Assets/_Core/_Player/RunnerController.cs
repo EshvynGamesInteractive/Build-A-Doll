@@ -80,6 +80,45 @@ namespace _Core._Player
         public RunScore Score => score;
         public RunnerAnimator Animator => animator;
         public DollOutfit DollOutfit => dollOutfit;
+        public RunnerMovementConfig Config => config;
+
+        /// <summary>True for the AI opponent. Its score, outfit and run start don't raise player events.</summary>
+        public bool IsAI { get; private set; }
+
+        /// <summary>Distance run along the track since the start.</summary>
+        public float Distance => _distance;
+
+        /// <summary>Sideways position she's heading for, from the track centre.</summary>
+        public float LateralTarget => _lateral.TargetOffset;
+
+        /// <summary>Turns this runner into the AI: its own events go quiet so the HUD only shows the player.</summary>
+        public void SetAI(bool isAI)
+        {
+            IsAI = isAI;
+            if (dollOutfit != null)
+                dollOutfit.RaiseEvents = !isAI;
+            if (score != null)
+                score.RaiseEvents = !isAI;
+        }
+
+        /// <summary>Swaps what drives this runner, e.g. touch input for AI input.</summary>
+        public void SetInput(IDragInput drag, IActionInput actions)
+        {
+            _input = drag;
+            _actions = actions;
+            if (_input != null && config != null)
+                enabled = true;
+        }
+
+        /// <summary>Swaps the movement tuning, e.g. a slower config for an easy AI.</summary>
+        public void SetConfig(RunnerMovementConfig newConfig)
+        {
+            if (newConfig != null)
+                config = newConfig;
+        }
+
+        /// <summary>Stops this runner only (the global StopRun stops everyone).</summary>
+        public void Stop() => StopRun();
         
 
         private void Awake()
@@ -243,7 +282,8 @@ namespace _Core._Player
                 return;
 
             _phase = Phase.Running;
-            GameEvents.GameplayEvents.RunStarted.Raise();
+            if (!IsAI)
+                GameEvents.GameplayEvents.RunStarted.Raise();
         }
 
         private void StopRun()

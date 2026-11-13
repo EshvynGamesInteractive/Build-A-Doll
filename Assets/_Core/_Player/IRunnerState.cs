@@ -12,5 +12,7 @@ namespace Game.Player
         bool IsGrounded { get; }
 
         bool IsSliding { get; }
+
+        bool IsStumbling { get; }
     }
 }
