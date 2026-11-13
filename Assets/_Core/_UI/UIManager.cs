@@ -1,9 +1,9 @@
-using _Core._UI;
+
 using _Core.UI;
 using Core._GameEvent;
 using UnityEngine;
 
-namespace Core.UI
+namespace _Core._UI
 {
     public class UIManager : MonoBehaviour
     {
@@ -11,33 +11,44 @@ namespace Core.UI
 
         [SerializeField] private UIScreen[] screens;
 
-        private ScreenType _settingsReturn = ScreenType.MainMenu;
-        private float? _resumeTimeScale;
+        private ScreenType settingsReturn = ScreenType.MainMenu;
+        private float? resumeTimeScale;
 
-        public ScreenType? Current { get; private set; }
+        private ScreenType? Current { get; set; }
 
         private void Awake()
         {
+            // Singleton check
             if (Instance != null && Instance != this)
             {
-                Destroy(this);
+                Destroy(gameObject);
                 return;
             }
 
             Instance = this;
+
+            // Keep root parent alive between scenes
+            transform.SetParent(null);
             DontDestroyOnLoad(gameObject);
         }
 
         private void OnEnable()
         {
+            if (Instance != this)
+                return;
+
             GameEvents.UIEvents.ShowByType.Register(Show);
             GameEvents.UIEvents.CloseSettings.Register(CloseSettings);
         }
 
         private void OnDisable()
         {
+            if (Instance != this)
+                return;
+
             GameEvents.UIEvents.ShowByType.Unregister(Show);
             GameEvents.UIEvents.CloseSettings.Unregister(CloseSettings);
+
             SetPaused(false);
         }
 
@@ -47,13 +58,18 @@ namespace Core.UI
                 Instance = null;
         }
 
-        public void Show(ScreenType type)
+        private void Show(ScreenType type)
         {
             if (type == ScreenType.Settings && Current != ScreenType.Settings)
-                _settingsReturn = Current ?? ScreenType.MainMenu;
+                settingsReturn = Current ?? ScreenType.MainMenu;
 
             Current = type;
-            SetPaused(type is ScreenType.PausePanel or ScreenType.Settings or ScreenType.MainMenu);
+
+            SetPaused(
+                type is ScreenType.PausePanel
+                    or ScreenType.Settings
+                    or ScreenType.MainMenu
+            );
 
             foreach (var screen in screens)
             {
@@ -67,19 +83,19 @@ namespace Core.UI
             }
         }
 
-        private void CloseSettings() => Show(_settingsReturn);
+        private void CloseSettings() => Show(settingsReturn);
 
         private void SetPaused(bool paused)
         {
-            if (paused && !_resumeTimeScale.HasValue)
+            if (paused && !resumeTimeScale.HasValue)
             {
-                _resumeTimeScale = Time.timeScale;
+                resumeTimeScale = Time.timeScale;
                 Time.timeScale = 0f;
             }
-            else if (!paused && _resumeTimeScale.HasValue)
+            else if (!paused && resumeTimeScale.HasValue)
             {
-                Time.timeScale = _resumeTimeScale.Value;
-                _resumeTimeScale = null;
+                Time.timeScale = resumeTimeScale.Value;
+                resumeTimeScale = null;
             }
         }
     }

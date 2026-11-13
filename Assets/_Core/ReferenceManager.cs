@@ -1,4 +1,7 @@
+using _Core._Level;
 using _Core._Player;
+using _Core._UI;
+using Core.UI;
 using Game.Level;
 using UnityEngine;
 
@@ -8,6 +11,7 @@ namespace _Core
     {
         public RunnerController player;
         public LevelManager levelManager;
+        public UIManager uiManager;
         
         public static ReferenceManager Instance { get; private set; }
 

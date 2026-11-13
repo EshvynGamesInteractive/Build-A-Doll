@@ -1,6 +1,7 @@
 using _Core.UI;
 using Core._GameEvent;
 using Core.Utilities;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ namespace _Core._UI._Views
     {
         [SerializeField] private Button playButton;
         [SerializeField] private Button settingsButton;
+        [SerializeField] private TextMeshProUGUI coinsLabel;
 
         protected override void Initialize()
         {

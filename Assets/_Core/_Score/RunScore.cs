@@ -73,10 +73,10 @@ namespace Game.Score
         private void ResetScore()
         {
             _points = 0;
-            Coins = 0;
+            //Coins = 0;
             if (!RaiseEvents)
                 return;
-            GameEvents.GameplayEvents.CoinsChanged.Raise(Coins);
+            //GameEvents.GameplayEvents.CoinsChanged.Raise(Coins);
             GameEvents.GameplayEvents.ScoreChanged.Raise(Score);
         }
     }
