@@ -1,4 +1,4 @@
-namespace _Core.UI
+namespace _Core._UI
 {
     public enum ScreenType
     {
@@ -7,8 +7,8 @@ namespace _Core.UI
         Gameplay,
         Settings,
         LoadingScreen,
-        LevelComplete,
-        LevelFailed,
+        LevelCompletePanel,
+        LevelFailedPanel,
         PausePanel
     }
 }

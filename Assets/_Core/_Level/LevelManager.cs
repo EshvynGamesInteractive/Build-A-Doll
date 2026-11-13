@@ -3,6 +3,7 @@ using _Core._Player;
 using _Core.UI;
 using Core._GameEvent;
 using System.Collections.Generic;
+using _Core._UI;
 using Game.AI;
 using Game.Hurdles;
 using Game.Player.Input;
@@ -468,13 +469,13 @@ namespace Game.Level
                     LevelProgress.CurrentLevelIndex = _currentIndex + 1;
 
                 GameEvents.GameplayEvents.LevelCompleted.Raise(result);
-                GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelComplete);
+                GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelCompletePanel);
             }
             else
             {
                 var result = new LevelResult(_current, CurrentLevelNumber, false, score, 0, coins, 0, _match, hasAi, aiScore, _aiMatch);
                 GameEvents.GameplayEvents.LevelFailed.Raise(result);
-                GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelFailed);
+                GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelFailedPanel);
             }
 
             if (autoContinueDelay > 0f)
