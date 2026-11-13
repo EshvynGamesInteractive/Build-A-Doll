@@ -140,7 +140,8 @@ MonoBehaviour:
   hitSound: {fileID: 0}
   item: {fileID: 11400000, guid: 88720c17928f14911ba39769e7852023, type: 2}
   iconRenderer: {fileID: 0}
-  previewAnchor: {fileID: 0}
+  previewAnchor: {fileID: 8000000000000000000}
+  greenPreviewAnchor: {fileID: 8000000000000000001}
 --- !u!1001 &2803866801815985885
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -278,4 +279,14 @@ Transform:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6849684579402603512, guid: db690802887314baba2a4af5b68673d3, type: 3}
   m_PrefabInstance: {fileID: 7874572824591945587}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8000000000000000000 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2614226075637014289, guid: db690802887314baba2a4af5b68673d3, type: 3}
+  m_PrefabInstance: {fileID: 7874572824591945587}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8000000000000000001 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4858401732186749918, guid: c508721dab37b4f1fa348fe989da2065, type: 3}
+  m_PrefabInstance: {fileID: 2803866801815985885}
   m_PrefabAsset: {fileID: 0}

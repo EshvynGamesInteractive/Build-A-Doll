@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _Core._Player;
 using Game.Outfit;
 using Game.Player;
@@ -21,20 +22,46 @@ namespace Game.Hurdles
         [Tooltip("Optional: a copy of the item's prefab is shown here so the player sees what they'll get.")]
         [SerializeField] private Transform previewAnchor;
 
+        [SerializeField] private Transform greenPreviewAnchor;
+
         private GameObject _preview;
+        private IReadOnlyList<OutfitItem> _targetItems;
+        private bool _started;
 
         public OutfitItem Item => item;
 
-        protected override void Awake()
+        private void Start()
         {
-            base.Awake();
+            _started = true;
             Refresh();
+        }
+
+        public void Configure(OutfitItem itemOverride, IReadOnlyList<OutfitItem> targetItems)
+        {
+            _targetItems = targetItems;
+            SetItem(itemOverride != null ? itemOverride : item);
         }
 
         public void SetItem(OutfitItem newItem)
         {
             item = newItem;
-            Refresh();
+            SetChoiceMatch(MatchesTarget());
+            if (_started)
+                Refresh();
+        }
+
+        private bool MatchesTarget()
+        {
+            if (item == null || _targetItems == null)
+                return false;
+
+            foreach (var targetItem in _targetItems)
+            {
+                if (item == targetItem)
+                    return true;
+            }
+
+            return false;
         }
 
         protected override void OnPlayerHit(RunnerController player)
@@ -54,7 +81,8 @@ namespace Game.Hurdles
             if (iconRenderer != null && item != null && item.Icon != null)
                 iconRenderer.sprite = item.Icon;
 
-            if (!Application.isPlaying || previewAnchor == null)
+            var anchor = ShowsGreen && greenPreviewAnchor != null ? greenPreviewAnchor : previewAnchor;
+            if (!Application.isPlaying || anchor == null)
                 return;
 
             if (_preview != null)
@@ -62,7 +90,7 @@ namespace Game.Hurdles
 
             if (item != null && item.Prefab != null)
             {
-                _preview = Instantiate(item.Prefab, previewAnchor, false);
+                _preview = Instantiate(item.Prefab, anchor, false);
                 _preview.name = "Preview";
 
                 // Preview is for looks only; don't let its colliders trigger anything.

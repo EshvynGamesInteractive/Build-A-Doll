@@ -247,7 +247,7 @@ namespace Game.Level
                 }
 
                 var instance = Spawn(root, entry.prefab, entry.distance, entry.lateral);
-                ApplyGateItems(instance, entry.gateItems);
+                ConfigureGates(instance, entry.gateItems, level.TargetOutfit);
                 hurdles.Add(instance);
             }
 
@@ -339,16 +339,13 @@ namespace Game.Level
                 _aiInput.Go();
         }
 
-        private static void ApplyGateItems(GameObject instance, OutfitItem[] items)
+        private static void ConfigureGates(GameObject instance, OutfitItem[] items, IReadOnlyList<OutfitItem> targetItems)
         {
-            if (items == null || items.Length == 0)
-                return;
-
             var gates = instance.GetComponentsInChildren<ItemGate>();
-            for (var i = 0; i < gates.Length && i < items.Length; i++)
+            for (var i = 0; i < gates.Length; i++)
             {
-                if (items[i] != null)
-                    gates[i].SetItem(items[i]);
+                var itemOverride = items != null && i < items.Length ? items[i] : null;
+                gates[i].Configure(itemOverride, targetItems);
             }
         }
 

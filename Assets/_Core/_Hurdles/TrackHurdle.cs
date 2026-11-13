@@ -25,6 +25,10 @@ namespace Game.Hurdles
         [SerializeField] private AudioClip hitSound;
 
         private Collider _trigger;
+        private bool _showGreen;
+
+        protected bool HasChoiceVisuals => redVisual != null && greenVisual != null;
+        protected bool ShowsGreen => HasChoiceVisuals && _showGreen;
         private HurdleGroup _group;
 
         public bool IsUsed { get; private set; }
@@ -77,16 +81,32 @@ namespace Game.Hurdles
         {
             IsUsed = true;
             _trigger.enabled = false;
-            if (activeVisual != null)
-                activeVisual.SetActive(false);
+            RefreshVisual();
         }
 
         public virtual void ResetHurdle()
         {
             IsUsed = false;
             _trigger.enabled = true;
-            if (activeVisual != null)
-                activeVisual.SetActive(true);
+            RefreshVisual();
+        }
+
+        protected void SetChoiceMatch(bool matches)
+        {
+            _showGreen = matches;
+            RefreshVisual();
+        }
+
+        private void RefreshVisual()
+        {
+            if (HasChoiceVisuals)
+            {
+                redVisual.SetActive(!IsUsed && !ShowsGreen);
+                greenVisual.SetActive(!IsUsed && ShowsGreen);
+            }
+
+            if (activeVisual != null && (!HasChoiceVisuals || (activeVisual != redVisual && activeVisual != greenVisual)))
+                activeVisual.SetActive(!IsUsed);
         }
     }
 }
