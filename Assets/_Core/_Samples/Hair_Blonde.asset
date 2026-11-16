@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Hair Blonde
   slot: 0
-  prefab: {fileID: 189475423518012240, guid: f3b5e8123f1a9410d81a8956b853a4fb, type: 3}
+  prefab: {fileID: 2541657119632823009, guid: f3b5e8123f1a9410d81a8956b853a4fb, type: 3}
   icon: {fileID: 0}
   styleScore: 2
   alsoClears: 

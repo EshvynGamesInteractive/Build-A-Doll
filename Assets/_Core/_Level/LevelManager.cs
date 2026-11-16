@@ -228,16 +228,7 @@ namespace _Core._Level
         private List<GameObject> BuildRamp(LevelData level, Transform root, bool spawnGround, bool warnMissing)
         {
             if (spawnGround && database.RampPrefab != null)
-            {
-                // 1 unit long from z = 0 → stretch from a bit behind the start to past the finish.
-                var zAxisScale = level.FinishDistance / 4;
-                const float behindStart = 5f;
-                const float pastFinish = 15f;
-                var ground = Instantiate(database.RampPrefab, root, false);
-                ground.transform.localPosition = new Vector3(0f, 0f, zAxisScale + zAxisScale);
-                ground.transform.localScale = new Vector3(1f, 1f, zAxisScale);
-                // ground.transform.localScale = new Vector3(1f, 1f, level.FinishDistance + behindStart + pastFinish);
-            }
+                SpawnRamp(root, level.FinishDistance);
 
             var hurdles = new List<GameObject>();
             var missing = 0;
@@ -264,6 +255,91 @@ namespace _Core._Level
                 Debug.LogWarning($"No finish line prefab for '{level.name}'. Set one on the level or the database.", level);
 
             return hurdles;
+        }
+
+        // How far the ramp reaches behind the start line and past the finish line.
+        private const float RampBehindStart = 5f;
+        private const float RampPastFinish = 15f;
+
+        // Any ramp model works: it's measured, stretched along the track to cover start..finish, lined up with
+        // the start, and moved up/down so its walking surface is at track height (where she runs).
+        // Its width and rotation (as set in the prefab) are kept.
+        private void SpawnRamp(Transform root, float finishDistance)
+        {
+            // The holder lines up with the track, so stretching it is always along the run direction,
+            // whatever way the model itself is rotated inside the prefab.
+            var holder = new GameObject("Ramp").transform;
+            holder.SetParent(root, false);
+            Instantiate(database.RampPrefab, holder, false);
+
+            if (!TryGetLocalBounds(holder, root, out var min, out var max) || max.z - min.z <= 0.001f)
+                return;
+
+            var wanted = finishDistance + RampBehindStart + RampPastFinish;
+            holder.localScale = new Vector3(1f, 1f, wanted / (max.z - min.z));
+
+            if (TryGetLocalBounds(holder, root, out min, out max))
+                holder.localPosition += new Vector3(0f, 0f, -RampBehindStart - min.z);
+
+            var surface = SurfaceHeight(holder, root, max.y);
+            holder.localPosition += new Vector3(0f, -surface, 0f);
+        }
+
+        // Height of the ramp's top along the middle of the track (so raised side edges don't count).
+        // Needs Read/Write on the model; otherwise falls back to the very top of the ramp.
+        private static float SurfaceHeight(Transform ramp, Transform space, float fallback)
+        {
+            const float centreHalfWidth = 0.75f;
+            var found = false;
+            var top = float.NegativeInfinity;
+
+            foreach (var filter in ramp.GetComponentsInChildren<MeshFilter>())
+            {
+                var mesh = filter.sharedMesh;
+                if (mesh == null || !mesh.isReadable)
+                    continue;
+
+                var toSpace = space.worldToLocalMatrix * filter.transform.localToWorldMatrix;
+                foreach (var vertex in mesh.vertices)
+                {
+                    var p = toSpace.MultiplyPoint3x4(vertex);
+                    if (Mathf.Abs(p.x) > centreHalfWidth || p.y <= top)
+                        continue;
+                    top = p.y;
+                    found = true;
+                }
+            }
+
+            if (!found)
+                Debug.LogWarning("Ramp: couldn't read the ramp mesh (turn on Read/Write in its import settings); lining up its top instead.");
+
+            return found ? top : fallback;
+        }
+
+        // Bounds of every renderer under 'target', in 'space' local coordinates.
+        private static bool TryGetLocalBounds(Transform target, Transform space, out Vector3 min, out Vector3 max)
+        {
+            min = Vector3.positiveInfinity;
+            max = Vector3.negativeInfinity;
+            var found = false;
+
+            foreach (var renderer in target.GetComponentsInChildren<Renderer>())
+            {
+                var b = renderer.bounds;
+                for (var i = 0; i < 8; i++)
+                {
+                    var corner = new Vector3(
+                        (i & 1) == 0 ? b.min.x : b.max.x,
+                        (i & 2) == 0 ? b.min.y : b.max.y,
+                        (i & 4) == 0 ? b.min.z : b.max.z);
+                    var local = space.InverseTransformPoint(corner);
+                    min = Vector3.Min(min, local);
+                    max = Vector3.Max(max, local);
+                    found = true;
+                }
+            }
+
+            return found;
         }
 
         private static GameObject Spawn(Transform root, GameObject prefab, float distance, float lateral)
