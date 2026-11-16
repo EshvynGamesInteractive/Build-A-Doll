@@ -32,6 +32,9 @@ namespace Game.Level
         [Tooltip("Spawn the ramp ground under the player too. Turn off if the Gameplay scene already has a track.")]
         [SerializeField] private bool spawnPlayerRamp = true;
 
+        [Tooltip("One of these is put on the ramp at random each time a level loads (never the same twice in a row). Empty = keep the ramp's own texture.")]
+        [SerializeField] private Texture2D[] rampTextures;
+
         [Header("AI opponent")]
         [Tooltip("AI difficulty for levels that don't set their own. Empty = no AI.")]
         [SerializeField] private Game.AI.AiProfile defaultAiProfile;
@@ -54,6 +57,7 @@ namespace Game.Level
         public GameObject DefaultDemoPrefab => defaultDemoPrefab;
         public GameObject RampPrefab => rampPrefab;
         public bool SpawnPlayerRamp => spawnPlayerRamp;
+        public Texture2D[] RampTextures => rampTextures;
         public Game.AI.AiProfile DefaultAiProfile => defaultAiProfile;
         public GameObject AiPrefab => aiPrefab;
         public float AiRampOffset => aiRampOffset;

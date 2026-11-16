@@ -66,6 +66,15 @@ namespace Game.AI
                 return;
             }
 
+            var coinGates = hurdle.GetComponentsInChildren<CoinGate>();
+            if (coinGates.Length > 0)
+            {
+                var gate = ChooseCoinGate(coinGates, profile);
+                var distance = ramp.InverseTransformPoint(gate.transform.position).z;
+                steps.Add(new AiStep { Distance = distance - profile.GateLookAhead, Action = AiStep.Kind.SteerTo, Target = gate.transform });
+                return;
+            }
+
             var penalty = hurdle.GetComponentInChildren<PenaltyItem>();
             if (penalty == null || Random.value > profile.ObstacleSkill)
                 return; // coins, or the AI "doesn't see" this one
@@ -104,6 +113,23 @@ namespace Game.AI
                 return right;
 
             return wrong.Count > 0 ? wrong[Random.Range(0, wrong.Count)] : gates[0];
+        }
+
+        // The gate that leaves the most coins (from a sample of 10), with 'GateAccuracy' chance; otherwise another one.
+        private static CoinGate ChooseCoinGate(CoinGate[] gates, AiProfile profile)
+        {
+            var best = gates[0];
+            foreach (var gate in gates)
+            {
+                if (gate.Apply(10) > best.Apply(10))
+                    best = gate;
+            }
+
+            if (gates.Length == 1 || Random.value <= profile.GateAccuracy)
+                return best;
+
+            var others = System.Array.FindAll(gates, g => g != best);
+            return others[Random.Range(0, others.Length)];
         }
 
         private static bool IsInLook(OutfitItem item, TargetLook look)

@@ -28,6 +28,9 @@ namespace Game.Level
 
             [Tooltip("For gate prefabs: items for its ItemGates, in hierarchy order (left, right). Empty = keep the prefab's items.")]
             public OutfitItem[] gateItems;
+
+            [Tooltip("For coin gate prefabs: maths for its CoinGates in hierarchy order (CoinGatePair: right gate first, then left), e.g. x2 and -10. Empty = keep the prefab's.")]
+            public Game.Hurdles.CoinGate.Setting[] coinGates;
         }
 
         [SerializeField] private string displayName;

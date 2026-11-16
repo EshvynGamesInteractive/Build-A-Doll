@@ -22,6 +22,13 @@ MonoBehaviour:
   comparisonTime: 2
   rampPrefab: {fileID: 2961257068082550235, guid: c481bbbe04ff34a099f266f57d710443, type: 3}
   spawnPlayerRamp: 1
+  rampTextures:
+  - {fileID: 2800000, guid: 01c73aea6d7a94c39bdc35c87b56f0ad, type: 3}
+  - {fileID: 2800000, guid: 445600b8059084774884a40e84e200d9, type: 3}
+  - {fileID: 2800000, guid: 7ba53aeebe19f478ba71fb6dd51c1ebc, type: 3}
+  - {fileID: 2800000, guid: c86153c6fb2804cbcac08da8c9a35831, type: 3}
+  - {fileID: 2800000, guid: 3ec0e336cf31a446e9244141e8a99ba9, type: 3}
+  - {fileID: 2800000, guid: 7425136f1441245288191375523fdfff, type: 3}
   defaultAiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
   aiPrefab: {fileID: 0}
   aiRampOffset: 14

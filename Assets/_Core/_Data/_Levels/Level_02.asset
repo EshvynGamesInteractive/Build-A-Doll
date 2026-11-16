@@ -50,6 +50,15 @@ MonoBehaviour:
     gateItems:
     - {fileID: 11400000, guid: b1f92b3a474fc4f3e8a4b51cc4f7281a, type: 2}
     - {fileID: 11400000, guid: 5e3d02d791f9f4e5ebfdc6eea012d941, type: 2}
+  - prefab: {fileID: 5187526501295159265, guid: 5d7a84aadf614dc587ae5f155045d5bc, type: 3}
+    distance: 62
+    lateral: 0
+    gateItems: []
+    coinGates:
+    - operation: 0
+      amount: 20
+    - operation: 3
+      amount: 2
   - prefab: {fileID: 1189894174054325172, guid: 8793cb3e3fd38469db68c571f3b8d850, type: 3}
     distance: 68
     lateral: 0

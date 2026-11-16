@@ -36,6 +36,15 @@ MonoBehaviour:
     distance: 29
     lateral: 0
     gateItems: []
+  - prefab: {fileID: 5187526501295159265, guid: 5d7a84aadf614dc587ae5f155045d5bc, type: 3}
+    distance: 37
+    lateral: 0
+    gateItems: []
+    coinGates:
+    - operation: 2
+      amount: 2
+    - operation: 1
+      amount: 10
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
     distance: 45
     lateral: 0

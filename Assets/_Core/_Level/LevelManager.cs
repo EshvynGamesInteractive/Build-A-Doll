@@ -209,6 +209,11 @@ namespace _Core._Level
             if (level.EnvironmentPrefab != null)
                 Instantiate(level.EnvironmentPrefab, levelRoot, false);
 
+            // Player's ramp gets a random texture (not the same as last level's).
+            var playerTexture = PickRampTexture(_lastRampTexture);
+            _lastRampTexture = playerTexture;
+            _rampTexture = TextureAt(playerTexture);
+
             // Player's ramp is the level root itself.
             BuildRamp(level, levelRoot, database.SpawnPlayerRamp, true);
 
@@ -221,6 +226,9 @@ namespace _Core._Level
             aiRamp = new GameObject("AI Ramp").transform;
             aiRamp.SetParent(levelRoot, false);
             aiRamp.localPosition = new Vector3(database.AiRampOffset, 0f, 0f);
+
+            // The AI's ramp gets a different texture from the player's.
+            _rampTexture = TextureAt(PickRampTexture(playerTexture));
             aiHurdles = BuildRamp(level, aiRamp, true, false);
         }
 
@@ -242,6 +250,7 @@ namespace _Core._Level
 
                 var instance = Spawn(root, entry.prefab, entry.distance, entry.lateral);
                 ConfigureGates(instance, entry.gateItems, level.TargetOutfit);
+                ConfigureCoinGates(instance, entry.coinGates);
                 hurdles.Add(instance);
             }
 
@@ -257,13 +266,52 @@ namespace _Core._Level
             return hurdles;
         }
 
+        private static readonly int BaseMapId = Shader.PropertyToID("_BaseMap");
+        private static readonly int MainTexId = Shader.PropertyToID("_MainTex");
+        private Texture2D _rampTexture;
+        private int _lastRampTexture = -1;
+
+        // Index of a random ramp texture that isn't 'avoid' (when there's a choice), or -1 if there are none.
+        private int PickRampTexture(int avoid)
+        {
+            var textures = database.RampTextures;
+            if (textures == null || textures.Length == 0)
+                return -1;
+
+            var index = Random.Range(0, textures.Length);
+            if (textures.Length > 1 && index == avoid)
+                index = (index + Random.Range(1, textures.Length)) % textures.Length;
+            return index;
+        }
+
+        private Texture2D TextureAt(int index)
+        {
+            var textures = database.RampTextures;
+            return textures != null && index >= 0 && index < textures.Length ? textures[index] : null;
+        }
+
+        // Swaps the texture on this ramp only (the material asset itself isn't changed).
+        private static void ApplyRampTexture(Transform ramp, Texture2D texture)
+        {
+            if (texture == null)
+                return;
+
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in ramp.GetComponentsInChildren<Renderer>())
+            {
+                renderer.GetPropertyBlock(block);
+                block.SetTexture(BaseMapId, texture); // URP
+                block.SetTexture(MainTexId, texture); // Built-in / others
+                renderer.SetPropertyBlock(block);
+            }
+        }
+
         // How far the ramp reaches behind the start line and past the finish line.
         private const float RampBehindStart = 5f;
         private const float RampPastFinish = 15f;
 
-        // Any ramp model works: it's measured, stretched along the track to cover start..finish, lined up with
-        // the start, and moved up/down so its walking surface is at track height (where she runs).
-        // Its width and rotation (as set in the prefab) are kept.
+        // Any ramp model works: it's measured, stretched along the track to cover start..finish and lined up
+        // with the start. Its height (Y), width and rotation are the ones set on the ramp prefab.
         private void SpawnRamp(Transform root, float finishDistance)
         {
             // The holder lines up with the track, so stretching it is always along the run direction,
@@ -271,6 +319,7 @@ namespace _Core._Level
             var holder = new GameObject("Ramp").transform;
             holder.SetParent(root, false);
             Instantiate(database.RampPrefab, holder, false);
+            ApplyRampTexture(holder, _rampTexture);
 
             if (!TryGetLocalBounds(holder, root, out var min, out var max) || max.z - min.z <= 0.001f)
                 return;
@@ -281,40 +330,8 @@ namespace _Core._Level
             if (TryGetLocalBounds(holder, root, out min, out max))
                 holder.localPosition += new Vector3(0f, 0f, -RampBehindStart - min.z);
 
-            var surface = SurfaceHeight(holder, root, max.y);
-            holder.localPosition += new Vector3(0f, -surface, 0f);
         }
 
-        // Height of the ramp's top along the middle of the track (so raised side edges don't count).
-        // Needs Read/Write on the model; otherwise falls back to the very top of the ramp.
-        private static float SurfaceHeight(Transform ramp, Transform space, float fallback)
-        {
-            const float centreHalfWidth = 0.75f;
-            var found = false;
-            var top = float.NegativeInfinity;
-
-            foreach (var filter in ramp.GetComponentsInChildren<MeshFilter>())
-            {
-                var mesh = filter.sharedMesh;
-                if (mesh == null || !mesh.isReadable)
-                    continue;
-
-                var toSpace = space.worldToLocalMatrix * filter.transform.localToWorldMatrix;
-                foreach (var vertex in mesh.vertices)
-                {
-                    var p = toSpace.MultiplyPoint3x4(vertex);
-                    if (Mathf.Abs(p.x) > centreHalfWidth || p.y <= top)
-                        continue;
-                    top = p.y;
-                    found = true;
-                }
-            }
-
-            if (!found)
-                Debug.LogWarning("Ramp: couldn't read the ramp mesh (turn on Read/Write in its import settings); lining up its top instead.");
-
-            return found ? top : fallback;
-        }
 
         // Bounds of every renderer under 'target', in 'space' local coordinates.
         private static bool TryGetLocalBounds(Transform target, Transform space, out Vector3 min, out Vector3 max)
@@ -426,6 +443,16 @@ namespace _Core._Level
                 var itemOverride = items != null && i < items.Length ? items[i] : null;
                 gates[i].Configure(itemOverride, targetItems);
             }
+        }
+
+        private static void ConfigureCoinGates(GameObject instance, CoinGate.Setting[] settings)
+        {
+            if (settings == null || settings.Length == 0)
+                return;
+
+            var gates = instance.GetComponentsInChildren<CoinGate>();
+            for (var i = 0; i < gates.Length && i < settings.Length; i++)
+                gates[i].Configure(settings[i]);
         }
 
         // ---------- Target look ----------
