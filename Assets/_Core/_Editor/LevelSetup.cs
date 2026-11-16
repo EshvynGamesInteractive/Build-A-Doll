@@ -185,7 +185,6 @@ namespace Game.EditorTools
                 var collectable = holder.gameObject.AddComponent<Collectable>();
                 var so = new SerializedObject(collectable);
                 so.FindProperty("coins").intValue = 1;
-                so.FindProperty("points").intValue = 1;
                 so.FindProperty("activeVisual").objectReferenceValue = mesh;
                 so.ApplyModifiedPropertiesWithoutUndo();
 

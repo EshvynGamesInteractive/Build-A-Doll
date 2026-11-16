@@ -219,7 +219,6 @@ namespace Game.EditorTools
                 var collectable = coin.AddComponent<Collectable>();
                 var so = new SerializedObject(collectable);
                 so.FindProperty("coins").intValue = 1;
-                so.FindProperty("points").intValue = 1;
                 so.ApplyModifiedPropertiesWithoutUndo();
 
                 // Spin around the world up axis: wrap in a parent so the coin's tilt stays.
@@ -296,7 +295,7 @@ namespace Game.EditorTools
 
             var penalty = go.AddComponent<PenaltyItem>();
             var so = new SerializedObject(penalty);
-            so.FindProperty("pointsLost").intValue = pointsLost;
+            so.FindProperty("coinCost").intValue = pointsLost;
             so.FindProperty("stumbleDuration").floatValue = stumble;
             so.FindProperty("removesItem").boolValue = cutsDress;
             so.FindProperty("slotToRemove").enumValueIndex = (int)OutfitSlot.Dress;

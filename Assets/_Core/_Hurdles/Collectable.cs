@@ -12,7 +12,6 @@ namespace Game.Hurdles
     public class Collectable : TrackHurdle
     {
         [SerializeField, Min(0)] private int coins = 1;
-        [SerializeField, Min(0)] private int points = 0;
 
         protected override void OnPlayerHit(RunnerController player)
         {
@@ -24,7 +23,6 @@ namespace Game.Hurdles
             }
 
             score.AddCoins(coins);
-            score.AddPoints(points);
         }
     }
 }

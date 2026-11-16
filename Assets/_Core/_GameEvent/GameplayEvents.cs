@@ -22,10 +22,7 @@ namespace Core._GameEvent
             /// <summary>Notification: coins collected this run changed. Arg: new total.</summary>
             public static readonly GameEvent<int> CoinsChanged = new();
 
-            /// <summary>Notification: run score changed (pickups, penalties, outfit style). Arg: new total.</summary>
-            public static readonly GameEvent<int> ScoreChanged = new();
-
-            /// <summary>Notification: the player hit a minus item. Arg: points lost. Use for screen shake, red flash, etc.</summary>
+            /// <summary>Notification: the player hit a minus item. Arg: coins lost. Use for screen shake, red flash, etc.</summary>
             public static readonly GameEvent<int> PenaltyTaken = new();
 
             /// <summary>Notification: a runner (player or AI) crossed its finish line.</summary>

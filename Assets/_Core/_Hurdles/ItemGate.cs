@@ -74,6 +74,10 @@ namespace Game.Hurdles
             }
 
             outfit.Equip(item);
+
+            // The item's value (its Style Score) is paid out in coins: plus for good picks, minus for bad.
+            if (item != null && player.Score != null)
+                player.Score.AddCoins(item.StyleScore);
         }
 
         private void Refresh()

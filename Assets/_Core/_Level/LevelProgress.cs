@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Level
 {
-    /// <summary>Saved progress: which level the player is on and their coin wallet.</summary>
+    /// <summary>Saved progress: which level the player is on, and their coin wallet.</summary>
     public static class LevelProgress
     {
         /// <summary>0-based index of the level to play next. Keeps counting past the last level (the database loops).</summary>
@@ -34,6 +34,15 @@ namespace Game.Level
 
             TotalCoins += amount;
             GameEvents.GameplayEvents.WalletChanged.Raise(TotalCoins);
+        }
+
+        /// <summary>Wipes all saved progress: level and coins.</summary>
+        public static void ResetAll()
+        {
+            PlayerPrefs.DeleteKey(GameConstants.CurrentLevelKey);
+            PlayerPrefs.DeleteKey(GameConstants.TotalCoinsKey);
+            PlayerPrefs.Save();
+            GameEvents.GameplayEvents.WalletChanged.Raise(0);
         }
     }
 }

@@ -5,6 +5,7 @@ using Core.Utilities;
 using Game.Level;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace _Core._UI._Views
@@ -13,18 +14,20 @@ namespace _Core._UI._Views
     {
         [SerializeField] private Button pauseButton;
         [SerializeField] private TMP_Text coinsText;
-        [SerializeField] private TMP_Text scoreText;
-        [SerializeField] private TMP_Text scorePopup;
+
+        [Tooltip("Shows +N / -N when coins are gained or lost during the run.")]
+        [FormerlySerializedAs("scorePopup")]
+        [SerializeField] private TMP_Text coinsPopup;
         [SerializeField, Min(0f)] private float popupDuration = 1.2f;
 
-        private int _score;
+        private int _runCoins;
         private bool _runStarted;
         private Coroutine _popupTimer;
 
         private void OnEnable()
         {
-            GameEvents.GameplayEvents.CoinsChanged.Register(SetCoins);
-            GameEvents.GameplayEvents.ScoreChanged.Register(SetScore);
+            GameEvents.GameplayEvents.CoinsChanged.Register(OnRunCoinsChanged);
+            GameEvents.GameplayEvents.WalletChanged.Register(OnWalletChanged);
             GameEvents.GameplayEvents.LevelLoaded.Register(OnLevelLoaded);
             GameEvents.GameplayEvents.ResetRun.Register(OnResetRun);
             GameEvents.GameplayEvents.RunStarted.Register(OnRunStarted);
@@ -32,8 +35,8 @@ namespace _Core._UI._Views
 
         private void OnDisable()
         {
-            GameEvents.GameplayEvents.CoinsChanged.Unregister(SetCoins);
-            GameEvents.GameplayEvents.ScoreChanged.Unregister(SetScore);
+            GameEvents.GameplayEvents.CoinsChanged.Unregister(OnRunCoinsChanged);
+            GameEvents.GameplayEvents.WalletChanged.Unregister(OnWalletChanged);
             GameEvents.GameplayEvents.LevelLoaded.Unregister(OnLevelLoaded);
             GameEvents.GameplayEvents.ResetRun.Unregister(OnResetRun);
             GameEvents.GameplayEvents.RunStarted.Unregister(OnRunStarted);
@@ -43,6 +46,7 @@ namespace _Core._UI._Views
         protected override void Initialize()
         {
             UIPanelButtonUtility.Bind(pauseButton, () => GameEvents.UIEvents.ShowByType.Raise(ScreenType.PausePanel));
+            RefreshCoins();
         }
 
         public override void Hide()
@@ -54,45 +58,49 @@ namespace _Core._UI._Views
         private void OnLevelLoaded(LevelData level, int levelNumber)
         {
             var runScore = ReferenceManager.Instance?.player?.Score;
-            SetCoins(runScore != null ? runScore.Coins : 0);
-            SetScore(runScore != null ? runScore.Score : 0);
+            _runCoins = runScore != null ? runScore.Coins : 0;
+            RefreshCoins();
         }
 
         private void OnResetRun()
         {
             _runStarted = false;
+            _runCoins = 0;
             ClearPopup();
+            RefreshCoins();
         }
 
         private void OnRunStarted() => _runStarted = true;
 
-        private void SetCoins(int coins)
-        {
-            if (coinsText != null)
-                coinsText.text = $"Coins {coins}";
-        }
+        private void OnWalletChanged(int _) => RefreshCoins();
 
-        private void SetScore(int score)
+        // 'coins' is the coins gained this run; the label always shows the saved wallet.
+        private void OnRunCoinsChanged(int coins)
         {
-            var delta = score - _score;
-            _score = score;
-            if (scoreText != null)
-                scoreText.text = $"Score {score}";
+            var delta = coins - _runCoins;
+            _runCoins = coins;
+            RefreshCoins();
 
-            if (delta == 0 || !_runStarted || scorePopup == null || !container.activeInHierarchy)
+            if (delta == 0 || !_runStarted || coinsPopup == null || !container.activeInHierarchy)
                 return;
 
             ClearPopup();
-            scorePopup.text = delta.ToString("+0;-0");
-            scorePopup.color = delta > 0 ? new Color32(146, 255, 132, 255) : new Color32(255, 149, 149, 255);
-            scorePopup.gameObject.SetActive(true);
+            coinsPopup.text = delta.ToString("+0;-0");
+            coinsPopup.color = delta > 0 ? new Color32(146, 255, 132, 255) : new Color32(255, 149, 149, 255);
+            coinsPopup.gameObject.SetActive(true);
             _popupTimer = StartCoroutine(HidePopupAfterDelay());
+        }
+
+        private void RefreshCoins()
+        {
+            if (coinsText != null)
+                coinsText.text = $"Coins {LevelProgress.TotalCoins}";
         }
 
         private IEnumerator HidePopupAfterDelay()
         {
             yield return new WaitForSeconds(popupDuration);
-            scorePopup.gameObject.SetActive(false);
+            coinsPopup.gameObject.SetActive(false);
             _popupTimer = null;
         }
 
@@ -104,8 +112,8 @@ namespace _Core._UI._Views
                 _popupTimer = null;
             }
 
-            if (scorePopup != null)
-                scorePopup.gameObject.SetActive(false);
+            if (coinsPopup != null)
+                coinsPopup.gameObject.SetActive(false);
         }
     }
 }

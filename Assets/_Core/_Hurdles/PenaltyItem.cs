@@ -4,11 +4,12 @@ using Game.Outfit;
 using Game.Player;
 using Game.Score;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Hurdles
 {
     /// <summary>
-    /// A "minus" item: mud, scissors, paint splash... Hitting it costs points (and optionally coins),
+    /// A "minus" item: mud, scissors, paint splash... Hitting it costs coins,
     /// can make the doll stumble, and can take an item off her (e.g. scissors cut the dress).
     /// </summary>
     public class PenaltyItem : TrackHurdle
@@ -25,8 +26,9 @@ namespace Game.Hurdles
         [Tooltip("How the AI gets past this.")]
         [SerializeField] private AiAvoidance aiAvoid = AiAvoidance.Auto;
 
-        [SerializeField, Min(0)] private int pointsLost = 2;
-        [SerializeField, Min(0)] private int coinsLost = 0;
+        [Tooltip("Coins taken away when hit.")]
+        [FormerlySerializedAs("pointsLost")]
+        [SerializeField, Min(0)] private int coinCost = 2;
 
         [Header("Stumble")]
         [Tooltip("Seconds the doll is slowed down. 0 = no stumble.")]
@@ -53,15 +55,14 @@ namespace Game.Hurdles
             var score = player.Score;
             if (score != null)
             {
-                score.AddPoints(-pointsLost);
-                score.AddCoins(-coinsLost);
+                score.AddCoins(-coinCost);
             }
 
             if (stumbleDuration > 0f)
                 player.Stumble(stumbleDuration, stumbleSpeedFactor);
 
             if (!player.IsAI)
-                GameEvents.GameplayEvents.PenaltyTaken.Raise(pointsLost);
+                GameEvents.GameplayEvents.PenaltyTaken.Raise(coinCost);
         }
     }
 }

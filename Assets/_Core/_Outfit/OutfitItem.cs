@@ -18,7 +18,7 @@ namespace Game.Outfit
         [Tooltip("Shown on the gate so the player can see what they're picking.")]
         [SerializeField] private Sprite icon;
 
-        [Tooltip("Points towards the end-of-level rating. Use negative values for 'wrong' choices.")]
+        [Tooltip("Coins given when picked from a gate. Use negative values for 'wrong' choices (takes coins away).")]
         [SerializeField] private int styleScore = 1;
 
         [Tooltip("Other slots this item takes off, e.g. a Dress takes off Top and Bottom.")]

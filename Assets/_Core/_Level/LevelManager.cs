@@ -455,8 +455,8 @@ namespace _Core._Level
             var runScore = player.Score;
             var coins = runScore != null ? runScore.Coins : 0;
 
-            // With a target look the score is how well she copied it (0..100); otherwise the run score.
-            var score = current.HasTarget ? match.Percent : (runScore != null ? runScore.Score : 0);
+            // With a target look the result is how well she copied it (0..100); otherwise the coins gained this run.
+            var score = current.HasTarget ? match.Percent : coins;
 
             // The level pass mark applies in every race. Against AI, ties also fail.
             var hasAi = ai != null;
@@ -468,7 +468,8 @@ namespace _Core._Level
                 var result = new LevelResult(current, CurrentLevelNumber, true, score, current.GetStars(score), coins, current.CompletionCoins, match, hasAi, aiScore, aiMatch);
                 if (testLevelNumber > 0 || currentIndex >= LevelProgress.CurrentLevelIndex)
                 {
-                    LevelProgress.AddCoins(result.TotalCoins);
+                    // Picked-up coins were saved the moment they were collected; only the bonus is added here.
+                    LevelProgress.AddCoins(result.CompletionCoins);
                     if (testLevelNumber == 0)
                         LevelProgress.CurrentLevelIndex = currentIndex + 1;
                 }
@@ -491,10 +492,10 @@ namespace _Core._Level
         {
             if (current.HasTarget)
                 return aiMatch.Percent;
-            return ai.Score != null ? ai.Score.Score : 0;
+            return ai.Score != null ? ai.Score.Coins : 0;
         }
 
         [ContextMenu("Reset Saved Progress")]
-        private void ResetProgress() => LevelProgress.CurrentLevelIndex = 0;
+        private void ResetProgress() => LevelProgress.ResetAll();
     }
 }
