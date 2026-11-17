@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using _Core._Player;
 using Game.Hurdles;
@@ -444,3 +445,4 @@ namespace Game.EditorTools
         }
     }
 }
+#endif

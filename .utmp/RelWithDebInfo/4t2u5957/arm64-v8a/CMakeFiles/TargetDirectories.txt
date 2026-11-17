@@ -1,0 +1,5 @@
+/Users/macmini/UnityProjects/Build A Doll/.utmp/RelWithDebInfo/4t2u5957/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/macmini/UnityProjects/Build A Doll/.utmp/RelWithDebInfo/4t2u5957/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/Users/macmini/UnityProjects/Build A Doll/.utmp/RelWithDebInfo/4t2u5957/arm64-v8a/GameActivity/CMakeFiles/game.dir
+/Users/macmini/UnityProjects/Build A Doll/.utmp/RelWithDebInfo/4t2u5957/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+/Users/macmini/UnityProjects/Build A Doll/.utmp/RelWithDebInfo/4t2u5957/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir

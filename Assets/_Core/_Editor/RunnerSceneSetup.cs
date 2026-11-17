@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using _Core._Player;
 using Game.CameraRig;
 using Game.Player;
@@ -109,3 +110,4 @@ namespace Game.EditorTools
         }
     }
 }
+#endif

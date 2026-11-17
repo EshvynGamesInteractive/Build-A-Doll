@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using _Core._Player;
 using Game.Hurdles;
 using Game.Outfit;
@@ -394,3 +395,4 @@ namespace Game.EditorTools
         }
     }
 }
+#endif

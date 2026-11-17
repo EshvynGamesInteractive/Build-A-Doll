@@ -7,6 +7,13 @@ namespace Game.Level
     /// The list of levels in play order, plus shared defaults.
     /// After the last level the game loops back to 'loopFromLevel' so players never run out.
     /// </summary>
+    /// <summary>How the ramp model is made as long as the level.</summary>
+    public enum RampFit
+    {
+        Tile,
+        Stretch
+    }
+
     [CreateAssetMenu(fileName = "LevelDatabase", menuName = "Build A Doll/Level/Level Database")]
     public class LevelDatabase : ScriptableObject
     {
@@ -26,8 +33,15 @@ namespace Game.Level
         [SerializeField, Min(0f)] private float comparisonTime = 2f;
 
         [Header("Ramps")]
-        [Tooltip("Optional: ground for each ramp. Build it 1 unit long from z = 0; it's stretched to the level's length.")]
+        [Tooltip("Optional: ground for each ramp, any length. It's repeated (Tile) or scaled (Stretch) along the track to cover the level.")]
         [SerializeField] private GameObject rampPrefab;
+
+        [Tooltip("Tile: the ramp model is repeated end to end at its real size (textures keep their shape). " +
+                 "Stretch: one copy is scaled to the level's length (textures get stretched).")]
+        [SerializeField] private RampFit rampFit = RampFit.Tile;
+
+        [Tooltip("Tile only: how much each copy overlaps the next, to hide seams.")]
+        [SerializeField, Min(0f)] private float rampTileOverlap = 0.01f;
 
         [Tooltip("Spawn the ramp ground under the player too. Turn off if the Gameplay scene already has a track.")]
         [SerializeField] private bool spawnPlayerRamp = true;
@@ -56,6 +70,8 @@ namespace Game.Level
         public GameObject DefaultPlayerPrefab => defaultPlayerPrefab;
         public GameObject DefaultDemoPrefab => defaultDemoPrefab;
         public GameObject RampPrefab => rampPrefab;
+        public RampFit RampFitMode => rampFit;
+        public float RampTileOverlap => rampTileOverlap;
         public bool SpawnPlayerRamp => spawnPlayerRamp;
         public Texture2D[] RampTextures => rampTextures;
         public Game.AI.AiProfile DefaultAiProfile => defaultAiProfile;

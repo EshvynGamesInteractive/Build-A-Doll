@@ -307,29 +307,50 @@ namespace _Core._Level
         }
 
         // How far the ramp reaches behind the start line and past the finish line.
-        private const float RampBehindStart = 5f;
-        private const float RampPastFinish = 15f;
+        private const float RampBehindStart = 20f;
+        private const float RampPastFinish = 200f;
 
-        // Any ramp model works: it's measured, stretched along the track to cover start..finish and lined up
-        // with the start. Its height (Y), width and rotation are the ones set on the ramp prefab.
+        // Any ramp model works: it's measured and made to cover start..finish, lined up with the start.
+        // Tile repeats the model end to end at its real size, so its texture isn't stretched;
+        // Stretch scales one copy along the track. Height (Y), width and rotation come from the prefab.
         private void SpawnRamp(Transform root, float finishDistance)
         {
-            // The holder lines up with the track, so stretching it is always along the run direction,
+            // The holder lines up with the track, so tiling/stretching is always along the run direction,
             // whatever way the model itself is rotated inside the prefab.
             var holder = new GameObject("Ramp").transform;
             holder.SetParent(root, false);
-            Instantiate(database.RampPrefab, holder, false);
-            ApplyRampTexture(holder, _rampTexture);
+            var first = Instantiate(database.RampPrefab, holder, false);
 
             if (!TryGetLocalBounds(holder, root, out var min, out var max) || max.z - min.z <= 0.001f)
+            {
+                ApplyRampTexture(holder, _rampTexture);
                 return;
+            }
 
+            var length = max.z - min.z;
             var wanted = finishDistance + RampBehindStart + RampPastFinish;
-            holder.localScale = new Vector3(1f, 1f, wanted / (max.z - min.z));
+
+            if (database.RampFitMode == RampFit.Stretch)
+            {
+                holder.localScale = new Vector3(1f, 1f, wanted / length);
+            }
+            else
+            {
+                // Each copy starts where the last one ended (minus a hair of overlap to hide seams).
+                var step = Mathf.Max(0.01f, length - database.RampTileOverlap);
+                var count = Mathf.CeilToInt((wanted - length) / step) + 1;
+                for (var i = 1; i < count; i++)
+                {
+                    var copy = Instantiate(database.RampPrefab, holder, false);
+                    copy.name = $"{first.name} ({i})";
+                    copy.transform.localPosition = first.transform.localPosition + new Vector3(0f, 0f, step * i);
+                }
+            }
+
+            ApplyRampTexture(holder, _rampTexture);
 
             if (TryGetLocalBounds(holder, root, out min, out max))
                 holder.localPosition += new Vector3(0f, 0f, -RampBehindStart - min.z);
-
         }
 
 
