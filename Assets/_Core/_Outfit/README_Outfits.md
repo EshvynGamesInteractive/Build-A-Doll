@@ -59,3 +59,23 @@ Gates show the item's Icon as a 2D sprite at the preview anchor of the red/green
   bones by name (`SkinnedPart`), replacing whatever was in that slot.
 - `DollOutfit.WearVariant(variant)` puts on a whole outfit; `IsWearing(variant)` checks it.
 - In Play mode, right-click a variant asset > **Wear On Player (Play Mode)** to try it on.
+
+## Doll animation
+
+**Build A Doll > Animation > Build Doll Animator** rebuilds `_ART/_3D/_Doll/DollAnimator.controller`
+(same GUID) from the clips in `_Animation/_Clips`, turns on looping for idle/walk/run/dance, and
+makes the DemoDoll dance (DollAnimatorTrigger). States:
+
+| Moment | Clip | Driven by |
+|---|---|---|
+| At the start line | Dwarf Idle | default / `IsRunning` false |
+| Running | Walking → Running blend | `IsRunning`, `Speed` |
+| Jump | Jump | `Jump` trigger, back on `IsGrounded` |
+| Level passed (winner) | Victory → Snake Hip Hop Dance | `Win` |
+| Player failed | Defeat | `Lose` |
+| AI lost | Loser | `LoseAlt` |
+| Demo doll | Snake Hip Hop Dance | `Dance` |
+
+RunnerAnimator sends these (results come from LevelCompleted / LevelFailed) and resets to Idle
+on ResetRun. Slide and Stumble triggers exist but have no clip yet; add a state for them when
+you have animations. Clip names are constants at the top of `DollAnimatorBuilder.cs`.

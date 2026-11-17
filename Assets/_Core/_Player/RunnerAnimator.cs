@@ -26,6 +26,27 @@ namespace Game.Player
         [Tooltip("Trigger fired when a slide starts.")]
         [SerializeField] private string slideParameter = "Slide";
 
+        [Header("Run speed sync")]
+        [Tooltip("Float the Locomotion state uses as its speed multiplier, so her feet match how fast she moves.")]
+        [SerializeField] private string runAnimSpeedParameter = "RunAnimSpeed";
+
+        [Tooltip("How fast (units/sec) the run animation looks like it's going on a doll at scale 1. " +
+                 "Feet slide forward / animation too fast: raise it. Feet look like they skate backwards: lower it. Tune in Play mode.")]
+        [SerializeField, Min(0.1f)] private float runClipSpeed = 4f;
+
+        [SerializeField, Range(0.1f, 1f)] private float minRunAnimSpeed = 0.5f;
+        [SerializeField, Range(1f, 3f)] private float maxRunAnimSpeed = 1.6f;
+
+        [Header("Result")]
+        [Tooltip("Trigger fired when this doll wins the level (Victory, then a dance).")]
+        [SerializeField] private string winParameter = "Win";
+        [Tooltip("Trigger fired when the player loses the level.")]
+        [SerializeField] private string loseParameter = "Lose";
+        [Tooltip("Trigger fired when the AI loses, so the two dolls don't react the same.")]
+        [SerializeField] private string aiLoseParameter = "LoseAlt";
+
+        private _Core._Player.RunnerController _runner;
+
         private IRunnerState _state;
         private int _speedHash;
         private int _isRunningHash;
@@ -67,6 +88,72 @@ namespace Game.Player
             _hasIsSliding = HasParameter(_isSlidingHash, AnimatorControllerParameterType.Bool);
             _hasJump = HasParameter(_jumpHash, AnimatorControllerParameterType.Trigger);
             _hasSlide = HasParameter(_slideHash, AnimatorControllerParameterType.Trigger);
+
+            _runner = GetComponentInParent<_Core._Player.RunnerController>();
+            _runAnimSpeedHash = Animator.StringToHash(runAnimSpeedParameter);
+            _hasRunAnimSpeed = HasParameter(_runAnimSpeedHash, AnimatorControllerParameterType.Float);
+        }
+
+        private int _runAnimSpeedHash;
+        private bool _hasRunAnimSpeed;
+
+        // Playback speed of the run so its stride matches her real speed. A bigger doll takes longer
+        // strides, so it plays slower; a faster run plays faster.
+        private float RunAnimSpeed()
+        {
+            if (_runner == null || _runner.Config == null)
+                return 1f;
+
+            var groundSpeed = _runner.Config.ForwardSpeed * _state.NormalizedSpeed;
+            var size = Mathf.Max(0.01f, animator.transform.lossyScale.y);
+            return Mathf.Clamp(groundSpeed / (runClipSpeed * size), minRunAnimSpeed, maxRunAnimSpeed);
+        }
+
+        private void OnEnable()
+        {
+            GameEvents.GameplayEvents.LevelCompleted.Register(OnLevelCompleted);
+            GameEvents.GameplayEvents.LevelFailed.Register(OnLevelFailed);
+            GameEvents.GameplayEvents.ResetRun.Register(OnResetRun);
+        }
+
+        private void OnDisable()
+        {
+            GameEvents.GameplayEvents.LevelCompleted.Unregister(OnLevelCompleted);
+            GameEvents.GameplayEvents.LevelFailed.Unregister(OnLevelFailed);
+            GameEvents.GameplayEvents.ResetRun.Unregister(OnResetRun);
+        }
+
+        private bool IsAI => _runner != null && _runner.IsAI;
+
+        // The player passed: she wins and the AI loses.
+        private void OnLevelCompleted(Game.Level.LevelResult result) => PlayResult(!IsAI);
+
+        // The player failed: the AI wins only if it actually matched the look better.
+        private void OnLevelFailed(Game.Level.LevelResult result) =>
+            PlayResult(IsAI && result.HasAi && result.AiScore > result.Score);
+
+        private void PlayResult(bool won)
+        {
+            if (animator == null || !enabled)
+                return;
+
+            var trigger = won ? winParameter : IsAI ? aiLoseParameter : loseParameter;
+            var hash = Animator.StringToHash(trigger);
+            if (HasParameter(hash, AnimatorControllerParameterType.Trigger))
+                animator.SetTrigger(hash);
+        }
+
+        // Back to the idle pose at the start line.
+        private void OnResetRun()
+        {
+            if (animator == null || !enabled)
+                return;
+
+            animator.Rebind();
+            animator.Update(0f);
+            _wasGrounded = true;
+            _wasSliding = false;
+            _wasStumbling = false;
         }
 
         private void Update()
@@ -76,6 +163,9 @@ namespace Game.Player
 
             if (_hasIsRunning)
                 animator.SetBool(_isRunningHash, _state.IsRunning);
+
+            if (_hasRunAnimSpeed)
+                animator.SetFloat(_runAnimSpeedHash, RunAnimSpeed());
 
             var grounded = _state.IsGrounded;
             var sliding = _state.IsSliding;

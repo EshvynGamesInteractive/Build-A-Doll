@@ -17,6 +17,9 @@ MonoBehaviour:
   finishDistance: 110
   finishLinePrefab: {fileID: 0}
   playerPrefab: {fileID: 0}
+  outfit: {fileID: 0}
+  outfitPassPercent: 60
+  outfitStarPercents: 320000004b00000064000000
   targetLook: {fileID: 11400000, guid: d843499f27c9e4f9c9daf5994710e380, type: 2}
   hasAiOpponent: 1
   aiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
@@ -28,30 +31,36 @@ MonoBehaviour:
     distance: 6
     lateral: 0
     gateItems: []
+    coinGates: []
   - prefab: {fileID: 3941991968021626027, guid: 9e21c8976fe8649c3aa142e80d6001e7, type: 3}
     distance: 18
     lateral: 0
     gateItems: []
+    coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
     distance: 28
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: d675f3f72eb4540c68b46ce642d37ff0, type: 2}
     - {fileID: 11400000, guid: d6051a5a4b6eb4d1a8f1a5118354079b, type: 2}
+    coinGates: []
   - prefab: {fileID: 858074213056708769, guid: 03ee667515f4347908b4a46ecd61003b, type: 3}
     distance: 38
     lateral: 1.2
     gateItems: []
+    coinGates: []
   - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
     distance: 42
     lateral: 0
     gateItems: []
+    coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
     distance: 55
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 1b0ef49bfd44c4c8ca9a312e33e236f1, type: 2}
     - {fileID: 11400000, guid: 07040d03f37ef4fc080ccac8227e2ca5, type: 2}
+    coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: 5d7a84aadf614dc587ae5f155045d5bc, type: 3}
     distance: 62
     lateral: 0
@@ -61,26 +70,25 @@ MonoBehaviour:
       amount: 20
     - operation: 3
       amount: 2
-  - prefab: {fileID: 1189894174054325172, guid: 8793cb3e3fd38469db68c571f3b8d850, type: 3}
-    distance: 68
-    lateral: 0
-    gateItems: []
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
     distance: 76
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 14c868cc51b8e473f8dd13ad97ab823b, type: 2}
     - {fileID: 11400000, guid: 3b14a8ad51250493199e320a646de631, type: 2}
+    coinGates: []
   - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
     distance: 88
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 3a0eaef2c495d405fa27e9b1e764322f, type: 2}
     - {fileID: 11400000, guid: 1c53b60e01e9742eaa577de6785dd4d7, type: 2}
+    coinGates: []
   - prefab: {fileID: 707516476705285905, guid: 30e89e41a147b48dcbae8a36f0bdd341, type: 3}
     distance: 100
     lateral: 0
     gateItems: []
+    coinGates: []
   scoreToPass: 1
   starScores: 050000000c00000014000000
   completionCoins: 50

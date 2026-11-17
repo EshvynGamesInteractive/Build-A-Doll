@@ -162,6 +162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7535522363466140559}
   - component: {fileID: 1275877773948586217}
+  - component: {fileID: 1811995023758577972}
   m_Layer: 0
   m_Name: DemoDoll
   m_TagString: Untagged
@@ -208,6 +209,20 @@ MonoBehaviour:
   skeletonRoot: {fileID: 4373468944371325445}
   raiseEvents: 0
   startingItems: []
+--- !u!114 &1811995023758577972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7866513120635556711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb2824d7bade0435781248d4fbbd6b8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 7207231866697296201}
+  trigger: Dance
 --- !u!1 &8754128394169180204
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,15 +268,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7485080203295249181, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7485080203295249181, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7485080203295249181, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7485080203295249181, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -311,6 +326,11 @@ PrefabInstance:
 --- !u!4 &4373468944371325445 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2652278613944342578, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
+  m_PrefabInstance: {fileID: 1765243436470895159}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7207231866697296201 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8969583587442436990, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
   m_PrefabInstance: {fileID: 1765243436470895159}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &9196138525610266922 stripped
