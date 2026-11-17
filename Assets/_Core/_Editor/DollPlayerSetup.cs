@@ -26,6 +26,10 @@ namespace Game.EditorTools
         private const string DollBaseName = "Doll_Base";
         private const string AnimatorName = "DollAnimator";
 
+        // The doll model is 1.64 units tall; gates are ~2.4 tall and 4 wide, so she's scaled up to
+        // match them. Only the model is scaled; the collision capsule stays the same.
+        private const float DefaultDollScale = 2;
+
         private static string PlayerFolder => EditorPaths.Prefabs + "/_Player";
         private static string DollBasePath => PlayerFolder + "/" + DollBaseName + ".prefab";
 
@@ -110,6 +114,7 @@ namespace Game.EditorTools
 
                 // Old doll from a previous run.
                 var oldDolls = visual.GetComponentsInChildren<Transform>(true).Where(x => x.name == DollBaseName).ToArray();
+                var scale = oldDolls.Length > 0 ? oldDolls[0].localScale : Vector3.one * DefaultDollScale; // keep a size set by hand
                 foreach (var oldDoll in oldDolls)
                 {
                     if (oldDoll != null) // may already be gone with its parent
@@ -123,7 +128,7 @@ namespace Game.EditorTools
                 var doll = (GameObject)PrefabUtility.InstantiatePrefab(dollBase, visual);
                 doll.name = DollBaseName;
                 doll.transform.localRotation = Quaternion.identity;
-                doll.transform.localScale = Vector3.one;
+                doll.transform.localScale = scale;
                 doll.transform.position = root.transform.TransformPoint(new Vector3(0f, GroundY(root), 0f));
 
                 var animator = doll.GetComponent<Animator>();
