@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Heroine_V01
+  m_EditorClassIdentifier: 
+  displayName: Heroine 01
+  outfit: {fileID: 11400000, guid: 81f8cea7d3fce4629ba82f0574f71cb8, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: f7582cafafa1543deaa7901abadd4405, type: 2}
+  - {fileID: 11400000, guid: 26b99be1b1c2041988359b0ccaa636f4, type: 2}
+  - {fileID: 11400000, guid: 122e2987e2ecd4328a370d56edc9bc51, type: 2}
+  - {fileID: 11400000, guid: 9c97d8415b3d840e8bc833e323f8749e, type: 2}

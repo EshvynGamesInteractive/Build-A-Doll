@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Dress Ballgown
   slot: 4
   prefab: {fileID: 4674986852023610164, guid: cb229391719d7497594452c8504b0774, type: 3}
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b0c818c7ae1d34238acdd39c24c8a117, type: 3}
   styleScore: 3
   alsoClears: 0200000003000000

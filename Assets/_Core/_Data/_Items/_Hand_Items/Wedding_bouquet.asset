@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Wedding_bouquet
+  m_EditorClassIdentifier: 
+  displayName: Wedding Hand Item
+  slot: 9
+  prefab: {fileID: 6600391716062224095, guid: 95b287be0536347428d9e6d9eef7ad7a, type: 3}
+  icon: {fileID: 21300000, guid: 06d5d743c74364f2e90874f14942075c, type: 3}
+  styleScore: 1
+  alsoClears: 

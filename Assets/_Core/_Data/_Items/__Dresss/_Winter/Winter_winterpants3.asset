@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Winter_winterpants3
+  m_EditorClassIdentifier: 
+  displayName: Winter Pants
+  slot: 3
+  prefab: {fileID: 2823074605718371282, guid: b9470bf313781458c9e8c249c70cdbad, type: 3}
+  icon: {fileID: 21300000, guid: 03f5df5a3ce6d453eb975a5733078abe, type: 3}
+  styleScore: 1
+  alsoClears: 

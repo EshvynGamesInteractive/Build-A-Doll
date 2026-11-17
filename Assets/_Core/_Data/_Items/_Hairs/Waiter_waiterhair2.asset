@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Waiter_waiterhair2
+  m_EditorClassIdentifier: 
+  displayName: Waiter Hair
+  slot: 0
+  prefab: {fileID: 7757440969650450899, guid: cb5f695f0a09d49efac48d35758b12ae, type: 3}
+  icon: {fileID: 21300000, guid: c7488d680cd994b7da8d235ad57fc7db, type: 3}
+  styleScore: 1
+  alsoClears: 

@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6aba97c8bb9400088552510792d9d7, type: 3}
   m_Name: Look_03
   m_EditorClassIdentifier: 
-  displayName: Country Walk
-  items:
-  - {fileID: 11400000, guid: a631c19a9c075415f957a1aa1617005f, type: 2}
-  - {fileID: 11400000, guid: 5e3d02d791f9f4e5ebfdc6eea012d941, type: 2}
-  - {fileID: 11400000, guid: a66c33ed7d5354b5c9b7451f22b1d7af, type: 2}
+  displayName: On Duty
+  variant: {fileID: 11400000, guid: d001fe8af4db0449c815932d577a8c98, type: 2}
+  items: []
   demoPrefab: {fileID: 0}
   preview: {fileID: 0}
   passPercent: 60

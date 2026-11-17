@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Puppet_puppet_Hairs
+  m_EditorClassIdentifier: 
+  displayName: Puppet Hair
+  slot: 0
+  prefab: {fileID: 3519102394292667251, guid: cdaf405bae3bc4932adc01a85dca0198, type: 3}
+  icon: {fileID: 21300000, guid: 85c1e9ebc87964a94bfdb021e1c8998d, type: 3}
+  styleScore: 1
+  alsoClears: 

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Nurse_V02
+  m_EditorClassIdentifier: 
+  displayName: Nurse 02
+  outfit: {fileID: 11400000, guid: 745647cd0c9014dec81f7b801a456d2b, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: 15d56fe60c3cc478082a557c9003447f, type: 2}
+  - {fileID: 11400000, guid: 35d093fb9e7dc474b930ec7682198f52, type: 2}

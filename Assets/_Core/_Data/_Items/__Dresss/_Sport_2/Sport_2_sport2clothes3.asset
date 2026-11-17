@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Sport_2_sport2clothes3
+  m_EditorClassIdentifier: 
+  displayName: Sport 2 Shirt
+  slot: 2
+  prefab: {fileID: 7563630143109912012, guid: 19638e1adce8442a68d28ed6aa45d666, type: 3}
+  icon: {fileID: 21300000, guid: 91540d15a446e41d994fc681f3b7d18e, type: 3}
+  styleScore: 1
+  alsoClears: 

@@ -47,9 +47,21 @@ namespace Game.Level
         [Tooltip("Optional: a different doll for this level. Empty = the database's default player.")]
         [SerializeField] private GameObject playerPrefab;
 
+        [Header("Outfit to complete")]
+        [Tooltip("The outfit variant this level completes. Used as the target look when Target Look is empty, and marked completed when the level is passed.")]
+        [SerializeField] private OutfitVariant outfit;
+
+        [Tooltip("Match % needed to pass when the target comes from Outfit (no Target Look).")]
+        [SerializeField, Range(0, 100)] private int outfitPassPercent = 60;
+
+        [Tooltip("Match % for 1, 2 and 3 stars when the target comes from Outfit.")]
+        [SerializeField] private int[] outfitStarPercents = { 50, 75, 100 };
+
         [Header("Target look")]
-        [Tooltip("The look to copy: shown on the demo doll at the start and compared at the finish. Empty = no comparison (run score decides).")]
+        [Tooltip("The look to copy: shown on the demo doll at the start and compared at the finish. Empty = use Outfit; both empty = no comparison (run score decides).")]
         [SerializeField] private TargetLook targetLook;
+
+        [NonSerialized] private TargetLook _outfitLook;
 
         [Header("AI opponent")]
         [Tooltip("Race an AI on a second ramp. The player wins only by matching the target look better than the AI.")]
@@ -79,12 +91,15 @@ namespace Game.Level
         public float FinishDistance => finishDistance;
         public GameObject FinishLinePrefab => finishLinePrefab;
         public GameObject PlayerPrefab => playerPrefab;
-        public TargetLook TargetLook => targetLook;
+        public TargetLook TargetLook => targetLook != null ? targetLook : GetOutfitLook();
+
+        /// <summary>The variant this level completes: Outfit, or the Target Look's variant.</summary>
+        public OutfitVariant Outfit => outfit != null ? outfit : targetLook != null ? targetLook.Variant : null;
         public bool HasAiOpponent => hasAiOpponent;
         public Game.AI.AiProfile AiProfile => aiProfile;
-        public bool HasTarget => targetLook != null && targetLook.HasItems;
-        public IReadOnlyList<OutfitItem> TargetOutfit => HasTarget ? targetLook.Items : null;
-        public GameObject DemoPrefab => targetLook != null ? targetLook.DemoPrefab : null;
+        public bool HasTarget => TargetLook != null && TargetLook.HasItems;
+        public IReadOnlyList<OutfitItem> TargetOutfit => HasTarget ? TargetLook.Items : null;
+        public GameObject DemoPrefab => TargetLook != null ? TargetLook.DemoPrefab : null;
         public IReadOnlyList<OutfitItem> StartingOutfit => startingOutfit;
         public IReadOnlyList<Entry> Entries => entries;
         public int ScoreToPass => scoreToPass;
@@ -94,7 +109,7 @@ namespace Game.Level
         public int GetStars(int score)
         {
             if (HasTarget)
-                return targetLook.GetStars(score);
+                return TargetLook.GetStars(score);
 
             var stars = 0;
             if (starScores == null)
@@ -109,13 +124,27 @@ namespace Game.Level
             return stars;
         }
 
-        public bool IsPass(int score) => HasTarget ? targetLook.IsPass(score) : score >= scoreToPass;
+        public bool IsPass(int score) => HasTarget ? TargetLook.IsPass(score) : score >= scoreToPass;
+
+        private TargetLook GetOutfitLook()
+        {
+            if (outfit == null)
+                return null;
+
+            // Rebuilt if the outfit was changed in the inspector since it was made.
+            if (_outfitLook == null || _outfitLook.Variant != outfit)
+                _outfitLook = TargetLook.CreateFor(outfit, outfitPassPercent, outfitStarPercents);
+
+            return _outfitLook;
+        }
 
         [ContextMenu("Sort Entries By Distance")]
         private void SortEntries() => entries.Sort((a, b) => a.distance.CompareTo(b.distance));
 
         private void OnValidate()
         {
+            _outfitLook = null; // pass % or stars may have changed
+
             foreach (var entry in entries)
             {
                 if (entry.distance > finishDistance)

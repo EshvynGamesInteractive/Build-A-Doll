@@ -20,14 +20,16 @@ MonoBehaviour:
   targetLook: {fileID: 11400000, guid: 26ef90389cebd43c19c63e0baa46d98f, type: 2}
   hasAiOpponent: 1
   aiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
-  startingOutfit: []
+  startingOutfit:
+  - {fileID: 11400000, guid: 832b10d8c20e04a8abb729a67a9ac22e, type: 2}
+  - {fileID: 11400000, guid: e979a7ae83ca6413c917f29e1aafabdc, type: 2}
   entries:
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
     distance: 15
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: a631c19a9c075415f957a1aa1617005f, type: 2}
-    - {fileID: 11400000, guid: 88720c17928f14911ba39769e7852023, type: 2}
+    - {fileID: 11400000, guid: 07d54d2d9beaa461eaffd19a88af9df5, type: 2}
+    - {fileID: 11400000, guid: a84d9c3ffad12498993a5610cd88d2f4, type: 2}
   - prefab: {fileID: 858074213056708769, guid: 03ee667515f4347908b4a46ecd61003b, type: 3}
     distance: 24
     lateral: -1.2
@@ -36,16 +38,18 @@ MonoBehaviour:
     distance: 31
     lateral: 1.2
     gateItems: []
-  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
-    distance: 34
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 36
     lateral: 0
-    gateItems: []
+    gateItems:
+    - {fileID: 11400000, guid: 34f8b9fbc0b11451f8649103f1d59fd4, type: 2}
+    - {fileID: 11400000, guid: dc9f78ecdf0694932aae80af888ebcdd, type: 2}
   - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
     distance: 45
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 5e3d02d791f9f4e5ebfdc6eea012d941, type: 2}
-    - {fileID: 11400000, guid: b1f92b3a474fc4f3e8a4b51cc4f7281a, type: 2}
+    - {fileID: 11400000, guid: 0451e692af3a3451a987da7ac708991a, type: 2}
+    - {fileID: 11400000, guid: 85781a1b6c3724e159042931f44c652d, type: 2}
   - prefab: {fileID: 5187526501295159265, guid: 5d7a84aadf614dc587ae5f155045d5bc, type: 3}
     distance: 51.5
     lateral: 0
@@ -71,16 +75,18 @@ MonoBehaviour:
     distance: 85
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: ee2f4d54e6de64a779a0fcdca79fdf13, type: 2}
-    - {fileID: 11400000, guid: a66c33ed7d5354b5c9b7451f22b1d7af, type: 2}
+    - {fileID: 11400000, guid: 2dd8a7b55098142b08b97875640ea500, type: 2}
+    - {fileID: 11400000, guid: f02615afa9d99446a8850c6e82b80963, type: 2}
   - prefab: {fileID: 1189894174054325172, guid: 8793cb3e3fd38469db68c571f3b8d850, type: 3}
     distance: 98
     lateral: 0
     gateItems: []
-  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
-    distance: 104
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 108
     lateral: 0
-    gateItems: []
+    gateItems:
+    - {fileID: 11400000, guid: 9f020d0464c144c27805252d38b4e16a, type: 2}
+    - {fileID: 11400000, guid: 53833a21a04fc436d929a6e6a6b71285, type: 2}
   - prefab: {fileID: 707516476705285905, guid: 30e89e41a147b48dcbae8a36f0bdd341, type: 3}
     distance: 120
     lateral: 0

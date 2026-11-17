@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Student_V01
+  m_EditorClassIdentifier: 
+  displayName: Student 01
+  outfit: {fileID: 11400000, guid: 318065b12985d4a758ed4c3844bf50ef, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: d33f0f51f68cd47a08f7c5282a2b8340, type: 2}
+  - {fileID: 11400000, guid: 1c27d8168d16d488696a9706fa94b03f, type: 2}
+  - {fileID: 11400000, guid: 344d39c41e12449f99f07f6dbdc78fe2, type: 2}
+  - {fileID: 11400000, guid: fcf1286fd4d704598a08d8000ce0be62, type: 2}

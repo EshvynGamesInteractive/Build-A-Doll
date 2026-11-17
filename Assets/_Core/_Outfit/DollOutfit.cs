@@ -26,7 +26,7 @@ namespace Game.Outfit
         [Tooltip("Used for slots without their own anchor. Leave empty to use this object.")]
         [SerializeField] private Transform defaultAnchor;
 
-        [Tooltip("Root bone of the doll's rig, for binding skinned clothes. Leave empty if the doll isn't skinned.")]
+        [Tooltip("Root bone of the doll's rig (e.g. mixamorig:Hips), for binding skinned clothes. Empty = found from a humanoid Animator in children.")]
         [SerializeField] private Transform skeletonRoot;
 
         [Tooltip("Turn off for display dolls (e.g. the target-look demo) so their items don't count as the player's.")]
@@ -64,6 +64,9 @@ namespace Game.Outfit
         {
             if (defaultAnchor == null)
                 defaultAnchor = transform;
+
+            if (skeletonRoot == null)
+                skeletonRoot = FindSkeletonRoot();
         }
 
         private void Start() => WearStartingItems();
@@ -120,6 +123,32 @@ namespace Game.Outfit
                 startingItems[i] = items[i];
         }
 
+        /// <summary>Takes everything off and puts on every part of the variant (own parts + shared pieces).</summary>
+        public void WearVariant(OutfitVariant variant)
+        {
+            ClearAll();
+            if (variant == null)
+                return;
+
+            foreach (var part in variant.AllParts)
+                Equip(part);
+        }
+
+        /// <summary>Is every part of this variant on her right now?</summary>
+        public bool IsWearing(OutfitVariant variant)
+        {
+            if (variant == null)
+                return false;
+
+            foreach (var part in variant.AllParts)
+            {
+                if (!_worn.TryGetValue(part.Slot, out var worn) || worn != part)
+                    return false;
+            }
+
+            return true;
+        }
+
         public void ClearAll()
         {
             foreach (var slot in new List<OutfitSlot>(_worn.Keys))
@@ -162,7 +191,19 @@ namespace Game.Outfit
         private void BindToSkeleton(GameObject instance)
         {
             if (skeletonRoot == null)
+                skeletonRoot = FindSkeletonRoot();
+
+            if (skeletonRoot == null)
                 return;
+
+            // Parts made by the Outfit Importer carry their bone names.
+            var part = instance.GetComponent<SkinnedPart>();
+            if (part != null)
+            {
+                _bonesByName ??= BuildBoneMap();
+                part.Bind(_bonesByName);
+                return;
+            }
 
             var renderers = instance.GetComponentsInChildren<SkinnedMeshRenderer>(true);
             if (renderers.Length == 0)
@@ -190,11 +231,29 @@ namespace Game.Outfit
                 skinned.rootBone = root;
         }
 
+        private Transform FindSkeletonRoot()
+        {
+            var animator = GetComponentInChildren<Animator>(true);
+            if (animator != null && animator.isHuman)
+            {
+                var hips = animator.GetBoneTransform(HumanBodyBones.Hips);
+                if (hips != null)
+                    return hips;
+            }
+
+            return null;
+        }
+
         private Dictionary<string, Transform> BuildBoneMap()
         {
             var map = new Dictionary<string, Transform>();
             foreach (var bone in skeletonRoot.GetComponentsInChildren<Transform>(true))
                 map.TryAdd(bone.name, bone);
+
+            // Some rigs bind meshes to the armature object above the hips too.
+            if (skeletonRoot.parent != null)
+                map.TryAdd(skeletonRoot.parent.name, skeletonRoot.parent);
+
             return map;
         }
     }

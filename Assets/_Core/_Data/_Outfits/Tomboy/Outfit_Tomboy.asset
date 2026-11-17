@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Tomboy
+  m_EditorClassIdentifier: 
+  displayName: Tomboy
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: de782500bd8d04e13bc3ecb8e6a8effd, type: 2}
+  - {fileID: 11400000, guid: 0c971d42ed82047868e07229ce5176a0, type: 2}
+  - {fileID: 11400000, guid: ae0b50ac5f5e24225b56ab1c388a9b9b, type: 2}
+  - {fileID: 11400000, guid: 1e884b4813e8d4920a220dbbd17c54c4, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 09630dcc391924d6b87b49adc4958df7, type: 2}
+  - {fileID: 11400000, guid: 34c608f44720942a7a347d1ba2a7509a, type: 2}
+  - {fileID: 11400000, guid: 50b1af67da9cb4a638e807fda0489807, type: 2}

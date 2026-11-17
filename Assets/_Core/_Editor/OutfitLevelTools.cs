@@ -1,0 +1,136 @@
+#if UNITY_EDITOR
+using System.Collections.Generic;
+using System.Linq;
+using Game.Hurdles;
+using Game.Level;
+using Game.Outfit;
+using UnityEditor;
+using UnityEngine;
+
+namespace Game.EditorTools
+{
+    /// <summary>
+    /// Right-click a LevelData > "Fill Gate Items From Outfit": walks the level's gate entries in
+    /// order and gives each one the next part of the level's outfit, with decoys from other outfits
+    /// for the same slot on the other gates (correct side picked at random).
+    /// </summary>
+    public static class OutfitLevelTools
+    {
+        // Order the parts are offered along the track.
+        private static readonly OutfitSlot[] SlotOrder =
+        {
+            OutfitSlot.Hair, OutfitSlot.Dress, OutfitSlot.Top, OutfitSlot.Bottom, OutfitSlot.Shoes,
+            OutfitSlot.Hat, OutfitSlot.Glasses, OutfitSlot.HandItem, OutfitSlot.Bag, OutfitSlot.Socks,
+            OutfitSlot.Wings, OutfitSlot.Accessory, OutfitSlot.Makeup
+        };
+
+        [MenuItem("CONTEXT/LevelData/Fill Gate Items From Outfit")]
+        private static void FillGates(MenuCommand command)
+        {
+            var level = (LevelData)command.context;
+            var variant = level.Outfit;
+            if (variant == null)
+            {
+                EditorUtility.DisplayDialog("Fill Gates", "Set this level's Outfit (or a Target Look with a Variant) first.", "OK");
+                return;
+            }
+
+            var catalog = AssetDatabase.LoadAssetAtPath<OutfitCatalog>(OutfitImporter.CatalogPath);
+            if (catalog == null)
+                catalog = EditorPaths.FindAsset<OutfitCatalog>();
+
+            var parts = variant.AllParts.OrderBy(p => System.Array.IndexOf(SlotOrder, p.Slot)).ToList();
+            var random = new System.Random();
+            var so = new SerializedObject(level);
+            var entries = so.FindProperty("entries");
+            var next = 0;
+            var gateEntries = 0;
+
+            for (var i = 0; i < entries.arraySize; i++)
+            {
+                var entry = entries.GetArrayElementAtIndex(i);
+                var prefab = entry.FindPropertyRelative("prefab").objectReferenceValue as GameObject;
+                var gates = prefab != null ? prefab.GetComponentsInChildren<ItemGate>(true) : null;
+                if (gates == null || gates.Length == 0)
+                    continue;
+
+                gateEntries++;
+                if (next >= parts.Count)
+                    continue; // more gates than parts: keep what's there
+
+                var correct = parts[next++];
+                var decoys = PickDecoys(catalog, variant, correct, gates.Length - 1, random);
+                var correctIndex = random.Next(gates.Length);
+
+                var items = entry.FindPropertyRelative("gateItems");
+                items.arraySize = gates.Length;
+                for (int g = 0, d = 0; g < gates.Length; g++)
+                {
+                    var item = g == correctIndex ? correct : d < decoys.Count ? decoys[d++] : null;
+                    items.GetArrayElementAtIndex(g).objectReferenceValue = item;
+                }
+            }
+
+            so.ApplyModifiedProperties(); // undoable
+            EditorUtility.SetDirty(level);
+
+            var message = $"{level.name}: filled {Mathf.Min(gateEntries, parts.Count)} gates for '{variant.DisplayName}' ({parts.Count} parts).";
+            if (gateEntries < parts.Count)
+                message += $"\n\nOnly {gateEntries} gate entries: add {parts.Count - gateEntries} more so every part can be picked " +
+                           $"(missing: {string.Join(", ", parts.Skip(gateEntries).Select(p => p.Slot))}).";
+            if (catalog == null)
+                message += "\n\nNo Outfit Catalog found, so gates have no decoys. Run Build A Doll > Outfits > Import Outfits From Doll FBX.";
+
+            Debug.Log(message, level);
+            EditorUtility.DisplayDialog("Fill Gates", message, "OK");
+        }
+
+        // Wrong choices for the same slot from other outfits; Top and Dress stand in for each other.
+        private static List<OutfitItem> PickDecoys(OutfitCatalog catalog, OutfitVariant variant, OutfitItem correct, int count, System.Random random)
+        {
+            var result = new List<OutfitItem>();
+            if (catalog == null || count <= 0)
+                return result;
+
+            var pool = catalog.GetPartsForSlot(correct.Slot);
+            if (correct.Slot == OutfitSlot.Dress)
+                pool.AddRange(catalog.GetPartsForSlot(OutfitSlot.Top));
+            else if (correct.Slot == OutfitSlot.Top)
+                pool.AddRange(catalog.GetPartsForSlot(OutfitSlot.Dress));
+
+            pool.RemoveAll(p => p == null || variant.Contains(p));
+
+            while (result.Count < count && pool.Count > 0)
+            {
+                var index = random.Next(pool.Count);
+                result.Add(pool[index]);
+                pool.RemoveAt(index);
+            }
+
+            return result;
+        }
+
+        [MenuItem("CONTEXT/OutfitVariant/Wear On Player (Play Mode)")]
+        private static void PreviewOnDoll(MenuCommand command)
+        {
+            if (!Application.isPlaying)
+            {
+                EditorUtility.DisplayDialog("Wear Outfit", "Enter Play mode first.", "OK");
+                return;
+            }
+
+            // The player's doll is the one that raises events (the AI and demo dolls don't).
+            var dolls = Object.FindObjectsByType<DollOutfit>(FindObjectsSortMode.None);
+            var doll = dolls.FirstOrDefault(d => d.RaiseEvents) ?? dolls.FirstOrDefault();
+            if (doll == null)
+            {
+                EditorUtility.DisplayDialog("Wear Outfit", "No doll with a DollOutfit in the scene.", "OK");
+                return;
+            }
+
+            doll.WearVariant((OutfitVariant)command.context);
+            EditorGUIUtility.PingObject(doll);
+        }
+    }
+}
+#endif

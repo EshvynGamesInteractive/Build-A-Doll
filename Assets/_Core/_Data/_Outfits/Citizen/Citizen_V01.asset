@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Citizen_V01
+  m_EditorClassIdentifier: 
+  displayName: Citizen 01
+  outfit: {fileID: 11400000, guid: 37052b1b819444d9aaca41c0c734c104, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: e43bf7cadbda349968d114c9c4416ad6, type: 2}
+  - {fileID: 11400000, guid: b7be1b3088bac481e9267f05fd2655c5, type: 2}
+  - {fileID: 11400000, guid: f22306364d02c4945a4d57f5e8d33388, type: 2}
+  - {fileID: 11400000, guid: c11a055fc65b84cf1be476a64bb53040, type: 2}

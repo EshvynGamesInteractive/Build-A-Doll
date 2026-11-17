@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Cinderella_V01
+  m_EditorClassIdentifier: 
+  displayName: Cinderella 01
+  outfit: {fileID: 11400000, guid: 5735579b8b77c4397a5460eb69f4a1e5, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: 3dd5150116db141ff8282673b2c87fff, type: 2}
+  - {fileID: 11400000, guid: da65a9b29a37e4bc7b85276e7b673573, type: 2}
+  - {fileID: 11400000, guid: f66ae7dc51cfb4f65b33922534306a3c, type: 2}
+  - {fileID: 11400000, guid: 13b3417b6b4454040a2b0f92ada71b1a, type: 2}
+  - {fileID: 11400000, guid: 4722114b073a64d7bafc97a26861c4dc, type: 2}

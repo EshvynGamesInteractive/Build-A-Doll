@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Casual
+  m_EditorClassIdentifier: 
+  displayName: Casual
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: 5de59415d3d84417693b07aec5c60d82, type: 2}
+  - {fileID: 11400000, guid: 2a6d757d5327141f2807acec29d91b9a, type: 2}
+  - {fileID: 11400000, guid: a157d8f47896b47e684d6889d2801a38, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 277b65e99bd8542c1a6605c05ebcd010, type: 2}
+  - {fileID: 11400000, guid: e0e87430c7c03494b9ef2848da629ba8, type: 2}

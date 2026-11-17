@@ -13,7 +13,10 @@ namespace Game.Outfit
     {
         [SerializeField] private string displayName;
 
-        [Tooltip("The items to copy, one per slot. Compared slot by slot at the finish.")]
+        [Tooltip("Optional: copy this outfit variant. When set, its parts are used instead of Items.")]
+        [SerializeField] private OutfitVariant variant;
+
+        [Tooltip("The items to copy, one per slot. Compared slot by slot at the finish. Ignored when Variant is set.")]
         [SerializeField] private OutfitItem[] items;
 
         [Tooltip("Optional: the doll that wears this look. Empty = the database's Default Demo Prefab.")]
@@ -29,14 +32,28 @@ namespace Game.Outfit
         [Tooltip("Match % for 1, 2 and 3 stars.")]
         [SerializeField] private int[] starPercents = { 50, 75, 100 };
 
-        public string DisplayName => string.IsNullOrEmpty(displayName) ? name : displayName;
-        public IReadOnlyList<OutfitItem> Items => items;
-        public bool HasItems => items != null && items.Length > 0;
+        public string DisplayName => !string.IsNullOrEmpty(displayName) ? displayName
+            : variant != null ? variant.DisplayName : name;
+        public OutfitVariant Variant => variant;
+        public IReadOnlyList<OutfitItem> Items => variant != null ? variant.AllParts : items;
+        public bool HasItems => Items != null && Items.Count > 0;
         public GameObject DemoPrefab => demoPrefab;
         public Sprite Preview => preview;
         public int PassPercent => passPercent;
 
         public bool IsPass(int matchPercent) => matchPercent >= passPercent;
+
+        /// <summary>A look made at runtime for a level that only names an outfit variant.</summary>
+        public static TargetLook CreateFor(OutfitVariant outfitVariant, int pass, int[] stars)
+        {
+            var look = CreateInstance<TargetLook>();
+            look.name = outfitVariant != null ? $"Look_{outfitVariant.name}" : "Look_Runtime";
+            look.hideFlags = HideFlags.DontSave;
+            look.variant = outfitVariant;
+            look.passPercent = pass;
+            look.starPercents = stars;
+            return look;
+        }
 
         public int GetStars(int matchPercent)
         {

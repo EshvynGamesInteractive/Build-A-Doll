@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Casual_uglyhairdefault
+  m_EditorClassIdentifier: 
+  displayName: Casual Hair
+  slot: 0
+  prefab: {fileID: 2521396351498386601, guid: 72765ebd9aab34a9689d641bdc8e1c5e, type: 3}
+  icon: {fileID: 21300000, guid: 69670f7d263a941f6b447db161f311a7, type: 3}
+  styleScore: 1
+  alsoClears: 

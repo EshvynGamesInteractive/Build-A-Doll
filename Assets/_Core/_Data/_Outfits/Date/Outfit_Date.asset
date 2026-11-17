@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Date
+  m_EditorClassIdentifier: 
+  displayName: Date
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: 432a10f7e4c3a45cfa291c0bf67baa07, type: 2}
+  - {fileID: 11400000, guid: 2f9bb81b84d4c44458a96db6b5dede71, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 6a71318e531ad476b9ef29635a5b1b72, type: 2}
+  - {fileID: 11400000, guid: d8263f6c8ce824d7a973f35339806aa1, type: 2}
+  - {fileID: 11400000, guid: 2fe25a3cd5d634f47b1dfee2df25ce44, type: 2}
+  - {fileID: 11400000, guid: 61a58fa0e83a342ccb0c01edb40606b5, type: 2}
+  - {fileID: 11400000, guid: 8e83cb857e8ad44048f127310f330024, type: 2}
+  - {fileID: 11400000, guid: 96edef1aaffee4b36b42fdbd9169a861, type: 2}

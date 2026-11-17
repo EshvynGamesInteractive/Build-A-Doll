@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Basketball
+  m_EditorClassIdentifier: 
+  displayName: Basketball
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: cc6ec8297f3b249c1ac6f21331dc4c8a, type: 2}
+  - {fileID: 11400000, guid: 870bde2d663bc43e4bed6f5580aab711, type: 2}
+  - {fileID: 11400000, guid: a5837a11a6eb2478b88b8daaa70384cf, type: 2}
+  variants:
+  - {fileID: 11400000, guid: dfdab944f840e47fd93af4d2c5567d2d, type: 2}
+  - {fileID: 11400000, guid: 0372bb0072af64a29870d9cc6f8bb15c, type: 2}
+  - {fileID: 11400000, guid: 2027a900361e3412696e20da2a57da29, type: 2}

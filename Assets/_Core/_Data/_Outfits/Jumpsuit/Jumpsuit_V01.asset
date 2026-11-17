@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Jumpsuit_V01
+  m_EditorClassIdentifier: 
+  displayName: Jumpsuit 01
+  outfit: {fileID: 11400000, guid: a6a14ba72bc544e2283ebc3f65ad4fb5, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: abf6413c2bdd64c31b82c243eee8aca5, type: 2}

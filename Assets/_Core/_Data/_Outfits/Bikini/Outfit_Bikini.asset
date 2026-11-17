@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Bikini
+  m_EditorClassIdentifier: 
+  displayName: Bikini
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: 5ea5d4d6f2c04462180c3deb9b6e5399, type: 2}
+  - {fileID: 11400000, guid: c450164e48fa34899b2f24249f104dc6, type: 2}
+  - {fileID: 11400000, guid: 75ce5c24abf6944e3bf4ccf9efe92caa, type: 2}
+  variants:
+  - {fileID: 11400000, guid: b4345d609c9f5476f8e29521c077dd0a, type: 2}
+  - {fileID: 11400000, guid: 7a3310281314a4dbda58c73998d15e3a, type: 2}
+  - {fileID: 11400000, guid: 2a65a894966904ced8e81876dfce61e7, type: 2}

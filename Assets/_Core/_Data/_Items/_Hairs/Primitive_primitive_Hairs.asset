@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Primitive_primitive_Hairs
+  m_EditorClassIdentifier: 
+  displayName: Primitive Hair
+  slot: 0
+  prefab: {fileID: 8755006904894204828, guid: 0d63a0a12290a4d25808ebb1b0686339, type: 3}
+  icon: {fileID: 21300000, guid: 9d6aff833efec4c67a8b8f344c55b1e4, type: 3}
+  styleScore: 1
+  alsoClears: 

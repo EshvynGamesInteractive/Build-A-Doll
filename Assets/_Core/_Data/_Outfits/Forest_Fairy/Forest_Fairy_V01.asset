@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Forest_Fairy_V01
+  m_EditorClassIdentifier: 
+  displayName: Forest Fairy 01
+  outfit: {fileID: 11400000, guid: da2b58142682844c99e5d90bc6e1d9c2, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: 01f941b6fd6fd41b9b09b8d8a17d5fa0, type: 2}
+  - {fileID: 11400000, guid: 8b3c05b46ec414983a85b71c9aa6312c, type: 2}
+  - {fileID: 11400000, guid: ba396e6e9f0924e38b30dfcb7c831ffc, type: 2}
+  - {fileID: 11400000, guid: 09f753292ad2346b283a04ff13a7b8b4, type: 2}

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Waiter
+  m_EditorClassIdentifier: 
+  displayName: Waiter
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: 08741bc697c164682836c8025bc6f414, type: 2}
+  - {fileID: 11400000, guid: 1e69e2943673b45de95f75ede35bfebb, type: 2}
+  - {fileID: 11400000, guid: 107708645eb224b29bcf9fc1213f7350, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 89ea43c96ddd540e0abde07321d62c96, type: 2}
+  - {fileID: 11400000, guid: 16b55847c60bc49ba9849e1473510f0f, type: 2}
+  - {fileID: 11400000, guid: ee0dded8e67aa4683830fb3dd4fe731e, type: 2}
+  - {fileID: 11400000, guid: bdb9311fe1f2c41a69f1bddd798e8795, type: 2}

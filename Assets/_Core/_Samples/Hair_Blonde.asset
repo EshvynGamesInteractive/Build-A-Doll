@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Hair Blonde
   slot: 0
   prefab: {fileID: 2541657119632823009, guid: f3b5e8123f1a9410d81a8956b853a4fb, type: 3}
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: fa93cebb8914b4ed6bcff3d3753b59ab, type: 3}
   styleScore: 2
   alsoClears: 

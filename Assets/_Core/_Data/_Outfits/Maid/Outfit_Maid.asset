@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Maid
+  m_EditorClassIdentifier: 
+  displayName: Maid
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: ccbbcc341c9044dc3b4ec2431182241b, type: 2}
+  - {fileID: 11400000, guid: 90566574da86a4af4b7636f50fe1b6e9, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 79de341d190d84f3aae7163f7c7f160a, type: 2}
+  - {fileID: 11400000, guid: 5bcffd407a4674f02969b522728cdb74, type: 2}
+  - {fileID: 11400000, guid: 84da26097f107490cb92caba2221d319, type: 2}

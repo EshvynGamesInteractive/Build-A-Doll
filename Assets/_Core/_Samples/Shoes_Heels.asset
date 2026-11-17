@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Shoes Heels
   slot: 5
   prefab: {fileID: 8009113364555229418, guid: efb317b9e093349b5b6b9e7d9fcd9945, type: 3}
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ecf37a6995f724b7a9ab1e031edc9c08, type: 3}
   styleScore: 2
   alsoClears: 

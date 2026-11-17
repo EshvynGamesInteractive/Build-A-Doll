@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Cheongsam_cheongsamdress2
+  m_EditorClassIdentifier: 
+  displayName: Cheongsam Dress
+  slot: 4
+  prefab: {fileID: 7013169076360373296, guid: fe32b8faf6eb145bc88de6d98fe0e3c1, type: 3}
+  icon: {fileID: 21300000, guid: 24bf123b6affb401095b92020a7e9288, type: 3}
+  styleScore: 1
+  alsoClears: 0200000003000000

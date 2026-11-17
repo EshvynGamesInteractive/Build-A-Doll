@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Tomboy_tomboy_Hair1
+  m_EditorClassIdentifier: 
+  displayName: Tomboy Hair
+  slot: 0
+  prefab: {fileID: 4897296628200631972, guid: 9fa5c58c183dd450f8c257d51d86135e, type: 3}
+  icon: {fileID: 21300000, guid: 7ed551999ef8a473caca77e85bc2f967, type: 3}
+  styleScore: 1
+  alsoClears: 

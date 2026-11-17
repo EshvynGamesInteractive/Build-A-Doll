@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6aba97c8bb9400088552510792d9d7, type: 3}
   m_Name: Look_01
   m_EditorClassIdentifier: 
-  displayName: Pink Princess
-  items:
-  - {fileID: 11400000, guid: a631c19a9c075415f957a1aa1617005f, type: 2}
-  - {fileID: 11400000, guid: b1f92b3a474fc4f3e8a4b51cc4f7281a, type: 2}
-  - {fileID: 11400000, guid: ee2f4d54e6de64a779a0fcdca79fdf13, type: 2}
+  displayName: Date Night
+  variant: {fileID: 11400000, guid: 6a71318e531ad476b9ef29635a5b1b72, type: 2}
+  items: []
   demoPrefab: {fileID: 0}
   preview: {fileID: 0}
   passPercent: 60

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Sport_2
+  m_EditorClassIdentifier: 
+  displayName: Sport 2
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: 0b1e4d7f94e23453497ecb541f868c4b, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 4d2956862eb994a3eac8ae5ee4362c55, type: 2}
+  - {fileID: 11400000, guid: 40161a990c77643cea73e80f54ea257e, type: 2}
+  - {fileID: 11400000, guid: ce524b266074d47f0bfe011d0e359287, type: 2}
+  - {fileID: 11400000, guid: a06ed3168f72642bd85f8f050c6d1d35, type: 2}

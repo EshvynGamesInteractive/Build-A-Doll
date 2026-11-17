@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Snow_White_V01
+  m_EditorClassIdentifier: 
+  displayName: Snow White 01
+  outfit: {fileID: 11400000, guid: e10178d40b81d44c5b8c3cc556df38d7, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: ea1a331eb97444fe0adbf456088f48dc, type: 2}
+  - {fileID: 11400000, guid: 596c22745ff454aa2b2bcdaf35a7ca92, type: 2}
+  - {fileID: 11400000, guid: 93f36e55b61ef4b91acfb9afe466135d, type: 2}
+  - {fileID: 11400000, guid: f83e2045d26124e37bef0d7700aece9a, type: 2}
+  - {fileID: 11400000, guid: 7241add4372924e48b89be085edbf40e, type: 2}

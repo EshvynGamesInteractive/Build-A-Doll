@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Bikini_bikinihairHat
+  m_EditorClassIdentifier: 
+  displayName: Bikini Hat
+  slot: 8
+  prefab: {fileID: 7231580079934096978, guid: 27c766a2936f5493698e8c0e00ab6d4c, type: 3}
+  icon: {fileID: 21300000, guid: afcf0e9e5ed214d66b51aea955b28c4e, type: 3}
+  styleScore: 1
+  alsoClears: 

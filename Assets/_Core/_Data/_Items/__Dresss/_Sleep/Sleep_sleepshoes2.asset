@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Sleep_sleepshoes2
+  m_EditorClassIdentifier: 
+  displayName: Sleep Shoes
+  slot: 5
+  prefab: {fileID: 7279294972009115379, guid: 4b02e3535dc7547f7bf6b05b9c97c08e, type: 3}
+  icon: {fileID: 21300000, guid: 151c4037a539b49549ec505812165e01, type: 3}
+  styleScore: 1
+  alsoClears: 

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Killer_V01
+  m_EditorClassIdentifier: 
+  displayName: Killer 01
+  outfit: {fileID: 11400000, guid: d7c84efdc0aa444ffa43151a6fdf32b7, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: c6db4f9943e3d48fd9423f7c90ea5abe, type: 2}
+  - {fileID: 11400000, guid: cd267dff7ef8f4cf5a4914be91edb941, type: 2}
+  - {fileID: 11400000, guid: ee4bcacdf85cc4f46aba52a7f8d43117, type: 2}

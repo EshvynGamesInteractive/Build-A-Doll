@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Sport_sporthair2
+  m_EditorClassIdentifier: 
+  displayName: Sport Hair
+  slot: 0
+  prefab: {fileID: 7260194036799963665, guid: 8801a2e55b2af4ad399be6a2ad238815, type: 3}
+  icon: {fileID: 21300000, guid: d4f1ee5a60a194954898693394daade0, type: 3}
+  styleScore: 1
+  alsoClears: 

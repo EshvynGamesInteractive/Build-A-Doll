@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Sleep_V02
+  m_EditorClassIdentifier: 
+  displayName: Sleep 02
+  outfit: {fileID: 11400000, guid: c78fc9b0ca1b84269b3be7160c0f697f, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: 07addc88973bd419ab52e7912e479ea6, type: 2}
+  - {fileID: 11400000, guid: 439abf27df07240a384b6f9b7a633351, type: 2}
+  - {fileID: 11400000, guid: 14c03cb9447b8436aa66f0b6894d33a0, type: 2}

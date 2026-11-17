@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Skate
+  m_EditorClassIdentifier: 
+  displayName: Skate
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: cfcc62045c5a24141af61e6637a3922a, type: 2}
+  - {fileID: 11400000, guid: beb86c98ab9e84c8e90615305ffc6147, type: 2}
+  - {fileID: 11400000, guid: 5b168ee34359e4009a4d8e3f1c4f7a9b, type: 2}
+  - {fileID: 11400000, guid: 10b2c876bad724250bc7651c00b7fd01, type: 2}
+  - {fileID: 11400000, guid: fca0536f15c594f9891736d28e01e0d1, type: 2}
+  variants:
+  - {fileID: 11400000, guid: eb2ebc75bd78e4ef4a2a7536ab7009a4, type: 2}
+  - {fileID: 11400000, guid: 336781fe3fee340c3b203e86cb272a6a, type: 2}
+  - {fileID: 11400000, guid: d45de3d458aae494599fb98e9a8d50a7, type: 2}
+  - {fileID: 11400000, guid: 163729d2e8172423f916b837fe6e75ec, type: 2}

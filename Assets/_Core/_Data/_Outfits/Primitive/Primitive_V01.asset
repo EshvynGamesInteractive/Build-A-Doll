@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Primitive_V01
+  m_EditorClassIdentifier: 
+  displayName: Primitive 01
+  outfit: {fileID: 11400000, guid: 85828dd208794497996baf7d516d9527, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: 17e037eb74a744fbbb551c77dbc3e623, type: 2}
+  - {fileID: 11400000, guid: 8ee73e2f7b6f54e3d9139b0a65922daf, type: 2}
+  - {fileID: 11400000, guid: 576fc45ff6060477294bbd44f1577ee1, type: 2}
+  - {fileID: 11400000, guid: fbf8b6d9a4f924c51b39d9d99e7be077, type: 2}

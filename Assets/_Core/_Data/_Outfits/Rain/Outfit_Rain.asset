@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Rain
+  m_EditorClassIdentifier: 
+  displayName: Rain
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: d00204a7ffeae41df9c92fb1e31ab475, type: 2}
+  - {fileID: 11400000, guid: 4bf9812f243b14e299c05fe1390d109c, type: 2}
+  - {fileID: 11400000, guid: fde7b26691908449189de8162efa7c17, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 122bfff8fc9514cb7ad77598f26ba714, type: 2}
+  - {fileID: 11400000, guid: c915765c8c7934316833cbc78c0d3a78, type: 2}
+  - {fileID: 11400000, guid: 8a2e14643a4a74900bcb1449dd5b15c8, type: 2}
+  - {fileID: 11400000, guid: e8f9469d58c2c49a3ac7f4c2447cf3a0, type: 2}

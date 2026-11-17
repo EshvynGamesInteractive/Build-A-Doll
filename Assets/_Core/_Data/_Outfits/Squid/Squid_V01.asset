@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e69ad3a4d39b4cb0a73a7b99391eae1, type: 3}
+  m_Name: Squid_V01
+  m_EditorClassIdentifier: 
+  displayName: Squid 01
+  outfit: {fileID: 11400000, guid: 353ea13789a9149318a5249611ec3a5d, type: 2}
+  icon: {fileID: 0}
+  parts:
+  - {fileID: 11400000, guid: a84584244c3744728ba2ede31b99c159, type: 2}
+  - {fileID: 11400000, guid: 5e5796ecff58d4bd090a1fc337e432cd, type: 2}
+  - {fileID: 11400000, guid: 6fbe12a57aa1f450190185cde8e3ec93, type: 2}
+  - {fileID: 11400000, guid: 08cba9b461869473eadefe1d82e0af79, type: 2}

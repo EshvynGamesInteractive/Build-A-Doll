@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Bunny
+  m_EditorClassIdentifier: 
+  displayName: Bunny
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: a84d9c3ffad12498993a5610cd88d2f4, type: 2}
+  - {fileID: 11400000, guid: 34f8b9fbc0b11451f8649103f1d59fd4, type: 2}
+  - {fileID: 11400000, guid: cdabb5ce8e10644ef9db68d200db1cce, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 8cd7751c675ee4073af0b98da07d8b79, type: 2}
+  - {fileID: 11400000, guid: e995729713372409895b5b2366305f58, type: 2}
+  - {fileID: 11400000, guid: 1e169c03343b04db293db451760bb412, type: 2}

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39772996c09504f03968beca350eb281, type: 3}
+  m_Name: Basketball_basketballpants2
+  m_EditorClassIdentifier: 
+  displayName: Basketball Pants
+  slot: 3
+  prefab: {fileID: 4518517979572799966, guid: c787b31e0e9d64b558c7937996f8a107, type: 3}
+  icon: {fileID: 21300000, guid: ed0bab6437fb446b5a6656cfb6603bd2, type: 3}
+  styleScore: 1
+  alsoClears: 

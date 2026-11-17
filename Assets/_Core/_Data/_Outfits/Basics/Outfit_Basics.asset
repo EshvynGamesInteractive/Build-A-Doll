@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Basics
+  m_EditorClassIdentifier: 
+  displayName: Basics
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: ece09f48a8c5545bebc38b4cf240e3e8, type: 2}
+  - {fileID: 11400000, guid: f6b1f81298188418488f12730e436fb4, type: 2}
+  variants:
+  - {fileID: 11400000, guid: b92f79595bf8b40eabb531183af845fb, type: 2}
+  - {fileID: 11400000, guid: 7c21fde89461140b696a97288aad5031, type: 2}
+  - {fileID: 11400000, guid: 75dac7aee3291499691f2033836fe175, type: 2}

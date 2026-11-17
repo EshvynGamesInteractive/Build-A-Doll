@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c10266b74104577bdfff08ff46749e, type: 3}
+  m_Name: Outfit_Uniform
+  m_EditorClassIdentifier: 
+  displayName: Uniform
+  icon: {fileID: 0}
+  sharedParts:
+  - {fileID: 11400000, guid: 422f64af387114ed5862358639fd831a, type: 2}
+  - {fileID: 11400000, guid: 1abeaf0839f5d4740b44fbb984421bc0, type: 2}
+  - {fileID: 11400000, guid: a068a5fd24a6449139aa0888facb5939, type: 2}
+  - {fileID: 11400000, guid: f8bd62448b0f34047a69aab918916c92, type: 2}
+  variants:
+  - {fileID: 11400000, guid: 62cff47d297a0486bb520bad71acdac9, type: 2}
+  - {fileID: 11400000, guid: e3aef76edecef4d69bad5e16822d6c39, type: 2}
+  - {fileID: 11400000, guid: 2aea8ff01fd4f43309022602c9e5f025, type: 2}

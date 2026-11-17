@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6aba97c8bb9400088552510792d9d7, type: 3}
   m_Name: Look_02
   m_EditorClassIdentifier: 
-  displayName: Party Rebel
-  items:
-  - {fileID: 11400000, guid: 88720c17928f14911ba39769e7852023, type: 2}
-  - {fileID: 11400000, guid: b1f92b3a474fc4f3e8a4b51cc4f7281a, type: 2}
-  - {fileID: 11400000, guid: a66c33ed7d5354b5c9b7451f22b1d7af, type: 2}
+  displayName: Office Boss
+  variant: {fileID: 11400000, guid: 19436d97c095241e5bce44219b420746, type: 2}
+  items: []
   demoPrefab: {fileID: 0}
   preview: {fileID: 0}
   passPercent: 60
