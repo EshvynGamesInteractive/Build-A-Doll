@@ -16,6 +16,33 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a7a103ed185aa4ec0b7ac225dd27f1ad, type: 2}
   - {fileID: 11400000, guid: 80601fe286ae34f38b4e4ad77b5878fc, type: 2}
   - {fileID: 11400000, guid: c4bc1453e5f1b4983b7e7c727f5ff7cf, type: 2}
+  - {fileID: 11400000, guid: b57187bc2b64248c59b1192d26069b71, type: 2}
+  - {fileID: 11400000, guid: febe5b1cbd0a44cb2839ce1cb508181f, type: 2}
+  - {fileID: 11400000, guid: 69b44de1d11c5427aaff81a858090014, type: 2}
+  - {fileID: 11400000, guid: 613c700432d314668af820477cd95fdb, type: 2}
+  - {fileID: 11400000, guid: 8936b9791ae8a43a58257b80fce10a3d, type: 2}
+  - {fileID: 11400000, guid: 30f198551c5a6481c84e81c46f8df968, type: 2}
+  - {fileID: 11400000, guid: 82bc7d5a0fe7d4174bcd37b63c972c73, type: 2}
+  - {fileID: 11400000, guid: 77cd484465a4a4a24956340b761eff1c, type: 2}
+  - {fileID: 11400000, guid: 048f3b4d7699e463f83c1fbc2e3df218, type: 2}
+  - {fileID: 11400000, guid: 16ba0b03e15b54000aac4ff12987b404, type: 2}
+  - {fileID: 11400000, guid: 14ca26d1b1d604672aeaf4631efdb1e6, type: 2}
+  - {fileID: 11400000, guid: d603438e124af4b40a8726be0a06a8b4, type: 2}
+  - {fileID: 11400000, guid: 7259cd3448a8142c18dace3bdca9d126, type: 2}
+  - {fileID: 11400000, guid: ccd0dacb733474de3afd1623fb3473aa, type: 2}
+  - {fileID: 11400000, guid: f567f2a15a7d84dac9da9c977650992f, type: 2}
+  - {fileID: 11400000, guid: 0ee12108ff44843ee985f513ea2932af, type: 2}
+  - {fileID: 11400000, guid: 3ba72bf776e5c4ea89d312be2774e0a1, type: 2}
+  - {fileID: 11400000, guid: e2b45db62b59442c5beed728a8779419, type: 2}
+  - {fileID: 11400000, guid: 99bcb80ead12549c98629b027d2be407, type: 2}
+  - {fileID: 11400000, guid: c8307d421a7b34343ad05df34e8f18cf, type: 2}
+  - {fileID: 11400000, guid: 2940ee595104c49dbaa551b918465e02, type: 2}
+  - {fileID: 11400000, guid: 133f23845d5fc4a72aaeea06fdfe13cb, type: 2}
+  - {fileID: 11400000, guid: de461b08c6f7d43c1b74d1e295c1a774, type: 2}
+  - {fileID: 11400000, guid: 8bfdc2b42d346451dae490eaf5242479, type: 2}
+  - {fileID: 11400000, guid: f35eb4468567a4ed89a9cc2b810eea9f, type: 2}
+  - {fileID: 11400000, guid: b05034a2ccd19435996970d8a435188a, type: 2}
+  - {fileID: 11400000, guid: 39344fcc654c14f40b48b5590c05b22d, type: 2}
   defaultPlayerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   defaultDemoPrefab: {fileID: 7866513120635556711, guid: f5a4dad8c9f104806989a095d5f710b4, type: 3}
   demoShowTime: 3
@@ -35,4 +62,4 @@ MonoBehaviour:
   aiPrefab: {fileID: 0}
   aiRampOffset: 14
   defaultFinishLine: {fileID: 3436351116473820346, guid: 92724c4b9b5f34ba6ae35951d32acb5b, type: 3}
-  loopFromLevel: 2
+  loopFromLevel: 4

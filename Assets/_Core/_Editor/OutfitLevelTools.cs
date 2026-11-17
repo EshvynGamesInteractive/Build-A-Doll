@@ -49,21 +49,29 @@ namespace Game.EditorTools
         }
 
         [MenuItem("CONTEXT/LevelData/Fill Gate Items From Outfit")]
-        private static void FillGates(MenuCommand command)
+        private static void FillGates(MenuCommand command) => FillGateItems((LevelData)command.context, true);
+
+        /// <summary>The variant's parts in the order they're offered along the track.</summary>
+        internal static List<OutfitItem> OrderedParts(OutfitVariant variant) =>
+            variant.AllParts.Where(p => p != null).OrderBy(p => System.Array.IndexOf(SlotOrder, p.Slot)).ToList();
+
+        /// <summary>Fills the level's gate entries with its outfit's parts plus decoys. Returns the summary.</summary>
+        internal static string FillGateItems(LevelData level, bool showDialog)
         {
-            var level = (LevelData)command.context;
             var variant = level.Outfit;
             if (variant == null)
             {
-                EditorUtility.DisplayDialog("Fill Gates", "Set this level's Outfit (or a Target Look with a Variant) first.", "OK");
-                return;
+                const string noOutfit = "Set this level's Outfit (or a Target Look with a Variant) first.";
+                if (showDialog)
+                    EditorUtility.DisplayDialog("Fill Gates", noOutfit, "OK");
+                return noOutfit;
             }
 
             var catalog = AssetDatabase.LoadAssetAtPath<OutfitCatalog>(OutfitImporter.CatalogPath);
             if (catalog == null)
                 catalog = EditorPaths.FindAsset<OutfitCatalog>();
 
-            var parts = variant.AllParts.OrderBy(p => System.Array.IndexOf(SlotOrder, p.Slot)).ToList();
+            var parts = OrderedParts(variant);
             var random = new System.Random();
             var ringPair = FindHurdlePrefab("RingPair");
             var gatePair = FindHurdlePrefab("GatePair");
@@ -126,7 +134,9 @@ namespace Game.EditorTools
                 message += "\n\nNo Outfit Catalog found, so gates have no decoys. Run Build A Doll > Outfits > Import Outfits From Doll FBX.";
 
             Debug.Log(message, level);
-            EditorUtility.DisplayDialog("Fill Gates", message, "OK");
+            if (showDialog)
+                EditorUtility.DisplayDialog("Fill Gates", message, "OK");
+            return message;
         }
 
         // Wrong choices for the same slot from other outfits; Top and Dress stand in for each other.

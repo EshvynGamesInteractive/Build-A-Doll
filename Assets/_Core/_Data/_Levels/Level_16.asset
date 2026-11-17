@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
+  m_Name: Level_16
+  m_EditorClassIdentifier: 
+  displayName: Neon City
+  environmentPrefab: {fileID: 0}
+  finishDistance: 188
+  finishLinePrefab: {fileID: 0}
+  playerPrefab: {fileID: 0}
+  outfit: {fileID: 11400000, guid: 91b5eb8f2664f4eb5a5981e95c003752, type: 2}
+  outfitPassPercent: 66
+  outfitStarPercents: 420000004200000064000000
+  targetLook: {fileID: 0}
+  hasAiOpponent: 1
+  aiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
+  startingOutfit:
+  - {fileID: 11400000, guid: 832b10d8c20e04a8abb729a67a9ac22e, type: 2}
+  - {fileID: 11400000, guid: e979a7ae83ca6413c917f29e1aafabdc, type: 2}
+  entries:
+  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
+    distance: 12
+    lateral: 0
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
+    distance: 37
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: b5f79bd04b4ed4de09bc8290e8a8fb31, type: 2}
+    - {fileID: 11400000, guid: 686da91a95ea54183a1d74bf7e47474f, type: 2}
+    coinGates: []
+  - prefab: {fileID: 3941991968021626027, guid: 9e21c8976fe8649c3aa142e80d6001e7, type: 3}
+    distance: 56
+    lateral: 0
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
+    distance: 61
+    lateral: 0
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
+    distance: 81
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: c6db4f9943e3d48fd9423f7c90ea5abe, type: 2}
+    - {fileID: 11400000, guid: 80ce1d12597694ebd9f1bc171ad478bd, type: 2}
+    coinGates: []
+  - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
+    distance: 100
+    lateral: 1.2
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 123
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: 37037f13c198e44d09c6842b39bb14ec, type: 2}
+    - {fileID: 11400000, guid: 29ab57521b9c843fda16dbfc83310214, type: 2}
+    coinGates: []
+  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
+    distance: 142
+    lateral: -1.2
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
+    distance: 142
+    lateral: 1.2
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
+    distance: 156
+    lateral: 0
+    gateItems: []
+    coinGates: []
+  scoreToPass: 1
+  starScores: 01000000080000000f000000
+  completionCoins: 90

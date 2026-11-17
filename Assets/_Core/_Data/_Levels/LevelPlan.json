@@ -1,0 +1,989 @@
+{
+ "version": 1,
+ "readme": "Build A Doll level plan. Edit, then run Build A Doll > Levels > Import Level Plan. Sections: a chunk id, 'part' (GatePair), 'part:moving' (GatePair_Moving), 'part:single' (GateSingle, no decoy), or 'coin:A,B' (CoinGatePair; right gate first; x2 +20 -10 /2). One 'part' per outfit part; parts are filled in slot order Hair, Dress, Top, Bottom, Shoes, Hat, Glasses, HandItem, Bag, Socks. Hair/accessory parts always become RingPair.",
+ "startDistance": 12,
+ "finishRunway": 20,
+ "partLength": 8,
+ "coinGateLength": 8,
+ "defaultAllowMisses": 1,
+ "loopFromLevel": 4,
+ "startingVariant": "Casual_V01",
+ "aiProfiles": [
+  {
+   "name": "AiProfile_Easy",
+   "gateAccuracy": 0.5,
+   "obstacleSkill": 0.55,
+   "steerSpeed": 4,
+   "gateLookAhead": 9,
+   "startDelay": 0.6
+  },
+  {
+   "name": "AiProfile_Normal",
+   "gateAccuracy": 0.7,
+   "obstacleSkill": 0.8,
+   "steerSpeed": 5,
+   "gateLookAhead": 12,
+   "startDelay": 0.3
+  },
+  {
+   "name": "AiProfile_Hard",
+   "gateAccuracy": 0.85,
+   "obstacleSkill": 0.9,
+   "steerSpeed": 6,
+   "gateLookAhead": 14,
+   "startDelay": 0.15
+  },
+  {
+   "name": "AiProfile_Expert",
+   "gateAccuracy": 0.95,
+   "obstacleSkill": 0.97,
+   "steerSpeed": 7,
+   "gateLookAhead": 16,
+   "startDelay": 0.0
+  }
+ ],
+ "chunks": [
+  {
+   "id": "coins_line",
+   "length": 12,
+   "note": "Warm-up coins, centre lane.",
+   "items": [
+    {
+     "prefab": "Coins_Line",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "coins_line_l",
+   "length": 12,
+   "note": "",
+   "items": [
+    {
+     "prefab": "Coins_Line",
+     "offset": 0,
+     "lateral": -1.2
+    }
+   ]
+  },
+  {
+   "id": "coins_line_r",
+   "length": 12,
+   "note": "",
+   "items": [
+    {
+     "prefab": "Coins_Line",
+     "offset": 0,
+     "lateral": 1.2
+    }
+   ]
+  },
+  {
+   "id": "coins_wave",
+   "length": 14,
+   "note": "Weaving coins: teaches steering.",
+   "items": [
+    {
+     "prefab": "Coins_Wave",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "coin_bonanza",
+   "length": 26,
+   "note": "Reward stretch, no danger. Use after hard sections and before the finish.",
+   "items": [
+    {
+     "prefab": "Coins_Wave",
+     "offset": 0,
+     "lateral": -1.2
+    },
+    {
+     "prefab": "Coins_Line",
+     "offset": 0,
+     "lateral": 1.2
+    },
+    {
+     "prefab": "Coins_Wave",
+     "offset": 14,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "jump_wall",
+   "length": 14,
+   "note": "Full-width wall: swipe up. Coins just after the landing reward a clean jump.",
+   "items": [
+    {
+     "prefab": "Obstacle_JumpWall",
+     "offset": 0,
+     "lateral": 0
+    },
+    {
+     "prefab": "Coins_Line",
+     "offset": 5,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "slide_bar",
+   "length": 12,
+   "note": "High bar: swipe down.",
+   "items": [
+    {
+     "prefab": "Obstacle_SlideBar",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "jump_slide",
+   "length": 22,
+   "note": "Jump then slide, ~1.7 s apart at speed 6.",
+   "items": [
+    {
+     "prefab": "Obstacle_JumpWall",
+     "offset": 0,
+     "lateral": 0
+    },
+    {
+     "prefab": "Obstacle_SlideBar",
+     "offset": 10,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "slide_jump",
+   "length": 22,
+   "note": "Slide then jump.",
+   "items": [
+    {
+     "prefab": "Obstacle_SlideBar",
+     "offset": 0,
+     "lateral": 0
+    },
+    {
+     "prefab": "Obstacle_JumpWall",
+     "offset": 10,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "wide_mud",
+   "length": 12,
+   "note": "Track-wide mud: jump it or stumble.",
+   "items": [
+    {
+     "prefab": "Penalty_WideMud",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "mud_left",
+   "length": 12,
+   "note": "Mud left, coins pull you right.",
+   "items": [
+    {
+     "prefab": "Penalty_Mud",
+     "offset": 0,
+     "lateral": -1.2
+    },
+    {
+     "prefab": "Coins_Line",
+     "offset": -2,
+     "lateral": 1.2
+    }
+   ]
+  },
+  {
+   "id": "mud_right",
+   "length": 12,
+   "note": "",
+   "items": [
+    {
+     "prefab": "Penalty_Mud",
+     "offset": 0,
+     "lateral": 1.2
+    },
+    {
+     "prefab": "Coins_Line",
+     "offset": -2,
+     "lateral": -1.2
+    }
+   ]
+  },
+  {
+   "id": "mud_slalom",
+   "length": 24,
+   "note": "Alternating mud: steer left-right-left.",
+   "items": [
+    {
+     "prefab": "Penalty_Mud",
+     "offset": 0,
+     "lateral": -1.2
+    },
+    {
+     "prefab": "Penalty_Mud",
+     "offset": 8,
+     "lateral": 1.2
+    },
+    {
+     "prefab": "Penalty_Mud",
+     "offset": 16,
+     "lateral": -1.2
+    },
+    {
+     "prefab": "Coins_Line",
+     "offset": 2,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "scissors_one",
+   "length": 12,
+   "note": "Scissors take off the DRESS. Place right after a dress gate to threaten it.",
+   "items": [
+    {
+     "prefab": "Penalty_Scissors",
+     "offset": 0,
+     "lateral": 0
+    },
+    {
+     "prefab": "Coins_Line",
+     "offset": -2,
+     "lateral": -1.2
+    }
+   ]
+  },
+  {
+   "id": "scissors_gauntlet",
+   "length": 24,
+   "note": "Three scissors, one safe line through.",
+   "items": [
+    {
+     "prefab": "Penalty_Scissors",
+     "offset": 0,
+     "lateral": -1.2
+    },
+    {
+     "prefab": "Penalty_Scissors",
+     "offset": 8,
+     "lateral": 1.2
+    },
+    {
+     "prefab": "Penalty_Scissors",
+     "offset": 16,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "trap_combo",
+   "length": 20,
+   "note": "Only the centre is safe, then jump. Late-game only.",
+   "items": [
+    {
+     "prefab": "Penalty_Mud",
+     "offset": 0,
+     "lateral": -1.2
+    },
+    {
+     "prefab": "Penalty_Scissors",
+     "offset": 0,
+     "lateral": 1.2
+    },
+    {
+     "prefab": "Obstacle_JumpWall",
+     "offset": 9,
+     "lateral": 0
+    }
+   ]
+  }
+ ],
+ "levels": [
+  {
+   "id": "Level_01",
+   "name": "First Steps",
+   "outfit": "Date_V01",
+   "ai": "AiProfile_Easy",
+   "gap": 12,
+   "completionCoins": 50,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "coins_wave",
+    "part:single",
+    "coins_line_r",
+    "part"
+   ],
+   "note": "Tutorial: steer only. Hair ring, free dress gate, shoes gate."
+  },
+  {
+   "id": "Level_02",
+   "name": "Hop It",
+   "outfit": "Sport_2_V01",
+   "ai": "AiProfile_Easy",
+   "gap": 12,
+   "completionCoins": 50,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_wall",
+    "part",
+    "coins_wave",
+    "jump_wall",
+    "part"
+   ],
+   "note": "Teaches jump. Top, Bottom, Shoes."
+  },
+  {
+   "id": "Level_03",
+   "name": "Duck & Dash",
+   "outfit": "Basics_V01",
+   "ai": "AiProfile_Easy",
+   "gap": 12,
+   "completionCoins": 50,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "slide_bar",
+    "part",
+    "mud_left",
+    "coins_wave",
+    "part",
+    "slide_bar"
+   ],
+   "note": "Teaches slide and mud. Hair, Top, Bottom."
+  },
+  {
+   "id": "Level_04",
+   "name": "Office Hours",
+   "outfit": "Business_V01",
+   "ai": "AiProfile_Easy",
+   "gap": 11,
+   "completionCoins": 60,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "mud_slalom",
+    "part",
+    "coin:x2,-10",
+    "part:moving",
+    "jump_wall",
+    "part"
+   ],
+   "note": "First coin gate and moving gate (Bottom)."
+  },
+  {
+   "id": "Level_05",
+   "name": "Date Night",
+   "outfit": "Date_V02",
+   "ai": "AiProfile_Normal",
+   "gap": 11,
+   "completionCoins": 120,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "jump_wall",
+    "part",
+    "scissors_one",
+    "coin:+20,/2",
+    "part:moving",
+    "wide_mud",
+    "coin_bonanza"
+   ],
+   "note": "SHOWCASE. Scissors introduced right after the dress gate. Moving Shoes gate."
+  },
+  {
+   "id": "Level_06",
+   "name": "Silk Road",
+   "outfit": "Cheongsam_V01",
+   "ai": "AiProfile_Easy",
+   "gap": 12,
+   "completionCoins": 60,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "mud_right",
+    "part",
+    "coins_line",
+    "part",
+    "coin_bonanza"
+   ],
+   "note": "Breather after the showcase."
+  },
+  {
+   "id": "Level_07",
+   "name": "Campus Run",
+   "outfit": "Student_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 11,
+   "completionCoins": 70,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "slide_bar",
+    "part",
+    "coin:x2,-15",
+    "part:moving",
+    "jump_slide",
+    "part"
+   ],
+   "note": "First jump+slide combo. Moving Bottom."
+  },
+  {
+   "id": "Level_08",
+   "name": "Bunny Hop",
+   "outfit": "Bunny_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 11,
+   "completionCoins": 70,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_wall",
+    "part",
+    "scissors_one",
+    "part",
+    "wide_mud",
+    "part",
+    "coins_wave"
+   ],
+   "note": "Dress then scissors. Hat ring last."
+  },
+  {
+   "id": "Level_09",
+   "name": "Weekend Chill",
+   "outfit": "Citizen_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 10,
+   "completionCoins": 75,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "mud_slalom",
+    "part:moving",
+    "jump_wall",
+    "part",
+    "coin:x3,-20",
+    "part",
+    "slide_bar"
+   ],
+   "note": "Moving Top. (Citizen instead of Casual: Casual is the starting outfit.)"
+  },
+  {
+   "id": "Level_10",
+   "name": "On Duty",
+   "outfit": "Police_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 10,
+   "completionCoins": 150,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_slide",
+    "part",
+    "mud_slalom",
+    "part:moving",
+    "coin:x2,-10",
+    "part",
+    "scissors_gauntlet",
+    "part",
+    "coin_bonanza"
+   ],
+   "note": "SHOWCASE. First 5-part look. Moving Bottom. Hat ring last."
+  },
+  {
+   "id": "Level_11",
+   "name": "Cherry Blossom",
+   "outfit": "Kimono_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 11,
+   "completionCoins": 80,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "slide_bar",
+    "part",
+    "coins_line_l",
+    "part:moving",
+    "coin_bonanza"
+   ],
+   "note": "Breather. Moving Shoes."
+  },
+  {
+   "id": "Level_12",
+   "name": "Hero Time",
+   "outfit": "Heroine_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 9,
+   "completionCoins": 85,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "slide_jump",
+    "part:moving",
+    "scissors_one",
+    "part",
+    "wide_mud",
+    "part",
+    "coin:x2,-20"
+   ],
+   "note": "Moving Dress straight into scissors. Hand item ring last."
+  },
+  {
+   "id": "Level_13",
+   "name": "Night Shift",
+   "outfit": "Nurse_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 9,
+   "completionCoins": 85,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "mud_slalom",
+    "part",
+    "scissors_gauntlet",
+    "part:moving",
+    "jump_wall",
+    "part",
+    "coins_wave"
+   ],
+   "note": "Protect the dress through the gauntlet. Moving Shoes."
+  },
+  {
+   "id": "Level_14",
+   "name": "Into the Woods",
+   "outfit": "Forest_Fairy_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 9,
+   "completionCoins": 90,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "jump_slide",
+    "part:moving",
+    "trap_combo",
+    "part",
+    "coin:x3,-25",
+    "part:moving",
+    "slide_bar"
+   ],
+   "note": "First trap combo. Moving Top and Shoes."
+  },
+  {
+   "id": "Level_15",
+   "name": "Fairest of All",
+   "outfit": "Snow_White_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 9,
+   "completionCoins": 180,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_wall",
+    "part:moving",
+    "mud_slalom",
+    "part",
+    "coin:x2,-15",
+    "slide_jump",
+    "part",
+    "scissors_gauntlet",
+    "part",
+    "coin_bonanza"
+   ],
+   "note": "SHOWCASE. First Hard AI. Moving Top."
+  },
+  {
+   "id": "Level_16",
+   "name": "Neon City",
+   "outfit": "Futuristic_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 11,
+   "completionCoins": 90,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "jump_wall",
+    "part:moving",
+    "coins_line_r",
+    "part",
+    "coin_bonanza"
+   ],
+   "note": "Breather. Moving Dress."
+  },
+  {
+   "id": "Level_17",
+   "name": "Cold Blooded",
+   "outfit": "Killer_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 9,
+   "completionCoins": 95,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "trap_combo",
+    "part",
+    "slide_bar",
+    "part:moving",
+    "coin:x2,-20",
+    "part",
+    "jump_slide",
+    "part"
+   ],
+   "note": "Glasses ring last. Moving Bottom."
+  },
+  {
+   "id": "Level_18",
+   "name": "Royal Ball",
+   "outfit": "Disney_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 9,
+   "completionCoins": 95,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_wall",
+    "part",
+    "scissors_gauntlet",
+    "part:moving",
+    "wide_mud",
+    "part",
+    "coin:x3,-30"
+   ],
+   "note": "Dress through the gauntlet. Moving Shoes."
+  },
+  {
+   "id": "Level_19",
+   "name": "Rainy Day",
+   "outfit": "Rain_V03",
+   "ai": "AiProfile_Hard",
+   "gap": 8,
+   "completionCoins": 100,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "mud_slalom",
+    "part:moving",
+    "slide_jump",
+    "part:moving",
+    "coin:x2,-15",
+    "part",
+    "trap_combo",
+    "part"
+   ],
+   "note": "Back-to-back moving Top and Bottom."
+  },
+  {
+   "id": "Level_20",
+   "name": "Maid Cafe",
+   "outfit": "Maid_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 8,
+   "completionCoins": 200,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_slide",
+    "part",
+    "scissors_gauntlet",
+    "part:moving",
+    "mud_slalom",
+    "part",
+    "coin:x2,-20",
+    "part",
+    "wide_mud",
+    "coin_bonanza"
+   ],
+   "note": "SHOWCASE. Socks gate last. Moving Shoes."
+  },
+  {
+   "id": "Level_21",
+   "name": "Jump Into It",
+   "outfit": "Jumpsuit_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 10,
+   "completionCoins": 100,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "slide_bar",
+    "part",
+    "coins_line_l",
+    "part:moving",
+    "coin_bonanza"
+   ],
+   "note": "Breather. Moving Shoes."
+  },
+  {
+   "id": "Level_22",
+   "name": "Class President",
+   "outfit": "Uniform_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 8,
+   "completionCoins": 110,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "trap_combo",
+    "part:moving",
+    "jump_slide",
+    "part",
+    "coin:x2,-25",
+    "part:moving",
+    "scissors_gauntlet",
+    "part"
+   ],
+   "note": "Moving Top and Shoes. Glasses ring last."
+  },
+  {
+   "id": "Level_23",
+   "name": "Beach Day",
+   "outfit": "Bikini_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 8,
+   "completionCoins": 110,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "wide_mud",
+    "part",
+    "mud_slalom",
+    "part:moving",
+    "slide_jump",
+    "part",
+    "coin:x3,-30",
+    "part",
+    "trap_combo"
+   ],
+   "note": "Moving Bottom. Hat ring last."
+  },
+  {
+   "id": "Level_24",
+   "name": "Strings Attached",
+   "outfit": "Puppet_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 8,
+   "completionCoins": 120,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_slide",
+    "part:moving",
+    "scissors_gauntlet",
+    "part:moving",
+    "trap_combo",
+    "part",
+    "coin:x2,-20",
+    "part",
+    "slide_bar"
+   ],
+   "note": "Moving Top and Bottom. Socks gate last."
+  },
+  {
+   "id": "Level_25",
+   "name": "Midnight Magic",
+   "outfit": "Cinderella_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 7,
+   "completionCoins": 250,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "slide_jump",
+    "part:moving",
+    "mud_slalom",
+    "part",
+    "scissors_gauntlet",
+    "part:moving",
+    "coin:x2,-30",
+    "trap_combo",
+    "part",
+    "coin_bonanza"
+   ],
+   "note": "SHOWCASE. Moving Top and Shoes."
+  },
+  {
+   "id": "Level_26",
+   "name": "Game On",
+   "outfit": "Squid_V01",
+   "ai": "AiProfile_Normal",
+   "gap": 10,
+   "completionCoins": 110,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "jump_wall",
+    "part",
+    "coins_line_r",
+    "part:moving",
+    "coin_bonanza",
+    "part"
+   ],
+   "note": "Breather. Moving Bottom."
+  },
+  {
+   "id": "Level_27",
+   "name": "Snow Day",
+   "outfit": "Winter_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 7,
+   "completionCoins": 130,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "trap_combo",
+    "part:moving",
+    "slide_jump",
+    "part:moving",
+    "wide_mud",
+    "part",
+    "coin:x3,-40",
+    "part",
+    "jump_slide"
+   ],
+   "note": "Moving Top and Bottom."
+  },
+  {
+   "id": "Level_28",
+   "name": "Match Point",
+   "outfit": "Tennis_V01",
+   "ai": "AiProfile_Hard",
+   "gap": 7,
+   "completionCoins": 140,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_slide",
+    "part:moving",
+    "mud_slalom",
+    "part",
+    "scissors_gauntlet",
+    "part:moving",
+    "coin:x2,-25",
+    "part",
+    "trap_combo",
+    "part"
+   ],
+   "note": "First 6-part look. Moving Top and Shoes."
+  },
+  {
+   "id": "Level_29",
+   "name": "Slam Dunk",
+   "outfit": "Basketball_V01",
+   "ai": "AiProfile_Expert",
+   "gap": 7,
+   "completionCoins": 150,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_wave",
+    "part",
+    "slide_jump",
+    "part:moving",
+    "trap_combo",
+    "part:moving",
+    "jump_wall",
+    "part",
+    "coin:x3,-40",
+    "part",
+    "scissors_gauntlet",
+    "part"
+   ],
+   "note": "6 parts vs Expert AI. Moving Top and Bottom."
+  },
+  {
+   "id": "Level_30",
+   "name": "Queen of the Runway",
+   "outfit": "Princess_V01",
+   "ai": "AiProfile_Expert",
+   "gap": 7,
+   "completionCoins": 300,
+   "allowMisses": -1,
+   "hasAiOpponent": true,
+   "sections": [
+    "coins_line",
+    "part",
+    "jump_slide",
+    "part:moving",
+    "scissors_gauntlet",
+    "part:moving",
+    "trap_combo",
+    "part:moving",
+    "coin:x2,-50",
+    "slide_jump",
+    "part",
+    "wide_mud",
+    "coin_bonanza"
+   ],
+   "note": "FINALE. Three moving gates in a row (Top, Bottom, Shoes)."
+  }
+ ]
+}
