@@ -107,6 +107,11 @@ namespace Game.Hurdles
 
             if (activeVisual != null && (!HasChoiceVisuals || (activeVisual != redVisual && activeVisual != greenVisual)))
                 activeVisual.SetActive(!IsUsed);
+
+            OnVisualRefreshed();
         }
+
+        /// <summary>Called after the visuals were switched (used, reset, red/green changed).</summary>
+        protected virtual void OnVisualRefreshed() { }
     }
 }

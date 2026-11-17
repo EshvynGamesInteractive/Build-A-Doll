@@ -43,9 +43,12 @@ Gates show the item's Icon as a 2D sprite at the preview anchor of the red/green
 1. On the LevelData, set **Outfit to complete** to a variant (e.g. `Police_V02`).
    Leave Target Look empty: the level builds its target from the variant, using
    Outfit Pass Percent / Outfit Star Percents. (Or point a Target Look's **Variant** at it.)
-2. Add gate entries (GatePair, GateSingle...) along the track, one per part of the outfit.
-3. Right-click the LevelData header > **Fill Gate Items From Outfit**: each gate gets the next
-   part (hair, dress/shirt, pants, shoes, hat, glasses, hand item...) and the other gate a
+2. Add gate entries along the track, one per part of the outfit. **Hair and accessories**
+   (hair, hat, glasses, hand item, bag, accessory, wings) are picked from **RingPair** (floor
+   rings, icon floating above); **clothes** (shirt, pants, dress, shoes, socks) from **GatePair**
+   (or GatePair_Moving).
+3. Right-click the LevelData header > **Fill Gate Items From Outfit**: switches each entry to
+   RingPair or GatePair by the part's slot, and each one gets the next part (hair, dress/shirt, pants, shoes, hat, glasses, hand item...) and the other gate a
    decoy from another outfit for the same slot, on a random side.
 4. Passing the level marks the variant completed (`OutfitProgress.IsCompleted(variant)`,
    event `GameplayEvents.OutfitCompleted`).

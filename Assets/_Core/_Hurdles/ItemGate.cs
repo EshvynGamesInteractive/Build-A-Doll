@@ -34,6 +34,16 @@ namespace Game.Hurdles
 
         [SerializeField] private int iconSortingOrder = 10;
 
+        [Tooltip("Used when there's no preview anchor (e.g. floor rings): the icon stands upright at this offset from the gate.")]
+        [SerializeField] private Vector3 iconOffset = Vector3.zero;
+
+        [Tooltip("How far the icon bobs up and down, in world units. 0 = still.")]
+        [SerializeField, Min(0f)] private float iconBob;
+
+        [SerializeField, Min(0f)] private float iconBobSpeed = 2.5f;
+
+        private bool _iconOnSelf;
+
         private SpriteRenderer _icon;
         private IReadOnlyList<OutfitItem> _targetItems;
         private bool _started;
@@ -103,8 +113,13 @@ namespace Game.Hurdles
             }
 
             var anchor = ShowsGreen && greenPreviewAnchor != null ? greenPreviewAnchor : previewAnchor;
-            if (!Application.isPlaying || anchor == null)
+            if (!Application.isPlaying)
                 return;
+
+            // Floor rings have no anchor: the icon stands on this object, above the ring.
+            _iconOnSelf = anchor == null;
+            if (_iconOnSelf)
+                anchor = transform;
 
             if (sprite == null)
             {
@@ -126,15 +141,31 @@ namespace Game.Hurdles
 
             // Follows the anchor of whichever visual (red or green) is showing.
             _icon.transform.SetParent(anchor, false);
-            _icon.transform.localPosition = Vector3.zero;
+            _icon.transform.localPosition = _iconOnSelf ? iconOffset : Vector3.zero;
             _icon.transform.localRotation = Quaternion.identity;
-            _icon.gameObject.SetActive(true);
+            _icon.gameObject.SetActive(!(_iconOnSelf && IsUsed));
             _icon.sprite = sprite;
 
             var size = sprite.bounds.size;
             var largest = Mathf.Max(size.x, size.y);
             var scale = largest > 0f ? iconSize / largest : 1f;
             _icon.transform.localScale = new Vector3(scale, scale, 1f);
+        }
+
+        // An icon under the red/green visual hides with it; one on this object is hidden here.
+        protected override void OnVisualRefreshed()
+        {
+            if (_icon != null && _iconOnSelf)
+                _icon.gameObject.SetActive(!IsUsed && _icon.sprite != null);
+        }
+
+        private void Update()
+        {
+            if (iconBob <= 0f || _icon == null || !_icon.gameObject.activeInHierarchy)
+                return;
+
+            var basePosition = _iconOnSelf ? iconOffset : Vector3.zero;
+            _icon.transform.localPosition = basePosition + Vector3.up * (Mathf.Sin(Time.time * iconBobSpeed) * iconBob);
         }
 
         private void OnValidate()

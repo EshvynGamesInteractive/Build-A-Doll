@@ -10,9 +10,10 @@ using UnityEngine;
 namespace Game.EditorTools
 {
     /// <summary>
-    /// Right-click a LevelData > "Fill Gate Items From Outfit": walks the level's gate entries in
-    /// order and gives each one the next part of the level's outfit, with decoys from other outfits
-    /// for the same slot on the other gates (correct side picked at random).
+    /// Right-click a LevelData > "Fill Gate Items From Outfit": walks the level's gate/ring entries
+    /// in order and gives each one the next part of the level's outfit, with decoys from other
+    /// outfits for the same slot (correct side picked at random). Hair and accessories are put on
+    /// RingPair, clothes (shirt, pants, dress, shoes, socks) on GatePair.
     /// </summary>
     public static class OutfitLevelTools
     {
@@ -23,6 +24,29 @@ namespace Game.EditorTools
             OutfitSlot.Hat, OutfitSlot.Glasses, OutfitSlot.HandItem, OutfitSlot.Bag, OutfitSlot.Socks,
             OutfitSlot.Wings, OutfitSlot.Accessory, OutfitSlot.Makeup
         };
+
+        // Small things are picked from floor rings; clothes from gates.
+        private static readonly OutfitSlot[] RingSlots =
+        {
+            OutfitSlot.Hair, OutfitSlot.Hat, OutfitSlot.Glasses, OutfitSlot.HandItem,
+            OutfitSlot.Bag, OutfitSlot.Accessory, OutfitSlot.Wings, OutfitSlot.Makeup
+        };
+
+        public static bool UsesRing(OutfitSlot slot) => System.Array.IndexOf(RingSlots, slot) >= 0;
+
+        private static bool IsRing(GameObject prefab) => prefab != null && prefab.name.Contains("Ring");
+
+        private static GameObject FindHurdlePrefab(string prefabName)
+        {
+            foreach (var guid in AssetDatabase.FindAssets($"{prefabName} t:Prefab", new[] { EditorPaths.HurdlePrefabs }))
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                if (System.IO.Path.GetFileNameWithoutExtension(path) == prefabName)
+                    return AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            }
+
+            return null;
+        }
 
         [MenuItem("CONTEXT/LevelData/Fill Gate Items From Outfit")]
         private static void FillGates(MenuCommand command)
@@ -41,6 +65,9 @@ namespace Game.EditorTools
 
             var parts = variant.AllParts.OrderBy(p => System.Array.IndexOf(SlotOrder, p.Slot)).ToList();
             var random = new System.Random();
+            var ringPair = FindHurdlePrefab("RingPair");
+            var gatePair = FindHurdlePrefab("GatePair");
+            var swapped = 0;
             var so = new SerializedObject(level);
             var entries = so.FindProperty("entries");
             var next = 0;
@@ -59,6 +86,21 @@ namespace Game.EditorTools
                     continue; // more gates than parts: keep what's there
 
                 var correct = parts[next++];
+
+                // Hair and accessories go on a ring pair, clothes on a gate pair (moving gates stay moving).
+                var prefabProp = entry.FindPropertyRelative("prefab");
+                if (UsesRing(correct.Slot) && !IsRing(prefab) && ringPair != null)
+                {
+                    prefabProp.objectReferenceValue = ringPair;
+                    gates = ringPair.GetComponentsInChildren<ItemGate>(true);
+                    swapped++;
+                }
+                else if (!UsesRing(correct.Slot) && IsRing(prefab) && gatePair != null)
+                {
+                    prefabProp.objectReferenceValue = gatePair;
+                    gates = gatePair.GetComponentsInChildren<ItemGate>(true);
+                    swapped++;
+                }
                 var decoys = PickDecoys(catalog, variant, correct, gates.Length - 1, random);
                 var correctIndex = random.Next(gates.Length);
 
@@ -75,6 +117,8 @@ namespace Game.EditorTools
             EditorUtility.SetDirty(level);
 
             var message = $"{level.name}: filled {Mathf.Min(gateEntries, parts.Count)} gates for '{variant.DisplayName}' ({parts.Count} parts).";
+            if (swapped > 0)
+                message += $"\n{swapped} entries switched between ring pair (hair, accessories) and gate pair (clothes).";
             if (gateEntries < parts.Count)
                 message += $"\n\nOnly {gateEntries} gate entries: add {parts.Count - gateEntries} more so every part can be picked " +
                            $"(missing: {string.Join(", ", parts.Skip(gateEntries).Select(p => p.Slot))}).";

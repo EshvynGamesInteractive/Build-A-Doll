@@ -77,6 +77,12 @@ MonoBehaviour:
   iconRenderer: {fileID: 0}
   previewAnchor: {fileID: 0}
   greenPreviewAnchor: {fileID: 0}
+  iconSize: 1.3
+  iconMaterial: {fileID: 0}
+  iconSortingOrder: 10
+  iconOffset: {x: 0, y: 0, z: 0}
+  iconBob: 0.12
+  iconBobSpeed: 2.5
   previewSize: 1
 --- !u!1 &5187526501295159265
 GameObject:
@@ -201,6 +207,12 @@ MonoBehaviour:
   iconRenderer: {fileID: 0}
   previewAnchor: {fileID: 0}
   greenPreviewAnchor: {fileID: 0}
+  iconSize: 1.3
+  iconMaterial: {fileID: 0}
+  iconSortingOrder: 10
+  iconOffset: {x: 0, y: 0, z: 0}
+  iconBob: 0.12
+  iconBobSpeed: 2.5
   previewSize: 1
 --- !u!1001 &1427917165526528791
 PrefabInstance:
