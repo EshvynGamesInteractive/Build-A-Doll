@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Rainy Day
   environmentPrefab: {fileID: 0}
-  finishDistance: 232
+  finishDistance: 236
   finishLinePrefab: {fileID: 0}
+  rampPrefab: {fileID: 8826979627748029712, guid: c1f9fee3407a84ce2ae0f48870845ddb, type: 3}
   playerPrefab: {fileID: 0}
   outfit: {fileID: 11400000, guid: 8a2e14643a4a74900bcb1449dd5b15c8, type: 2}
   outfitPassPercent: 80
@@ -24,67 +25,64 @@ MonoBehaviour:
   hasAiOpponent: 1
   aiProfile: {fileID: 11400000, guid: 660780bfe5970418998ef6ebbe1908a0, type: 2}
   startingOutfit:
-  - {fileID: 11400000, guid: 832b10d8c20e04a8abb729a67a9ac22e, type: 2}
-  - {fileID: 11400000, guid: e979a7ae83ca6413c917f29e1aafabdc, type: 2}
+  - {fileID: 11400000, guid: b5f79bd04b4ed4de09bc8290e8a8fb31, type: 2}
+  - {fileID: 11400000, guid: 5de59415d3d84417693b07aec5c60d82, type: 2}
+  - {fileID: 11400000, guid: 2a6d757d5327141f2807acec29d91b9a, type: 2}
+  - {fileID: 11400000, guid: a157d8f47896b47e684d6889d2801a38, type: 2}
   entries:
   - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
     distance: 12
     lateral: 0
     gateItems: []
     coinGates: []
-  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
+  - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
     distance: 34
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 433dd8a0c9b5d4ee0bd5f60fadd2a7a2, type: 2}
-    - {fileID: 11400000, guid: d00204a7ffeae41df9c92fb1e31ab475, type: 2}
+    - {fileID: 11400000, guid: fde7b26691908449189de8162efa7c17, type: 2}
+    - {fileID: 11400000, guid: fb154b7d05137427694ecf7506fc44a0, type: 2}
     coinGates: []
-  - prefab: {fileID: 858074213056708769, guid: 03ee667515f4347908b4a46ecd61003b, type: 3}
+  - prefab: {fileID: 7935422112549978861, guid: 5c134ae7be9bc49918fa0d9ce9ddc24b, type: 3}
     distance: 50
-    lateral: -1.2
-    gateItems: []
-    coinGates: []
-  - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
-    distance: 52
     lateral: 0
-    gateItems: []
-    coinGates: []
-  - prefab: {fileID: 858074213056708769, guid: 03ee667515f4347908b4a46ecd61003b, type: 3}
-    distance: 58
-    lateral: 1.2
-    gateItems: []
-    coinGates: []
-  - prefab: {fileID: 858074213056708769, guid: 03ee667515f4347908b4a46ecd61003b, type: 3}
-    distance: 66
-    lateral: -1.2
     gateItems: []
     coinGates: []
   - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
-    distance: 82
+    distance: 70
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: fb568f20399504030aefe8d06b393856, type: 2}
+    - {fileID: 11400000, guid: 1e884b4813e8d4920a220dbbd17c54c4, type: 2}
     - {fileID: 11400000, guid: 07061e704d18c462ca3f5daa8567c409, type: 2}
     coinGates: []
-  - prefab: {fileID: 1189894174054325172, guid: 8793cb3e3fd38469db68c571f3b8d850, type: 3}
-    distance: 98
+  - prefab: {fileID: 5687693529013232266, guid: 1ec4631dda2054b8289fd0a9659259bb, type: 3}
+    distance: 89
     lateral: 0
     gateItems: []
     coinGates: []
-  - prefab: {fileID: 3941991968021626027, guid: 9e21c8976fe8649c3aa142e80d6001e7, type: 3}
-    distance: 108
+  - prefab: {fileID: 5029123075355146430, guid: ba5c16328eeef49e5ab415e14927f281, type: 3}
+    distance: 95
     lateral: 0
     gateItems: []
     coinGates: []
-  - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
-    distance: 128
+  - prefab: {fileID: 3739534601094708000, guid: 5ae079eeda16441b8821450113dbff3b, type: 3}
+    distance: 101
+    lateral: 0
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 9197587632164261293, guid: 182f68fb8563e4e0481a1d39784494a6, type: 3}
+    distance: 107
+    lateral: 0
+    gateItems: []
+    coinGates: []
+  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
+    distance: 118
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 6f114ba69a0fd46b88bb8f74551696ae, type: 2}
-    - {fileID: 11400000, guid: fde7b26691908449189de8162efa7c17, type: 2}
+    - {fileID: 11400000, guid: d675f3f72eb4540c68b46ce642d37ff0, type: 2}
+    - {fileID: 11400000, guid: d00204a7ffeae41df9c92fb1e31ab475, type: 2}
     coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: 5d7a84aadf614dc587ae5f155045d5bc, type: 3}
-    distance: 144
+    distance: 134
     lateral: 0
     gateItems: []
     coinGates:
@@ -92,34 +90,29 @@ MonoBehaviour:
       amount: 2
     - operation: 1
       amount: 15
+  - prefab: {fileID: 644712195907245989, guid: 2b00bc0665816486ca0f0e3ab04b5ba4, type: 3}
+    distance: 150
+    lateral: 0
+    gateItems: []
+    coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
-    distance: 160
+    distance: 170
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: b20b4a4adb1414af28e56741ba46a0c2, type: 2}
-    - {fileID: 11400000, guid: 8b3c05b46ec414983a85b71c9aa6312c, type: 2}
+    - {fileID: 11400000, guid: 596c22745ff454aa2b2bcdaf35a7ca92, type: 2}
     coinGates: []
-  - prefab: {fileID: 858074213056708769, guid: 03ee667515f4347908b4a46ecd61003b, type: 3}
-    distance: 176
-    lateral: -1.2
-    gateItems: []
-    coinGates: []
-  - prefab: {fileID: 8992507098036388250, guid: d428d702ee8154ffa98376441a6a80f0, type: 3}
-    distance: 176
-    lateral: 1.2
-    gateItems: []
-    coinGates: []
-  - prefab: {fileID: 3941991968021626027, guid: 9e21c8976fe8649c3aa142e80d6001e7, type: 3}
-    distance: 185
+  - prefab: {fileID: 879550793050235980, guid: 14c0bcf7eb84c4fe4adae836951a505b, type: 3}
+    distance: 186
     lateral: 0
     gateItems: []
     coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
-    distance: 204
+    distance: 208
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 4bf9812f243b14e299c05fe1390d109c, type: 2}
-    - {fileID: 11400000, guid: 9494c5dc646df4f25b03669be5b8a7a9, type: 2}
+    - {fileID: 11400000, guid: 870bde2d663bc43e4bed6f5580aab711, type: 2}
     coinGates: []
   scoreToPass: 1
   starScores: 01000000080000000f000000

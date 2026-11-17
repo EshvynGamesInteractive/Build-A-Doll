@@ -265,6 +265,13 @@ MonoBehaviour:
   isSlidingParameter: IsSliding
   jumpParameter: Jump
   slideParameter: Slide
+  runAnimSpeedParameter: RunAnimSpeed
+  runClipSpeed: 4
+  minRunAnimSpeed: 0.5
+  maxRunAnimSpeed: 1.6
+  winParameter: Win
+  loseParameter: Lose
+  aiLoseParameter: LoseAlt
 --- !u!114 &7588100930215237292
 MonoBehaviour:
   m_ObjectHideFlags: 0

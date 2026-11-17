@@ -1,6 +1,6 @@
 {
- "version": 1,
- "readme": "Build A Doll level plan. Edit, then run Build A Doll > Levels > Import Level Plan. Sections: a chunk id, 'part' (GatePair), 'part:moving' (GatePair_Moving), 'part:single' (GateSingle, no decoy), or 'coin:A,B' (CoinGatePair; right gate first; x2 +20 -10 /2). One 'part' per outfit part; parts are filled in slot order Hair, Dress, Top, Bottom, Shoes, Hat, Glasses, HandItem, Bag, Socks. Hair/accessory parts always become RingPair.",
+ "version": 3,
+ "readme": "Build A Doll level plan. Build the kit first (Build A Doll > Hurdles > Build Hurdle Kit Prefabs), then run Build A Doll > Levels > Import Level Plan. Sections: a chunk id, 'part' (GatePair), 'part:moving' (GatePair_Moving), 'part:single' (GateSingle, no decoy) or 'coin:A,B' (CoinGatePair; right gate first; x2 +20 -10 /2). One 'part' per outfit part, filled in order: pants (or dress), shirt, hair, shoes, socks, hat, glasses, hand item, bag. Hair and accessories always become a RingPair. Lanes: track half width is 4, so laterals go from -4 to 4.",
  "startDistance": 12,
  "finishRunway": 20,
  "partLength": 8,
@@ -46,7 +46,7 @@
   {
    "id": "coins_line",
    "length": 12,
-   "note": "Warm-up coins, centre lane.",
+   "note": "Warm-up coins, centre.",
    "items": [
     {
      "prefab": "Coins_Line",
@@ -58,24 +58,24 @@
   {
    "id": "coins_line_l",
    "length": 12,
-   "note": "",
+   "note": "Coins on the left lane.",
    "items": [
     {
      "prefab": "Coins_Line",
      "offset": 0,
-     "lateral": -1.2
+     "lateral": -2.5
     }
    ]
   },
   {
    "id": "coins_line_r",
    "length": 12,
-   "note": "",
+   "note": "Coins on the right lane.",
    "items": [
     {
      "prefab": "Coins_Line",
      "offset": 0,
-     "lateral": 1.2
+     "lateral": 2.5
     }
    ]
   },
@@ -94,17 +94,17 @@
   {
    "id": "coin_bonanza",
    "length": 26,
-   "note": "Reward stretch, no danger. Use after hard sections and before the finish.",
+   "note": "Reward stretch, no danger.",
    "items": [
     {
      "prefab": "Coins_Wave",
      "offset": 0,
-     "lateral": -1.2
+     "lateral": -2.5
     },
     {
      "prefab": "Coins_Line",
      "offset": 0,
-     "lateral": 1.2
+     "lateral": 2.5
     },
     {
      "prefab": "Coins_Wave",
@@ -114,145 +114,527 @@
    ]
   },
   {
-   "id": "jump_wall",
-   "length": 14,
-   "note": "Full-width wall: swipe up. Coins just after the landing reward a clean jump.",
+   "id": "cones_slalom",
+   "length": 20,
+   "note": "Rows of cones block left, right, left: weave.",
    "items": [
     {
-     "prefab": "Obstacle_JumpWall",
+     "prefab": "Kit_Cone",
      "offset": 0,
-     "lateral": 0
+     "lateral": -3
     },
     {
-     "prefab": "Coins_Line",
+     "prefab": "Kit_Cone",
+     "offset": 0,
+     "lateral": -1.8
+    },
+    {
+     "prefab": "Kit_Cone",
+     "offset": 0,
+     "lateral": -0.6
+    },
+    {
+     "prefab": "Kit_Cone",
+     "offset": 8,
+     "lateral": 0.6
+    },
+    {
+     "prefab": "Kit_Cone",
+     "offset": 8,
+     "lateral": 1.8
+    },
+    {
+     "prefab": "Kit_Cone",
+     "offset": 8,
+     "lateral": 3
+    },
+    {
+     "prefab": "Kit_Cone",
+     "offset": 16,
+     "lateral": -3
+    },
+    {
+     "prefab": "Kit_Cone",
+     "offset": 16,
+     "lateral": -1.8
+    },
+    {
+     "prefab": "Kit_Cone",
+     "offset": 16,
+     "lateral": -0.6
+    }
+   ]
+  },
+  {
+   "id": "bollard_gate",
+   "length": 8,
+   "note": "Four bollards: wide gap in the middle, narrow ones at the sides.",
+   "items": [
+    {
+     "prefab": "Kit_Bollard",
+     "offset": 0,
+     "lateral": -3
+    },
+    {
+     "prefab": "Kit_Bollard",
+     "offset": 0,
+     "lateral": -1.5
+    },
+    {
+     "prefab": "Kit_Bollard",
+     "offset": 0,
+     "lateral": 1.5
+    },
+    {
+     "prefab": "Kit_Bollard",
+     "offset": 0,
+     "lateral": 3
+    }
+   ]
+  },
+  {
+   "id": "puddles",
+   "length": 14,
+   "note": "Puddles to steer round.",
+   "items": [
+    {
+     "prefab": "Kit_Puddle",
+     "offset": 0,
+     "lateral": -2.2
+    },
+    {
+     "prefab": "Kit_Puddle",
+     "offset": 5,
+     "lateral": 1.5
+    },
+    {
+     "prefab": "Kit_Puddle",
+     "offset": 10,
+     "lateral": -0.8
+    }
+   ]
+  },
+  {
+   "id": "slime_trays",
+   "length": 12,
+   "note": "Slime trays on both sides, middle is clear.",
+   "items": [
+    {
+     "prefab": "Kit_SlimeTray",
+     "offset": 0,
+     "lateral": -2.6
+    },
+    {
+     "prefab": "Kit_SlimeTray",
+     "offset": 0,
+     "lateral": 2.6
+    }
+   ]
+  },
+  {
+   "id": "brick_left",
+   "length": 12,
+   "note": "Brick wall on the left: pass right.",
+   "items": [
+    {
+     "prefab": "Kit_BrickWall",
+     "offset": 0,
+     "lateral": -1.45
+    }
+   ]
+  },
+  {
+   "id": "brick_right",
+   "length": 12,
+   "note": "Brick wall on the right: pass left.",
+   "items": [
+    {
+     "prefab": "Kit_BrickWall",
+     "offset": 0,
+     "lateral": 1.45
+    }
+   ]
+  },
+  {
+   "id": "brick_zigzag",
+   "length": 24,
+   "note": "Wall left then wall right.",
+   "items": [
+    {
+     "prefab": "Kit_BrickWall",
+     "offset": 0,
+     "lateral": -1.45
+    },
+    {
+     "prefab": "Kit_BrickWall",
+     "offset": 12,
+     "lateral": 1.45
+    }
+   ]
+  },
+  {
+   "id": "toy_walls",
+   "length": 14,
+   "note": "Toy walls at the sides (go middle), then one in the middle (go side).",
+   "items": [
+    {
+     "prefab": "Kit_ToyWall",
+     "offset": 0,
+     "lateral": -2.6
+    },
+    {
+     "prefab": "Kit_ToyWall",
+     "offset": 0,
+     "lateral": 2.6
+    },
+    {
+     "prefab": "Kit_ToyWall",
+     "offset": 8,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "fan_left",
+   "length": 14,
+   "note": "Spinning fan on the left half: pass right.",
+   "items": [
+    {
+     "prefab": "Kit_Fan",
+     "offset": 0,
+     "lateral": -1.95
+    }
+   ]
+  },
+  {
+   "id": "fan_right",
+   "length": 14,
+   "note": "Spinning fan on the right half: pass left.",
+   "items": [
+    {
+     "prefab": "Kit_Fan",
+     "offset": 0,
+     "lateral": 1.95
+    }
+   ]
+  },
+  {
+   "id": "roller_gate",
+   "length": 12,
+   "note": "Frame with spinning rollers: through the middle or round the outside.",
+   "items": [
+    {
+     "prefab": "Kit_RollerGate",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "hurdle_row",
+   "length": 10,
+   "note": "Row of low hurdles across the track: jump.",
+   "items": [
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": -2.7
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": -0.9
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": 0.9
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": 2.7
+    }
+   ]
+  },
+  {
+   "id": "hurdle_double",
+   "length": 20,
+   "note": "Two hurdle rows, 10 apart.",
+   "items": [
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": -2.7
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": -0.9
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": 0.9
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 0,
+     "lateral": 2.7
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 10,
+     "lateral": -2.7
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 10,
+     "lateral": -0.9
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 10,
+     "lateral": 0.9
+    },
+    {
+     "prefab": "Kit_Hurdle",
+     "offset": 10,
+     "lateral": 2.7
+    }
+   ]
+  },
+  {
+   "id": "low_blocks",
+   "length": 12,
+   "note": "Low blocks: jump or weave.",
+   "items": [
+    {
+     "prefab": "Kit_LowBlock",
+     "offset": 0,
+     "lateral": -2.5
+    },
+    {
+     "prefab": "Kit_LowBlock",
+     "offset": 0,
+     "lateral": 2.5
+    },
+    {
+     "prefab": "Kit_LowBlock",
+     "offset": 6,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "spinner_cross",
+   "length": 14,
+   "note": "Four-arm spinner in the middle: jump, or squeeze past at the edge.",
+   "items": [
+    {
+     "prefab": "Kit_Spinner_Cross",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "spinner_tri",
+   "length": 14,
+   "note": "Three-arm spinner: jump.",
+   "items": [
+    {
+     "prefab": "Kit_Spinner_Tri",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "spinner_bar",
+   "length": 12,
+   "note": "Spinning bar: jump.",
+   "items": [
+    {
+     "prefab": "Kit_Spinner_Bar",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "sweep_arms",
+   "length": 16,
+   "note": "Sweeping arms from each side, one after the other.",
+   "items": [
+    {
+     "prefab": "Kit_SweepArm_Long",
+     "offset": 0,
+     "lateral": -2.6
+    },
+    {
+     "prefab": "Kit_SweepArm_Short",
+     "offset": 8,
+     "lateral": 2.9
+    }
+   ]
+  },
+  {
+   "id": "paddles",
+   "length": 12,
+   "note": "Spinning paddles: jump.",
+   "items": [
+    {
+     "prefab": "Kit_Paddles",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "puncher_pair",
+   "length": 16,
+   "note": "Punching drums left then right.",
+   "items": [
+    {
+     "prefab": "Kit_Puncher",
+     "offset": 0,
+     "lateral": -2.4
+    },
+    {
+     "prefab": "Kit_Puncher",
+     "offset": 8,
+     "lateral": 2.4
+    }
+   ]
+  },
+  {
+   "id": "spike_roller",
+   "length": 12,
+   "note": "Spiked roller rolling across: jump it.",
+   "items": [
+    {
+     "prefab": "Kit_SpikeRoller",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "spike_rail_low",
+   "length": 12,
+   "note": "Low rail with a sliding spike on the left half: jump or go right.",
+   "items": [
+    {
+     "prefab": "Kit_SpikeRail_Low",
+     "offset": 0,
+     "lateral": -1.5
+    }
+   ]
+  },
+  {
+   "id": "spike_rail_wide",
+   "length": 12,
+   "note": "Knee-high rail across the whole track with a sliding spike: must jump.",
+   "items": [
+    {
+     "prefab": "Kit_SpikeRail_Wide",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "slide_gate",
+   "length": 12,
+   "note": "Roller at head height: slide under, or go round the outside.",
+   "items": [
+    {
+     "prefab": "Kit_SlideGate",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "slide_block",
+   "length": 12,
+   "note": "Block sliding across the track: time it.",
+   "items": [
+    {
+     "prefab": "Kit_SlideBlock",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "closing_doors",
+   "length": 12,
+   "note": "Two blocks closing in and opening: go through when open or at the edges.",
+   "items": [
+    {
+     "prefab": "Kit_ClosingDoors",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "closing_pillars",
+   "length": 12,
+   "note": "Spinning spiked pillars closing in.",
+   "items": [
+    {
+     "prefab": "Kit_ClosingPillars",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
+  },
+  {
+   "id": "pendulum_pair",
+   "length": 18,
+   "note": "Two swinging maces.",
+   "items": [
+    {
+     "prefab": "Kit_Pendulum",
+     "offset": 0,
+     "lateral": -1.5
+    },
+    {
+     "prefab": "Kit_Pendulum",
+     "offset": 9,
+     "lateral": 1.5
+    }
+   ]
+  },
+  {
+   "id": "crusher_row",
+   "length": 14,
+   "note": "Crushers going up and down, staggered: pass under while they're up.",
+   "items": [
+    {
+     "prefab": "Kit_Crusher",
+     "offset": 0,
+     "lateral": -2.5
+    },
+    {
+     "prefab": "Kit_Crusher",
      "offset": 5,
      "lateral": 0
-    }
-   ]
-  },
-  {
-   "id": "slide_bar",
-   "length": 12,
-   "note": "High bar: swipe down.",
-   "items": [
-    {
-     "prefab": "Obstacle_SlideBar",
-     "offset": 0,
-     "lateral": 0
-    }
-   ]
-  },
-  {
-   "id": "jump_slide",
-   "length": 22,
-   "note": "Jump then slide, ~1.7 s apart at speed 6.",
-   "items": [
-    {
-     "prefab": "Obstacle_JumpWall",
-     "offset": 0,
-     "lateral": 0
     },
     {
-     "prefab": "Obstacle_SlideBar",
+     "prefab": "Kit_Crusher",
      "offset": 10,
-     "lateral": 0
-    }
-   ]
-  },
-  {
-   "id": "slide_jump",
-   "length": 22,
-   "note": "Slide then jump.",
-   "items": [
-    {
-     "prefab": "Obstacle_SlideBar",
-     "offset": 0,
-     "lateral": 0
-    },
-    {
-     "prefab": "Obstacle_JumpWall",
-     "offset": 10,
-     "lateral": 0
-    }
-   ]
-  },
-  {
-   "id": "wide_mud",
-   "length": 12,
-   "note": "Track-wide mud: jump it or stumble.",
-   "items": [
-    {
-     "prefab": "Penalty_WideMud",
-     "offset": 0,
-     "lateral": 0
-    }
-   ]
-  },
-  {
-   "id": "mud_left",
-   "length": 12,
-   "note": "Mud left, coins pull you right.",
-   "items": [
-    {
-     "prefab": "Penalty_Mud",
-     "offset": 0,
-     "lateral": -1.2
-    },
-    {
-     "prefab": "Coins_Line",
-     "offset": -2,
-     "lateral": 1.2
-    }
-   ]
-  },
-  {
-   "id": "mud_right",
-   "length": 12,
-   "note": "",
-   "items": [
-    {
-     "prefab": "Penalty_Mud",
-     "offset": 0,
-     "lateral": 1.2
-    },
-    {
-     "prefab": "Coins_Line",
-     "offset": -2,
-     "lateral": -1.2
-    }
-   ]
-  },
-  {
-   "id": "mud_slalom",
-   "length": 24,
-   "note": "Alternating mud: steer left-right-left.",
-   "items": [
-    {
-     "prefab": "Penalty_Mud",
-     "offset": 0,
-     "lateral": -1.2
-    },
-    {
-     "prefab": "Penalty_Mud",
-     "offset": 8,
-     "lateral": 1.2
-    },
-    {
-     "prefab": "Penalty_Mud",
-     "offset": 16,
-     "lateral": -1.2
-    },
-    {
-     "prefab": "Coins_Line",
-     "offset": 2,
-     "lateral": 0
+     "lateral": 2.5
     }
    ]
   },
   {
    "id": "scissors_one",
    "length": 12,
-   "note": "Scissors take off the DRESS. Place right after a dress gate to threaten it.",
+   "note": "Scissors cut the DRESS: right after a dress gate.",
    "items": [
     {
      "prefab": "Penalty_Scissors",
@@ -262,50 +644,28 @@
     {
      "prefab": "Coins_Line",
      "offset": -2,
-     "lateral": -1.2
+     "lateral": -2.5
     }
    ]
   },
   {
    "id": "scissors_gauntlet",
    "length": 24,
-   "note": "Three scissors, one safe line through.",
+   "note": "Three scissors, one safe line.",
    "items": [
     {
      "prefab": "Penalty_Scissors",
      "offset": 0,
-     "lateral": -1.2
+     "lateral": -2.5
     },
     {
      "prefab": "Penalty_Scissors",
      "offset": 8,
-     "lateral": 1.2
+     "lateral": 2.5
     },
     {
      "prefab": "Penalty_Scissors",
      "offset": 16,
-     "lateral": 0
-    }
-   ]
-  },
-  {
-   "id": "trap_combo",
-   "length": 20,
-   "note": "Only the centre is safe, then jump. Late-game only.",
-   "items": [
-    {
-     "prefab": "Penalty_Mud",
-     "offset": 0,
-     "lateral": -1.2
-    },
-    {
-     "prefab": "Penalty_Scissors",
-     "offset": 0,
-     "lateral": 1.2
-    },
-    {
-     "prefab": "Obstacle_JumpWall",
-     "offset": 9,
      "lateral": 0
     }
    ]
@@ -323,13 +683,15 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_line",
+    "part:single",
+    "cones_slalom",
     "part",
     "coins_wave",
-    "part:single",
-    "coins_line_r",
-    "part"
+    "puddles",
+    "part",
+    "coin_bonanza"
    ],
-   "note": "Tutorial: steer only. Hair ring, free dress gate, shoes gate."
+   "note": "Steer only. Free dress gate, hair ring, shoes."
   },
   {
    "id": "Level_02",
@@ -343,13 +705,14 @@
    "sections": [
     "coins_line",
     "part",
-    "jump_wall",
+    "hurdle_row",
     "part",
     "coins_wave",
-    "jump_wall",
-    "part"
+    "hurdle_row",
+    "part",
+    "low_blocks"
    ],
-   "note": "Teaches jump. Top, Bottom, Shoes."
+   "note": "Teaches jump. Pants, shirt, shoes."
   },
   {
    "id": "Level_03",
@@ -363,14 +726,14 @@
    "sections": [
     "coins_line",
     "part",
-    "slide_bar",
+    "slide_gate",
     "part",
-    "mud_left",
+    "bollard_gate",
     "coins_wave",
     "part",
-    "slide_bar"
+    "slide_gate"
    ],
-   "note": "Teaches slide and mud. Hair, Top, Bottom."
+   "note": "Teaches slide. Pants, shirt, hair."
   },
   {
    "id": "Level_04",
@@ -384,14 +747,14 @@
    "sections": [
     "coins_line",
     "part",
-    "mud_slalom",
-    "part",
-    "coin:x2,-10",
+    "brick_zigzag",
     "part:moving",
-    "jump_wall",
+    "coin:x2,-10",
+    "part",
+    "spike_rail_low",
     "part"
    ],
-   "note": "First coin gate and moving gate (Bottom)."
+   "note": "Walls, first coin gate, moving shirt gate."
   },
   {
    "id": "Level_05",
@@ -405,15 +768,16 @@
    "sections": [
     "coins_wave",
     "part",
-    "jump_wall",
-    "part",
     "scissors_one",
+    "spinner_bar",
+    "part",
+    "low_blocks",
     "coin:+20,/2",
     "part:moving",
-    "wide_mud",
+    "hurdle_row",
     "coin_bonanza"
    ],
-   "note": "SHOWCASE. Scissors introduced right after the dress gate. Moving Shoes gate."
+   "note": "SHOWCASE. Scissors after the dress, first spinner. Moving shoes gate."
   },
   {
    "id": "Level_06",
@@ -427,13 +791,14 @@
    "sections": [
     "coins_wave",
     "part",
-    "mud_right",
+    "puddles",
     "part",
     "coins_line",
+    "slime_trays",
     "part",
     "coin_bonanza"
    ],
-   "note": "Breather after the showcase."
+   "note": "Breather."
   },
   {
    "id": "Level_07",
@@ -447,14 +812,15 @@
    "sections": [
     "coins_line",
     "part",
-    "slide_bar",
-    "part",
-    "coin:x2,-15",
+    "spinner_cross",
     "part:moving",
-    "jump_slide",
+    "coin:x2,-15",
+    "toy_walls",
+    "part",
+    "puddles",
     "part"
    ],
-   "note": "First jump+slide combo. Moving Bottom."
+   "note": "Moving shirt gate."
   },
   {
    "id": "Level_08",
@@ -468,15 +834,16 @@
    "sections": [
     "coins_line",
     "part",
-    "jump_wall",
-    "part",
     "scissors_one",
+    "hurdle_double",
     "part",
-    "wide_mud",
+    "sweep_arms",
+    "part:moving",
+    "spike_roller",
     "part",
     "coins_wave"
    ],
-   "note": "Dress then scissors. Hat ring last."
+   "note": "Dress then scissors. Moving shoes, hat ring last."
   },
   {
    "id": "Level_09",
@@ -489,16 +856,16 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_line",
-    "part",
-    "mud_slalom",
     "part:moving",
-    "jump_wall",
+    "paddles",
     "part",
+    "slime_trays",
     "coin:x3,-20",
     "part",
-    "slide_bar"
+    "slide_gate",
+    "part"
    ],
-   "note": "Moving Top. (Citizen instead of Casual: Casual is the starting outfit.)"
+   "note": "Moving pants gate."
   },
   {
    "id": "Level_10",
@@ -512,17 +879,18 @@
    "sections": [
     "coins_line",
     "part",
-    "jump_slide",
-    "part",
-    "mud_slalom",
+    "slide_block",
     "part:moving",
+    "brick_zigzag",
     "coin:x2,-10",
     "part",
-    "scissors_gauntlet",
+    "roller_gate",
+    "part",
+    "spinner_tri",
     "part",
     "coin_bonanza"
    ],
-   "note": "SHOWCASE. First 5-part look. Moving Bottom. Hat ring last."
+   "note": "SHOWCASE. First 5-part look. Moving shirt."
   },
   {
    "id": "Level_11",
@@ -536,13 +904,13 @@
    "sections": [
     "coins_wave",
     "part",
-    "slide_bar",
+    "puddles",
     "part",
     "coins_line_l",
     "part:moving",
     "coin_bonanza"
    ],
-   "note": "Breather. Moving Shoes."
+   "note": "Breather. Moving shoes."
   },
   {
    "id": "Level_12",
@@ -555,16 +923,17 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_line",
-    "part",
-    "slide_jump",
     "part:moving",
     "scissors_one",
+    "crusher_row",
     "part",
-    "wide_mud",
+    "brick_zigzag",
+    "part",
+    "spike_rail_wide",
     "part",
     "coin:x2,-20"
    ],
-   "note": "Moving Dress straight into scissors. Hand item ring last."
+   "note": "Moving dress straight into scissors. Hand item ring last."
   },
   {
    "id": "Level_13",
@@ -578,15 +947,15 @@
    "sections": [
     "coins_line",
     "part",
-    "mud_slalom",
-    "part",
     "scissors_gauntlet",
+    "part",
+    "fan_left",
     "part:moving",
-    "jump_wall",
+    "pendulum_pair",
     "part",
     "coins_wave"
    ],
-   "note": "Protect the dress through the gauntlet. Moving Shoes."
+   "note": "Protect the dress. Moving shoes."
   },
   {
    "id": "Level_14",
@@ -599,16 +968,16 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_wave",
-    "part",
-    "jump_slide",
     "part:moving",
-    "trap_combo",
+    "closing_doors",
+    "part:moving",
+    "puncher_pair",
     "part",
     "coin:x3,-25",
-    "part:moving",
-    "slide_bar"
+    "spike_roller",
+    "part"
    ],
-   "note": "First trap combo. Moving Top and Shoes."
+   "note": "Moving pants and shirt."
   },
   {
    "id": "Level_15",
@@ -622,18 +991,18 @@
    "sections": [
     "coins_line",
     "part",
-    "jump_wall",
+    "roller_gate",
     "part:moving",
-    "mud_slalom",
+    "brick_zigzag",
     "part",
     "coin:x2,-15",
-    "slide_jump",
+    "sweep_arms",
     "part",
-    "scissors_gauntlet",
+    "slide_gate",
     "part",
     "coin_bonanza"
    ],
-   "note": "SHOWCASE. First Hard AI. Moving Top."
+   "note": "SHOWCASE. First Hard AI. Moving shirt."
   },
   {
    "id": "Level_16",
@@ -646,14 +1015,14 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_wave",
-    "part",
-    "jump_wall",
     "part:moving",
+    "spinner_bar",
+    "part",
     "coins_line_r",
     "part",
     "coin_bonanza"
    ],
-   "note": "Breather. Moving Dress."
+   "note": "Breather. Moving dress."
   },
   {
    "id": "Level_17",
@@ -667,16 +1036,17 @@
    "sections": [
     "coins_line",
     "part",
-    "trap_combo",
+    "closing_pillars",
     "part",
-    "slide_bar",
-    "part:moving",
+    "crusher_row",
+    "part",
     "coin:x2,-20",
-    "part",
-    "jump_slide",
+    "spike_rail_wide",
+    "part:moving",
+    "fan_right",
     "part"
    ],
-   "note": "Glasses ring last. Moving Bottom."
+   "note": "Moving shoes. Glasses ring last."
   },
   {
    "id": "Level_18",
@@ -690,15 +1060,15 @@
    "sections": [
     "coins_line",
     "part",
-    "jump_wall",
-    "part",
     "scissors_gauntlet",
+    "part",
+    "pendulum_pair",
     "part:moving",
-    "wide_mud",
+    "crusher_row",
     "part",
     "coin:x3,-30"
    ],
-   "note": "Dress through the gauntlet. Moving Shoes."
+   "note": "Dress through the scissors. Moving shoes."
   },
   {
    "id": "Level_19",
@@ -711,17 +1081,18 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_wave",
+    "part:moving",
+    "slide_block",
+    "part:moving",
+    "brick_zigzag",
     "part",
-    "mud_slalom",
-    "part:moving",
-    "slide_jump",
-    "part:moving",
     "coin:x2,-15",
+    "roller_gate",
     "part",
-    "trap_combo",
+    "spinner_cross",
     "part"
    ],
-   "note": "Back-to-back moving Top and Bottom."
+   "note": "Back-to-back moving pants and shirt."
   },
   {
    "id": "Level_20",
@@ -735,18 +1106,18 @@
    "sections": [
     "coins_line",
     "part",
-    "jump_slide",
-    "part",
     "scissors_gauntlet",
+    "part",
+    "closing_doors",
     "part:moving",
-    "mud_slalom",
+    "spinner_tri",
     "part",
     "coin:x2,-20",
+    "slide_gate",
     "part",
-    "wide_mud",
     "coin_bonanza"
    ],
-   "note": "SHOWCASE. Socks gate last. Moving Shoes."
+   "note": "SHOWCASE. Moving shoes, socks gate, hat ring last."
   },
   {
    "id": "Level_21",
@@ -760,13 +1131,13 @@
    "sections": [
     "coins_wave",
     "part",
-    "slide_bar",
+    "hurdle_row",
     "part",
     "coins_line_l",
     "part:moving",
     "coin_bonanza"
    ],
-   "note": "Breather. Moving Shoes."
+   "note": "Breather. Moving shoes."
   },
   {
    "id": "Level_22",
@@ -779,17 +1150,18 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_line",
-    "part",
-    "trap_combo",
     "part:moving",
-    "jump_slide",
+    "puncher_pair",
+    "part",
+    "closing_pillars",
     "part",
     "coin:x2,-25",
+    "brick_zigzag",
     "part:moving",
-    "scissors_gauntlet",
+    "fan_left",
     "part"
    ],
-   "note": "Moving Top and Shoes. Glasses ring last."
+   "note": "Moving pants and shoes. Glasses ring last."
   },
   {
    "id": "Level_23",
@@ -803,17 +1175,17 @@
    "sections": [
     "coins_wave",
     "part",
-    "wide_mud",
-    "part",
-    "mud_slalom",
+    "puddles",
     "part:moving",
-    "slide_jump",
+    "spike_rail_wide",
     "part",
+    "crusher_row",
     "coin:x3,-30",
     "part",
-    "trap_combo"
+    "paddles",
+    "part"
    ],
-   "note": "Moving Bottom. Hat ring last."
+   "note": "Moving shirt. Hat ring last."
   },
   {
    "id": "Level_24",
@@ -826,18 +1198,18 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_line",
-    "part",
-    "jump_slide",
     "part:moving",
-    "scissors_gauntlet",
+    "pendulum_pair",
     "part:moving",
-    "trap_combo",
+    "toy_walls",
     "part",
+    "closing_doors",
     "coin:x2,-20",
     "part",
-    "slide_bar"
+    "spinner_tri",
+    "part:moving"
    ],
-   "note": "Moving Top and Bottom. Socks gate last."
+   "note": "Moving pants, shirt and socks."
   },
   {
    "id": "Level_25",
@@ -851,18 +1223,18 @@
    "sections": [
     "coins_line",
     "part",
-    "slide_jump",
+    "roller_gate",
     "part:moving",
-    "mud_slalom",
+    "crusher_row",
     "part",
-    "scissors_gauntlet",
-    "part:moving",
+    "slide_block",
     "coin:x2,-30",
-    "trap_combo",
+    "part:moving",
+    "sweep_arms",
     "part",
     "coin_bonanza"
    ],
-   "note": "SHOWCASE. Moving Top and Shoes."
+   "note": "SHOWCASE. Moving shirt and shoes."
   },
   {
    "id": "Level_26",
@@ -876,14 +1248,14 @@
    "sections": [
     "coins_wave",
     "part",
-    "jump_wall",
+    "cones_slalom",
     "part",
     "coins_line_r",
-    "part:moving",
+    "part",
     "coin_bonanza",
-    "part"
+    "part:moving"
    ],
-   "note": "Breather. Moving Bottom."
+   "note": "Breather. Moving shoes."
   },
   {
    "id": "Level_27",
@@ -896,18 +1268,18 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_line",
-    "part",
-    "trap_combo",
     "part:moving",
-    "slide_jump",
+    "closing_pillars",
     "part:moving",
-    "wide_mud",
+    "crusher_row",
     "part",
+    "fan_right",
     "coin:x3,-40",
     "part",
-    "jump_slide"
+    "slide_gate",
+    "part"
    ],
-   "note": "Moving Top and Bottom."
+   "note": "Moving pants and shirt."
   },
   {
    "id": "Level_28",
@@ -921,18 +1293,19 @@
    "sections": [
     "coins_line",
     "part",
-    "jump_slide",
+    "spinner_cross",
     "part:moving",
-    "mud_slalom",
+    "pendulum_pair",
     "part",
-    "scissors_gauntlet",
+    "fan_left",
     "part:moving",
     "coin:x2,-25",
+    "closing_doors",
     "part",
-    "trap_combo",
+    "crusher_row",
     "part"
    ],
-   "note": "First 6-part look. Moving Top and Shoes."
+   "note": "First 6-part look. Moving shirt and shoes."
   },
   {
    "id": "Level_29",
@@ -945,19 +1318,20 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_wave",
-    "part",
-    "slide_jump",
     "part:moving",
-    "trap_combo",
+    "puncher_pair",
     "part:moving",
-    "jump_wall",
+    "brick_zigzag",
     "part",
+    "spike_rail_wide",
     "coin:x3,-40",
+    "part:moving",
+    "roller_gate",
     "part",
-    "scissors_gauntlet",
+    "slide_block",
     "part"
    ],
-   "note": "6 parts vs Expert AI. Moving Top and Bottom."
+   "note": "6 parts vs Expert AI. Moving pants, shirt, shoes."
   },
   {
    "id": "Level_30",
@@ -970,20 +1344,20 @@
    "hasAiOpponent": true,
    "sections": [
     "coins_line",
+    "part:moving",
+    "closing_pillars",
+    "part:moving",
+    "crusher_row",
     "part",
-    "jump_slide",
-    "part:moving",
-    "scissors_gauntlet",
-    "part:moving",
-    "trap_combo",
-    "part:moving",
+    "pendulum_pair",
     "coin:x2,-50",
-    "slide_jump",
+    "part:moving",
+    "slide_gate",
     "part",
-    "wide_mud",
+    "closing_doors",
     "coin_bonanza"
    ],
-   "note": "FINALE. Three moving gates in a row (Top, Bottom, Shoes)."
+   "note": "FINALE. Moving pants, shirt, shoes."
   }
  ]
 }

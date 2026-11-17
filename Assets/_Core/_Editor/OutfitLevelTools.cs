@@ -17,11 +17,12 @@ namespace Game.EditorTools
     /// </summary>
     public static class OutfitLevelTools
     {
-        // Order the parts are offered along the track.
+        // Order the parts are offered along the track: pants (or a dress, which replaces pants and shirt),
+        // then shirt, hair, shoes, then everything else.
         private static readonly OutfitSlot[] SlotOrder =
         {
-            OutfitSlot.Hair, OutfitSlot.Dress, OutfitSlot.Top, OutfitSlot.Bottom, OutfitSlot.Shoes,
-            OutfitSlot.Hat, OutfitSlot.Glasses, OutfitSlot.HandItem, OutfitSlot.Bag, OutfitSlot.Socks,
+            OutfitSlot.Dress, OutfitSlot.Bottom, OutfitSlot.Top, OutfitSlot.Hair, OutfitSlot.Shoes,
+            OutfitSlot.Socks, OutfitSlot.Hat, OutfitSlot.Glasses, OutfitSlot.HandItem, OutfitSlot.Bag,
             OutfitSlot.Wings, OutfitSlot.Accessory, OutfitSlot.Makeup
         };
 

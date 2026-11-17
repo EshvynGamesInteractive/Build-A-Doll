@@ -89,7 +89,7 @@ namespace Game.AI
                     steps.Add(new AiStep { Distance = bounds.min.z - SlideLead, Action = AiStep.Kind.Slide });
                     break;
                 default:
-                    var dodge = bounds.center.x > 0f ? -DodgeLateral : DodgeLateral;
+                    var dodge = FindOpenLane(penalty, ramp, trackWidth * 0.5f, bounds);
                     steps.Add(new AiStep { Distance = bounds.min.z - SteerAroundLead, Action = AiStep.Kind.SteerTo, Lateral = dodge });
                     break;
             }
@@ -161,12 +161,63 @@ namespace Game.AI
             return PenaltyItem.AiAvoidance.SteerAround;
         }
 
-        // The penalty's collider box in ramp space (x = sideways, y = up, z = along the ramp).
+        // Centre of the widest stretch of track (ramp space x) that none of the penalty's boxes cover.
+        // Falls back to the old fixed dodge when nothing is wide enough for the doll.
+        private static float FindOpenLane(PenaltyItem penalty, Transform ramp, float halfWidth, Bounds bounds)
+        {
+            const float minOpening = 1f;
+            var blocked = new List<Vector2>();
+            foreach (var col in penalty.GetComponents<Collider>())
+            {
+                var b = ToRamp(col.bounds, ramp);
+                blocked.Add(new Vector2(b.min.x, b.max.x));
+            }
+
+            blocked.Sort((a, b) => a.x.CompareTo(b.x));
+            var bestWidth = 0f;
+            var bestCentre = 0f;
+            var cursor = -halfWidth;
+            foreach (var range in blocked)
+            {
+                var from = cursor;
+                var to = Mathf.Min(range.x, halfWidth);
+                if (to - from > bestWidth)
+                {
+                    bestWidth = to - from;
+                    bestCentre = (from + to) * 0.5f;
+                }
+
+                cursor = Mathf.Max(cursor, range.y);
+            }
+
+            if (halfWidth - cursor > bestWidth)
+            {
+                bestWidth = halfWidth - cursor;
+                bestCentre = (cursor + halfWidth) * 0.5f;
+            }
+
+            if (bestWidth >= minOpening)
+                return bestCentre;
+
+            return bounds.center.x > 0f ? -DodgeLateral : DodgeLateral;
+        }
+
+        private static Bounds ToRamp(Bounds world, Transform ramp)
+        {
+            var min = ramp.InverseTransformPoint(world.min);
+            var max = ramp.InverseTransformPoint(world.max);
+            var b = new Bounds();
+            b.SetMinMax(Vector3.Min(min, max), Vector3.Max(min, max));
+            return b;
+        }
+
+        // All of the penalty's collider boxes together, in ramp space (x = sideways, y = up, z = along the ramp).
         private static Bounds GetRampBounds(PenaltyItem penalty, Transform ramp)
         {
-            var world = penalty.TryGetComponent<Collider>(out var col)
-                ? col.bounds
-                : new Bounds(penalty.transform.position, Vector3.one);
+            var colliders = penalty.GetComponents<Collider>();
+            var world = colliders.Length > 0 ? colliders[0].bounds : new Bounds(penalty.transform.position, Vector3.one);
+            for (var i = 1; i < colliders.Length; i++)
+                world.Encapsulate(colliders[i].bounds);
 
             var min = ramp.InverseTransformPoint(world.min);
             var max = ramp.InverseTransformPoint(world.max);

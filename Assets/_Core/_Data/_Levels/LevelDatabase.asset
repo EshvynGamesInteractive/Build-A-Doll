@@ -49,7 +49,7 @@ MonoBehaviour:
   comparisonTime: 2
   rampPrefab: {fileID: 2961257068082550235, guid: c481bbbe04ff34a099f266f57d710443, type: 3}
   rampFit: 0
-  rampTileOverlap: 0.01
+  rampTileOverlap: 0.0001
   spawnPlayerRamp: 1
   rampTextures:
   - {fileID: 2800000, guid: 01c73aea6d7a94c39bdc35c87b56f0ad, type: 3}
