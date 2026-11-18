@@ -45,6 +45,9 @@ namespace Core._GameEvent
 
             public static readonly GameEvent RequestPlaySavedLevel = new();
 
+            /// <summary>Request: play this level (0-based index), e.g. a button on the level map.</summary>
+            public static readonly GameEvent<int> RequestPlayLevel = new();
+
             /// <summary>Request: play the current level again (e.g. "Retry" button).</summary>
             public static readonly GameEvent RequestRestartLevel = new();
 

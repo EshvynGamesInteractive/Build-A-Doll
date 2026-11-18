@@ -65,6 +65,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.FinishReached.Register(OnFinishReached);
             GameEvents.GameplayEvents.RequestNextLevel.Register(LoadNext);
             GameEvents.GameplayEvents.RequestPlaySavedLevel.Register(LoadCurrent);
+            GameEvents.GameplayEvents.RequestPlayLevel.Register(LoadLevel);
             GameEvents.GameplayEvents.RequestRestartLevel.Register(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Register(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Register(OnTargetLookIntroDone);
@@ -75,6 +76,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.FinishReached.Unregister(OnFinishReached);
             GameEvents.GameplayEvents.RequestNextLevel.Unregister(LoadNext);
             GameEvents.GameplayEvents.RequestPlaySavedLevel.Unregister(LoadCurrent);
+            GameEvents.GameplayEvents.RequestPlayLevel.Unregister(LoadLevel);
             GameEvents.GameplayEvents.RequestRestartLevel.Unregister(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Unregister(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Unregister(OnTargetLookIntroDone);
@@ -548,8 +550,10 @@ namespace _Core._Level
             waitingForTargetLook = true;
             GameEvents.GameplayEvents.TargetLookShown.Raise(level);
 
-            // On stage the UI says when its intro is over; the timer is only a safety net.
-            Invoke(nameof(HideTargetLook), onStage ? database.DemoShowTime + 5f : database.DemoShowTime);
+            // On stage the Gameplay UI says when its intro is over (the player pressed PLAY), so no timer.
+            // Without the render texture the demo stands on the track for Demo Show Time.
+            if (!onStage)
+                Invoke(nameof(HideTargetLook), database.DemoShowTime);
         }
 
         private void OnTargetLookIntroDone()

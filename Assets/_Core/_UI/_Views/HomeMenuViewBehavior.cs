@@ -13,6 +13,8 @@ namespace _Core._UI._Views
         [SerializeField] private Button playButton;
         [SerializeField] private Button settingsButton;
         [SerializeField] private TextMeshProUGUI coinsLabel;
+        [Tooltip("Level map: its buttons play the clicked level. Play shortcut = the current level.")]
+        [SerializeField] private _LevelMap.LevelMapView levelMap;
 
         protected override void Initialize()
         {
@@ -29,6 +31,8 @@ namespace _Core._UI._Views
         {
             base.Show();
             SetCoins(LevelProgress.TotalCoins);
+            if (levelMap != null)
+                levelMap.Refresh();
         }
 
         private void SetCoins(int coins)
