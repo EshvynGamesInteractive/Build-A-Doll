@@ -46,7 +46,11 @@ MonoBehaviour:
   defaultPlayerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   defaultDemoPrefab: {fileID: 7866513120635556711, guid: f5a4dad8c9f104806989a095d5f710b4, type: 3}
   demoShowTime: 3
-  comparisonTime: 2
+  comparisonTime: 3
+  stagePrefab: {fileID: 3917083751510794983, guid: 78c466ef4b5e640e6bcfc6bc61851481, type: 3}
+  demoRenderTexture: {fileID: 8400000, guid: 4a0be64b3d4ff49eca4ce61c70ccfb0a, type: 2}
+  demoStageOffset: {x: -300, y: 0, z: -300}
+  demoCameraFov: 30
   rampPrefab: {fileID: 2961257068082550235, guid: c481bbbe04ff34a099f266f57d710443, type: 3}
   rampFit: 0
   rampTileOverlap: 0.0001

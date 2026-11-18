@@ -23,7 +23,9 @@ namespace _Core._Player
         {
             Idle,
             Running,
-            Stopped
+            Stopped,
+            Walking, // scripted walk (e.g. onto the finish stage); input is ignored
+            Placed   // after a scripted walk: stays exactly where she is until ResetRun
         }
 
         [SerializeField] private RunnerMovementConfig config;
@@ -69,10 +71,21 @@ namespace _Core._Player
         private Vector3 _hitboxCenter;
         private float _squash = 1f;
 
-        public bool IsRunning => _forward.CurrentSpeed > MovingThreshold;
+        public bool IsRunning => _phase == Phase.Walking ? _walkSpeedNow > MovingThreshold : _forward.CurrentSpeed > MovingThreshold;
 
         public float NormalizedSpeed =>
-            config.ForwardSpeed > 0f ? _forward.CurrentSpeed / config.ForwardSpeed : 0f;
+            config.ForwardSpeed <= 0f ? 0f
+            : (_phase == Phase.Walking ? _walkSpeedNow : _forward.CurrentSpeed) / config.ForwardSpeed;
+
+        /// <summary>True while a scripted walk (WalkTo) is still going.</summary>
+        public bool IsWalking => _phase == Phase.Walking;
+
+        // ---------- Scripted walk ----------
+        private readonly System.Collections.Generic.List<Vector3> _walkPath = new();
+        private float _walkSpeed;
+        private float _walkSpeedNow;
+        private Vector3 _walkFace;
+        private System.Action _walkArrived;
 
         public bool IsGrounded => _vertical.IsGrounded;
         public bool IsSliding => _vertical.IsSliding;
@@ -119,6 +132,88 @@ namespace _Core._Player
 
         /// <summary>Stops this runner only (the global StopRun stops everyone).</summary>
         public void Stop() => StopRun();
+
+        /// <summary>
+        /// Walks her through the points (world space) at 'speed', playing the run animation, then turns her to face
+        /// 'faceDirection' and calls 'onArrived'. Input is ignored meanwhile. ResetRun ends it.
+        /// </summary>
+        public void WalkTo(System.Collections.Generic.IEnumerable<Vector3> path, float speed, Vector3 faceDirection, System.Action onArrived = null)
+        {
+            _walkPath.Clear();
+            if (path != null)
+                _walkPath.AddRange(path);
+
+            _phase = Phase.Walking;
+            _walkSpeed = Mathf.Max(0.1f, speed);
+            _walkSpeedNow = _forward.CurrentSpeed; // carry on from her run speed, then ease to walking pace
+            _walkFace = Vector3.ProjectOnPlane(faceDirection, Vector3.up);
+            _walkArrived = onArrived;
+
+            CancelInvoke(nameof(EndStumble));
+            _isStumbling = false;
+            _vertical.Reset();
+            _forward.Reset();
+            _squash = 1f;
+            if (visual != transform)
+                ApplySquash();
+            UpdateSlidePose(0f);
+        }
+
+        /// <summary>Puts her straight at a point, facing 'faceDirection' (e.g. when a scripted walk can't wait any longer).</summary>
+        public void PlaceAt(Vector3 position, Vector3 faceDirection)
+        {
+            var arrived = _walkArrived;
+            _walkPath.Clear();
+            _walkArrived = null;
+            _walkSpeedNow = 0f;
+            _phase = Phase.Placed;
+            transform.position = position;
+            var face = Vector3.ProjectOnPlane(faceDirection, Vector3.up);
+            if (face.sqrMagnitude > 1e-4f)
+                visual.rotation = Quaternion.LookRotation(face.normalized, Vector3.up);
+            arrived?.Invoke();
+        }
+
+        private void UpdateWalk(float deltaTime)
+        {
+            var turnT = 1f - Mathf.Exp(-config.TurnLerpSpeed * 0.6f * deltaTime);
+
+            if (_walkPath.Count == 0)
+            {
+                // Arrived: slow down and turn to face the given way.
+                _walkSpeedNow = Mathf.MoveTowards(_walkSpeedNow, 0f, config.Deceleration * deltaTime);
+                if (_walkFace.sqrMagnitude > 1e-4f)
+                    visual.rotation = Quaternion.Slerp(visual.rotation, Quaternion.LookRotation(_walkFace.normalized, Vector3.up), turnT);
+
+                var facing = _walkFace.sqrMagnitude < 1e-4f || Vector3.Angle(visual.forward, _walkFace) < 3f;
+                if (_walkSpeedNow <= MovingThreshold && facing)
+                {
+                    _walkSpeedNow = 0f;
+                    _phase = Phase.Placed;
+                    var arrived = _walkArrived;
+                    _walkArrived = null;
+                    arrived?.Invoke();
+                }
+                return;
+            }
+
+            _walkSpeedNow = Mathf.MoveTowards(_walkSpeedNow, _walkSpeed, Mathf.Max(config.Acceleration, config.Deceleration) * deltaTime);
+
+            var target = _walkPath[0];
+            var step = _walkSpeedNow * deltaTime;
+            var toTarget = target - transform.position;
+            if (toTarget.magnitude <= step)
+            {
+                transform.position = target;
+                _walkPath.RemoveAt(0);
+                return;
+            }
+
+            transform.position += toTarget.normalized * step;
+            var flat = Vector3.ProjectOnPlane(toTarget, Vector3.up);
+            if (flat.sqrMagnitude > 1e-4f)
+                visual.rotation = Quaternion.Slerp(visual.rotation, Quaternion.LookRotation(flat.normalized, Vector3.up), turnT);
+        }
         
 
         private void Awake()
@@ -170,6 +265,15 @@ namespace _Core._Player
         private void Update()
         {
             if (Time.timeScale == 0f)
+                return;
+
+            if (_phase == Phase.Walking)
+            {
+                UpdateWalk(Time.deltaTime);
+                return;
+            }
+
+            if (_phase == Phase.Placed)
                 return;
 
             if (_phase == Phase.Idle)
@@ -279,9 +383,12 @@ namespace _Core._Player
             visual.localRotation = Quaternion.Slerp(visual.localRotation, target, t);
         }
 
+        /// <summary>Starts this runner now (e.g. when the target-look intro ends), without waiting for a touch.</summary>
+        public void BeginRun() => StartRun();
+
         private void StartRun()
         {
-            if (_phase == Phase.Running)
+            if (_phase is Phase.Running or Phase.Walking or Phase.Placed)
                 return;
 
             _phase = Phase.Running;
@@ -295,9 +402,15 @@ namespace _Core._Player
                 _phase = Phase.Stopped;
         }
 
+        /// <summary>True once she's stopped (finish line or scripted walk done).</summary>
+        public bool IsStopped => _phase is Phase.Stopped or Phase.Placed;
+
         private void ResetRun()
         {
             _phase = Phase.Idle;
+            _walkPath.Clear();
+            _walkArrived = null;
+            _walkSpeedNow = 0f;
             _distance = 0f;
             CancelInvoke(nameof(EndStumble));
             _isStumbling = false;

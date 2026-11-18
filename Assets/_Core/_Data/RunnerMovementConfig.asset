@@ -24,7 +24,7 @@ MonoBehaviour:
   slideDuration: 0.8
   slideHitboxHeight: 0.9
   fastFallSpeed: 12
-  squashVisualOnSlide: 1
+  squashVisualOnSlide: 0
   slideVisualScale: 0.45
   turnAnglePerSpeed: 4
   maxTurnAngle: 35

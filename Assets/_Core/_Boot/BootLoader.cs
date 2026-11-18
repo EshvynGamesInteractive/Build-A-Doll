@@ -11,7 +11,10 @@ namespace _Core.Boot
     /// Lives in the Bootstrap scene. Shows the splash, loads the Gameplay scene in the background
     /// and switches to it once BOTH the minimum loading time has passed and the scene is ready.
     /// Progress goes out through UIEvents.LoadingProgress for the splash bar.
-    /// Once the scene is ready, Home lets the player start the saved level.
+    /// Home (main menu) only shows once the Gameplay scene has reported in (GameplaySceneReady),
+    /// so Play always has a scene to build the level in.
+    /// Flow: Splash -> Gameplay scene loaded -> Home -> Play -> level + player + demo doll -> Gameplay UI
+    /// -> demo intro (pop, hold, move to corner) -> run starts.
     /// </summary>
     public class BootLoader : MonoBehaviour
     {
@@ -23,7 +26,17 @@ namespace _Core.Boot
         [Tooltip("Turn off to start loading from code (call StartLoading).")]
         [SerializeField] private bool loadOnStart = true;
 
+        [Tooltip("Longest wait for the Gameplay scene to report in before Home shows anyway.")]
+        [SerializeField, Min(0f)] private float sceneReadyTimeout = 5f;
+
         private bool _isLoading;
+        private bool _sceneReady;
+
+        private void OnEnable() => GameEvents.GameplayEvents.GameplaySceneReady.Register(OnGameplaySceneReady);
+
+        private void OnDisable() => GameEvents.GameplayEvents.GameplaySceneReady.Unregister(OnGameplaySceneReady);
+
+        private void OnGameplaySceneReady(Game.Level.GameplayScene scene) => _sceneReady = true;
 
         private void Start()
         {
@@ -37,6 +50,7 @@ namespace _Core.Boot
                 return;
 
             _isLoading = true;
+            _sceneReady = false;
             GameEvents.UIEvents.ShowByType.Raise(ScreenType.SplashScreen);
             StartCoroutine(LoadRoutine());
         }
@@ -66,6 +80,13 @@ namespace _Core.Boot
             GameEvents.UIEvents.LoadingProgress.Raise(1f);
             operation.allowSceneActivation = true;
             yield return operation;
+
+            // GameplayScene raises GameplaySceneReady in its Start; wait for it so Play can't be pressed too early.
+            for (var waited = 0f; !_sceneReady && waited < sceneReadyTimeout; waited += Time.unscaledDeltaTime)
+                yield return null;
+
+            if (!_sceneReady)
+                Debug.LogWarning($"'{sceneToLoad}' never raised GameplaySceneReady. Is there a {nameof(Game.Level.GameplayScene)} in it?", this);
 
             _isLoading = false;
             GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);

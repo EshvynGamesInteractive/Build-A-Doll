@@ -34,6 +34,12 @@ namespace Game.Player
                  "Feet slide forward / animation too fast: raise it. Feet look like they skate backwards: lower it. Tune in Play mode.")]
         [SerializeField, Min(0.1f)] private float runClipSpeed = 4f;
 
+        [Header("Slide speed sync")]
+        [Tooltip("Float the Slide state uses as its speed multiplier, so the slide clip lasts exactly as long as the slide (RunnerMovementConfig.SlideDuration).")]
+        [SerializeField] private string slideAnimSpeedParameter = "SlideAnimSpeed";
+        [Tooltip("Name of the slide clip in the animator, used to read its length.")]
+        [SerializeField] private string slideClipName = "Sliding";
+
         [SerializeField, Range(0.1f, 1f)] private float minRunAnimSpeed = 0.5f;
         [SerializeField, Range(1f, 3f)] private float maxRunAnimSpeed = 1.6f;
 
@@ -92,6 +98,38 @@ namespace Game.Player
             _runner = GetComponentInParent<_Core._Player.RunnerController>();
             _runAnimSpeedHash = Animator.StringToHash(runAnimSpeedParameter);
             _hasRunAnimSpeed = HasParameter(_runAnimSpeedHash, AnimatorControllerParameterType.Float);
+
+            _slideAnimSpeedHash = Animator.StringToHash(slideAnimSpeedParameter);
+            _hasSlideAnimSpeed = HasParameter(_slideAnimSpeedHash, AnimatorControllerParameterType.Float);
+            _slideClipLength = FindClipLength(slideClipName);
+        }
+
+        private int _slideAnimSpeedHash;
+        private bool _hasSlideAnimSpeed;
+        private float _slideClipLength;
+
+        private float FindClipLength(string clipName)
+        {
+            if (animator.runtimeAnimatorController == null || string.IsNullOrEmpty(clipName))
+                return 0f;
+
+            foreach (var clip in animator.runtimeAnimatorController.animationClips)
+            {
+                if (clip != null && clip.name == clipName)
+                    return clip.length;
+            }
+
+            return 0f;
+        }
+
+        // Plays the whole slide clip (down, slide, get up) in the time the slide lasts.
+        private void UpdateSlideSpeed()
+        {
+            if (!_hasSlideAnimSpeed || _slideClipLength <= 0f || _runner == null || _runner.Config == null)
+                return;
+
+            var duration = _runner.Config.SlideDuration;
+            animator.SetFloat(_slideAnimSpeedHash, duration > 0.01f ? _slideClipLength / duration : 1f);
         }
 
         private int _runAnimSpeedHash;
@@ -124,6 +162,56 @@ namespace Game.Player
         }
 
         private bool IsAI => _runner != null && _runner.IsAI;
+
+        /// <summary>The doll's Animator (may be null).</summary>
+        public Animator UnityAnimator => animator;
+
+        /// <summary>
+        /// Coroutine: call right after the Win / Lose trigger was fired. Waits until the animator has moved into the
+        /// result state and that state has played once (or moved on, e.g. Victory into Dance). Gives up after maxTime.
+        /// </summary>
+        public System.Collections.IEnumerator WaitForResultAnimation(float maxTime, float minTime = 0.5f)
+        {
+            if (animator == null || !animator.isActiveAndEnabled || animator.runtimeAnimatorController == null)
+            {
+                yield return new WaitForSeconds(minTime);
+                yield break;
+            }
+
+            var startState = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+            var resultState = 0;
+            var elapsed = 0f;
+
+            while (elapsed < maxTime)
+            {
+                yield return null;
+                elapsed += Time.deltaTime;
+
+                if (animator.IsInTransition(0))
+                    continue;
+
+                var info = animator.GetCurrentAnimatorStateInfo(0);
+                if (resultState == 0)
+                {
+                    // Still in the old pose: the trigger hasn't been picked up yet.
+                    if (info.fullPathHash != startState)
+                        resultState = info.fullPathHash;
+                    else if (elapsed > 1.5f)
+                        break; // no result state on this animator
+                    continue;
+                }
+
+                var done = info.fullPathHash != resultState || info.normalizedTime >= 1f;
+                if (done && elapsed >= minTime)
+                    yield break;
+            }
+
+            while (elapsed < minTime)
+            {
+                yield return null;
+                elapsed += Time.deltaTime;
+            }
+        }
 
         // The player passed: she wins and the AI loses.
         private void OnLevelCompleted(Game.Level.LevelResult result) => PlayResult(!IsAI);
@@ -177,7 +265,10 @@ namespace Game.Player
             if (_hasJump && _wasGrounded && !grounded)
                 animator.SetTrigger(_jumpHash);
             if (_hasSlide && !_wasSliding && sliding)
+            {
+                UpdateSlideSpeed();
                 animator.SetTrigger(_slideHash);
+            }
 
             // Stumble when THIS doll starts stumbling (not on any penalty anywhere, e.g. the AI's).
             var stumbling = _state.IsStumbling;

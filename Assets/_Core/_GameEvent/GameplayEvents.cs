@@ -63,8 +63,23 @@ namespace Core._GameEvent
             /// <summary>Notification: the target look was hidden; the player can start running.</summary>
             public static readonly GameEvent TargetLookHidden = new();
 
+            /// <summary>Request from the Gameplay UI: the target-look intro (demo image shown, then moved to its corner) is done; start the run.</summary>
+            public static readonly GameEvent TargetLookIntroDone = new();
+
             /// <summary>Notification: at the finish, the demo stands next to the player. Args: player match, AI match.</summary>
             public static readonly GameEvent<Game.Outfit.OutfitMatch, Game.Outfit.OutfitMatch> ComparisonStarted = new();
+
+            /// <summary>Notification: player and AI are on the stage and the item-by-item comparison begins. Args: player, AI (null without an AI).</summary>
+            public static readonly GameEvent<_Core._Player.RunnerController, _Core._Player.RunnerController> StageComparisonStarted = new();
+
+            /// <summary>Notification: one target item is being compared (shown over each doll with the running percentage).</summary>
+            public static readonly GameEvent<Game.Outfit.ComparisonStep> ComparisonItemShown = new();
+
+            /// <summary>Notification: the stage sequence is over (the result panel is opening). Hide the comparison labels.</summary>
+            public static readonly GameEvent ComparisonEnded = new();
+
+            /// <summary>Notification: true from the finish line until the result panel opens. The UI blocks touches meanwhile.</summary>
+            public static readonly GameEvent<bool> InputBlocked = new();
         }
     }
 }

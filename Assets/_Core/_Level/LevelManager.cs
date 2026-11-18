@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using _Core._Player;
 using _Core._UI;
@@ -24,6 +25,9 @@ namespace _Core._Level
         [Tooltip("Seconds after the finish before the next level / retry loads on its own. 0 = wait for the UI to raise RequestNextLevel / RequestRestartLevel.")]
         [SerializeField, Min(0f)] private float autoContinueDelay;
 
+        [Tooltip("On: the player starts running by herself as soon as the target-look intro ends (demo moved to its corner). Off: she waits for the first touch.")]
+        [SerializeField] private bool autoStartRun = true;
+
         [Header("Testing")]
         [Tooltip("Play this level number (1-based) instead of the saved one. 0 = use saved progress.")]
         [SerializeField, Min(0)] private int testLevelNumber;
@@ -38,6 +42,8 @@ namespace _Core._Level
         private GameObject playerSource;
         private GameplayScene scene;
         private GameObject demo;
+        private Camera demoCamera;
+        private bool waitingForTargetLook;
         private OutfitMatch match;
 
         // AI opponent on its own ramp next to the player's.
@@ -49,8 +55,6 @@ namespace _Core._Level
 
         // Where the demo stands at the start: this far down the track, facing the player.
         private const float DemoDistance = 4f;
-        // How far to the side of the player the demo stands at the finish.
-        private const float ComparisonSideOffset = 1.6f;
 
         public LevelData CurrentLevel => current;
         public int CurrentLevelNumber => currentIndex + 1;
@@ -63,6 +67,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestPlaySavedLevel.Register(LoadCurrent);
             GameEvents.GameplayEvents.RequestRestartLevel.Register(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Register(OnGameplaySceneReady);
+            GameEvents.GameplayEvents.TargetLookIntroDone.Register(OnTargetLookIntroDone);
         }
 
         private void OnDisable()
@@ -72,6 +77,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestPlaySavedLevel.Unregister(LoadCurrent);
             GameEvents.GameplayEvents.RequestRestartLevel.Unregister(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Unregister(OnGameplaySceneReady);
+            GameEvents.GameplayEvents.TargetLookIntroDone.Unregister(OnTargetLookIntroDone);
         }
 
         // Cache scene references so the Home screen can start the saved level on demand.
@@ -107,6 +113,7 @@ namespace _Core._Level
         {
             // Drop any pending demo / result / auto-continue timers from the previous level.
             CancelInvoke();
+            StopFinishSequence();
 
             var level = database.GetLevel(index);
             if (level == null)
@@ -141,6 +148,10 @@ namespace _Core._Level
 
             // Puts the player, her outfit, score and any hurdles back to their start state.
             GameEvents.GameplayEvents.ResetRun.Raise();
+
+            // Back to following her (the finish stage view left the camera on the stage).
+            if (scene.CameraFollow != null)
+                scene.CameraFollow.SetTarget(player.transform);
             GameEvents.GameplayEvents.LevelLoaded.Raise(level, CurrentLevelNumber);
 
             GameEvents.UIEvents.ShowByType.Raise(ScreenType.Gameplay);
@@ -478,10 +489,15 @@ namespace _Core._Level
 
         // ---------- Target look ----------
 
-        // Level start: the demo doll shows the look to copy; the run can't start until it's hidden.
+        // Level start: the demo doll shows the look to copy; the run can't start until the intro is over.
+        // With a demo render texture the doll stands on its own far from the track, filmed by a demo camera into
+        // the texture; the Gameplay UI shows it big, moves it to its corner and then raises TargetLookIntroDone.
+        // Without one, the old way: the doll stands on the track in front of the player for Demo Show Time.
         private void ShowTargetLook(LevelData level)
         {
-            demo = null; // the old one went with the previous level root
+            demo = null; // the old ones went with the previous level root
+            demoCamera = null;
+            waitingForTargetLook = false;
 
             var prefab = level.DemoPrefab != null ? level.DemoPrefab : database.DefaultDemoPrefab;
             if (!level.HasTarget || prefab == null)
@@ -489,14 +505,29 @@ namespace _Core._Level
                 if (level.HasTarget)
                     Debug.LogWarning($"'{level.name}' has a target look but no demo doll prefab (set Default Demo Prefab on the {nameof(LevelDatabase)}).", level);
 
-                player.StartLocked = false;
-                StartAi();
+                ReleaseRunners();
                 return;
             }
 
+            var onStage = database.DemoRenderTexture != null;
             var point = scene.DemoPoint;
-            var position = point != null ? point.position : levelRoot.TransformPoint(new Vector3(0f, 0f, DemoDistance));
-            var rotation = point != null ? point.rotation : _rotation * Quaternion.Euler(0f, 180f, 0f);
+            Vector3 position;
+            Quaternion rotation;
+            if (point != null)
+            {
+                position = point.position;
+                rotation = point.rotation;
+            }
+            else if (onStage)
+            {
+                position = levelRoot.TransformPoint(database.DemoStageOffset);
+                rotation = database.DemoFaceSun ? FaceTheSun(_rotation) : _rotation;
+            }
+            else
+            {
+                position = levelRoot.TransformPoint(new Vector3(0f, 0f, DemoDistance));
+                rotation = _rotation * Quaternion.Euler(0f, 180f, 0f);
+            }
 
             // Child of the level root, so it's cleaned up with the level.
             demo = Instantiate(prefab, position, rotation, levelRoot);
@@ -510,40 +541,214 @@ namespace _Core._Level
             else
                 Debug.LogWarning($"Demo prefab '{prefab.name}' has no {nameof(DollOutfit)}, so it can't show the look.", prefab);
 
+            if (onStage)
+                demoCamera = CreateDemoCamera(demo, database.DemoRenderTexture);
+
             player.StartLocked = true;
+            waitingForTargetLook = true;
             GameEvents.GameplayEvents.TargetLookShown.Raise(level);
-            Invoke(nameof(HideTargetLook), database.DemoShowTime);
+
+            // On stage the UI says when its intro is over; the timer is only a safety net.
+            Invoke(nameof(HideTargetLook), onStage ? database.DemoShowTime + 5f : database.DemoShowTime);
+        }
+
+        private void OnTargetLookIntroDone()
+        {
+            if (!waitingForTargetLook)
+                return;
+
+            CancelInvoke(nameof(HideTargetLook));
+            HideTargetLook();
+        }
+
+        // A camera in front of the demo doll that films it (whole body, transparent background) into the render texture.
+        // Short far plane, so nothing else is in the shot. Framed now, and again a frame later once the
+        // doll has put her outfit on (DollOutfit wears it in Start) and her animator has posed her.
+        private Camera CreateDemoCamera(GameObject doll, RenderTexture texture)
+        {
+            var go = new GameObject("DemoCamera");
+            go.transform.SetParent(levelRoot, true);
+
+            var cam = go.AddComponent<Camera>();
+            cam.targetTexture = texture;
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = new Color(0f, 0f, 0f, 0f);
+            cam.fieldOfView = database.DemoCameraFov;
+            cam.nearClipPlane = 0.1f;
+            cam.depth = -10f;
+
+            // Its own light, so she's lit from the camera's side whatever way the sun points.
+            // The stage is far from the track, so it lights nothing else.
+            if (database.DemoLightIntensity > 0f)
+            {
+                var lightGo = new GameObject("DemoLight");
+                lightGo.transform.SetParent(go.transform, false);
+                lightGo.transform.localPosition = new Vector3(0.6f, 1.2f, 0f);
+                var light = lightGo.AddComponent<Light>();
+                light.type = LightType.Point;
+                light.shadows = LightShadows.None;
+                light.renderMode = LightRenderMode.ForcePixel;
+                light.color = Color.white;
+            }
+
+            FrameDemoCamera(cam, doll, texture);
+            StartCoroutine(ReframeDemoCamera(cam, doll, texture));
+            return cam;
+        }
+
+        private System.Collections.IEnumerator ReframeDemoCamera(Camera cam, GameObject doll, RenderTexture texture)
+        {
+            yield return null;
+            yield return null;
+            if (cam != null && doll != null && doll.activeInHierarchy && cam.enabled)
+                FrameDemoCamera(cam, doll, texture);
+        }
+
+        private void FrameDemoCamera(Camera cam, GameObject doll, RenderTexture texture)
+        {
+            var bounds = GetVisibleBounds(doll);
+
+            var aspect = texture.height > 0 ? (float)texture.width / texture.height : 1f;
+            var halfTan = Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            var fitHeight = bounds.extents.y * 1.1f / halfTan;
+            var fitWidth = Mathf.Max(bounds.extents.x, bounds.extents.z) * 1.1f / (halfTan * aspect);
+            var distance = Mathf.Max(fitHeight, fitWidth) + bounds.extents.z;
+
+            var forward = Vector3.ProjectOnPlane(doll.transform.forward, Vector3.up).normalized;
+            if (forward == Vector3.zero)
+                forward = Vector3.forward;
+
+            cam.transform.position = bounds.center + forward * distance;
+            cam.transform.rotation = Quaternion.LookRotation(-forward, Vector3.up);
+            cam.farClipPlane = distance + bounds.size.magnitude + 1f;
+
+            // URP point lights fade with distance squared, so scale by it to get the same brightness however far the camera is.
+            var light = cam.GetComponentInChildren<Light>();
+            if (light != null)
+            {
+                var toDoll = Vector3.Distance(light.transform.position, bounds.center);
+                light.range = toDoll * 2.5f + bounds.size.magnitude;
+                light.intensity = DemoLightBoost * toDoll * toDoll;
+            }
+        }
+
+        private float DemoLightBoost => database != null ? database.DemoLightIntensity : 1f;
+
+        // Turns 'rotation' to face the scene's sun (RenderSettings.sun, else the first directional light).
+        private static Quaternion FaceTheSun(Quaternion rotation)
+        {
+            var sun = RenderSettings.sun;
+            if (sun == null || sun.type != LightType.Directional)
+            {
+                sun = null;
+                foreach (var l in FindObjectsByType<Light>(FindObjectsSortMode.None))
+                {
+                    if (l.type == LightType.Directional && l.isActiveAndEnabled)
+                    {
+                        sun = l;
+                        break;
+                    }
+                }
+            }
+
+            if (sun == null)
+                return rotation;
+
+            var toSun = Vector3.ProjectOnPlane(-sun.transform.forward, Vector3.up);
+            return toSun.sqrMagnitude > 1e-4f ? Quaternion.LookRotation(toSun.normalized, Vector3.up) : rotation;
+        }
+
+        // Bounds of what's actually drawn on the doll. Switched-off or hidden renderers are skipped: Unity reports
+        // their bounds at the world origin, which would stretch the shot hundreds of metres and shrink her to a dot.
+        // Anything odd (no renderers, or far too big for a doll) falls back to a doll-sized box at her feet.
+        private const float MaxDollSize = 12f;
+
+        private static Bounds GetVisibleBounds(GameObject doll)
+        {
+            var fallback = new Bounds(doll.transform.position + Vector3.up * 1.6f, Vector3.one * 3.3f);
+            var found = false;
+            var bounds = fallback;
+
+            foreach (var r in doll.GetComponentsInChildren<Renderer>())
+            {
+                if (!r.enabled || !r.gameObject.activeInHierarchy || r is ParticleSystemRenderer or TrailRenderer or LineRenderer)
+                    continue;
+
+                var b = r.bounds;
+                if (b.size.sqrMagnitude < 1e-6f || (b.center - doll.transform.position).sqrMagnitude > MaxDollSize * MaxDollSize)
+                    continue;
+
+                if (!found)
+                {
+                    bounds = b;
+                    found = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(b);
+                }
+            }
+
+            return found && bounds.size.magnitude <= MaxDollSize ? bounds : fallback;
         }
 
         private void HideTargetLook()
         {
-            if (demo != null)
+            if (!waitingForTargetLook)
+                return;
+            waitingForTargetLook = false;
+
+            // On stage the doll keeps posing for the UI's corner image during the run.
+            if (demo != null && demoCamera == null)
                 demo.SetActive(false);
 
+            ReleaseRunners();
+            GameEvents.GameplayEvents.TargetLookHidden.Raise();
+        }
+
+        // Intro over: unlock the player (and start her right away when autoStartRun is on) and let the AI go.
+        private void ReleaseRunners()
+        {
             if (player != null)
+            {
                 player.StartLocked = false;
+                if (autoStartRun)
+                    player.BeginRun();
+            }
 
             StartAi();
-            GameEvents.GameplayEvents.TargetLookHidden.Raise();
         }
 
         // ---------- Finish ----------
 
-        // Finish: stop, put the demo next to the player, compare both dolls, then show the result.
+        // Gate order, used for the item-by-item comparison so it matches the order they were picked up.
+        private static readonly OutfitSlot[] ComparisonOrder =
+        {
+            OutfitSlot.Dress, OutfitSlot.Bottom, OutfitSlot.Top, OutfitSlot.Hair, OutfitSlot.Shoes,
+            OutfitSlot.Socks, OutfitSlot.Hat, OutfitSlot.Glasses, OutfitSlot.HandItem, OutfitSlot.Bag,
+            OutfitSlot.Wings, OutfitSlot.Accessory, OutfitSlot.Makeup
+        };
+
+        // Longest the whole walk onto the stage may take before both dolls are put on their spots.
+        private const float StageWalkTimeout = 12f;
+
+        private Coroutine finishRoutine;
+        private bool aiFinished;
+
+        // Player at her finish line: stop her and run the stage sequence. The AI crossing its own finish line
+        // just stops it; the sequence walks it to the stage.
         private void OnFinishReached(RunnerController runner)
         {
-            // The AI crossing its own finish line just stops the AI.
             if (runner != null && runner.IsAI)
             {
-                runner.Stop();
+                aiFinished = true;
+                if (runner.IsWalking == false)
+                    runner.Stop();
                 return;
             }
 
             if (finished || current == null)
                 return;
-
-            finished = true;
-            GameEvents.GameplayEvents.StopRun.Raise();
 
             if (player == null)
             {
@@ -551,31 +756,239 @@ namespace _Core._Level
                 return;
             }
 
-            match = OutfitComparer.Compare(current.TargetOutfit, player.DollOutfit);
-            aiMatch = ai != null ? OutfitComparer.Compare(current.TargetOutfit, ai.DollOutfit) : default;
-
-            if (!current.HasTarget || demo == null)
-            {
-                ShowResult();
-                return;
-            }
-
-            // Stand the demo just past the finish, on the side of the track the player isn't on.
-            var playerLocal = levelRoot.InverseTransformPoint(player.transform.position);
-            var side = playerLocal.x > 0f ? -1f : 1f;
-            var demoLocal = new Vector3(playerLocal.x + side * ComparisonSideOffset, 0f, current.FinishDistance + 1f);
-            demo.transform.SetPositionAndRotation(levelRoot.TransformPoint(demoLocal), _rotation * Quaternion.Euler(0f, 180f, 0f));
-            demo.SetActive(true);
-
-            GameEvents.GameplayEvents.ComparisonStarted.Raise(match, aiMatch);
-            Invoke(nameof(ShowResult), database.ComparisonTime);
+            finished = true;
+            player.Stop(); // only her: the AI keeps running to its own finish line
+            finishRoutine = StartCoroutine(FinishSequence());
         }
 
-        private void ShowResult()
+        // Finish line -> walk onto the stage -> item-by-item comparison -> win / lose animation -> result panel.
+        // Touches are blocked the whole time.
+        private IEnumerator FinishSequence()
         {
-            if (player == null || current == null)
+            GameEvents.GameplayEvents.InputBlocked.Raise(true);
+
+            var hasAi = ai != null;
+            var facing = _rotation * Vector3.back; // on the stage they face back down the track, towards the camera
+
+            // 1. Stage + walk.
+            var playerArrived = false;
+            var aiArrived = !hasAi;
+            var hasStage = TrySpawnStage(hasAi, out var playerSpot, out var aiSpot, out var frontZ);
+
+            if (hasStage)
+            {
+                player.WalkTo(StagePath(player.transform.position, playerSpot, frontZ), database.StageWalkSpeed, facing, () => playerArrived = true);
+                FrameStage(playerSpot, hasAi ? aiSpot : playerSpot, facing);
+            }
+            else
+            {
+                playerArrived = true;
+            }
+
+            var aiStarted = !hasAi;
+            var waitedForAi = 0f;
+            for (var elapsed = 0f; !(playerArrived && aiArrived); elapsed += Time.deltaTime)
+            {
+                if (!aiStarted)
+                {
+                    if (!hasStage)
+                    {
+                        aiStarted = aiArrived = true;
+                    }
+                    else if (aiFinished)
+                    {
+                        aiStarted = true;
+                        ai.WalkTo(StagePath(ai.transform.position, aiSpot, frontZ), database.StageWalkSpeed, facing, () => aiArrived = true);
+                    }
+                    else if (playerArrived && (waitedForAi += Time.deltaTime) >= database.AiFinishWait)
+                    {
+                        // The AI is too far behind: put it on its spot.
+                        aiStarted = aiArrived = true;
+                        ai.PlaceAt(aiSpot, facing);
+                    }
+                }
+
+                if (elapsed > StageWalkTimeout)
+                {
+                    if (!playerArrived)
+                        player.PlaceAt(playerSpot, facing);
+                    if (hasAi && !aiArrived)
+                        ai.PlaceAt(aiSpot, facing);
+                    break;
+                }
+
+                yield return null;
+            }
+
+            // 2. Item-by-item comparison.
+            match = OutfitComparer.Compare(current.TargetOutfit, player.DollOutfit);
+            aiMatch = hasAi ? OutfitComparer.Compare(current.TargetOutfit, ai.DollOutfit) : default;
+
+            // The demo image goes away for the comparison: nothing left to film.
+            if (demoCamera != null)
+                demoCamera.enabled = false;
+
+            GameEvents.GameplayEvents.ComparisonStarted.Raise(match, aiMatch);
+            GameEvents.GameplayEvents.StageComparisonStarted.Raise(player, hasAi ? ai : null);
+
+            if (current.HasTarget)
+                yield return CompareItems(hasAi);
+
+            yield return new WaitForSeconds(database.ResultDelay);
+
+            // 3. Result: saves progress and fires LevelCompleted / LevelFailed, which starts the win / lose animations.
+            var passed = DecideResult();
+
+            var playerAnimator = player.Animator != null ? player.Animator : player.GetComponentInChildren<Game.Player.RunnerAnimator>();
+            if (playerAnimator != null)
+                yield return playerAnimator.WaitForResultAnimation(database.ResultAnimMaxTime);
+            else
+                yield return new WaitForSeconds(1f);
+
+            // 4. Panel.
+            finishRoutine = null;
+            GameEvents.GameplayEvents.ComparisonEnded.Raise();
+            GameEvents.GameplayEvents.InputBlocked.Raise(false);
+            GameEvents.UIEvents.ShowByType.Raise(passed ? ScreenType.LevelCompletePanel : ScreenType.LevelFailedPanel);
+
+            if (autoContinueDelay > 0f)
+                Invoke(passed ? nameof(LoadNext) : nameof(RestartCurrent), autoContinueDelay);
+        }
+
+        // One target item at a time, ComparisonTime split evenly between them.
+        private IEnumerator CompareItems(bool hasAi)
+        {
+            var targets = new List<OutfitItem>();
+            foreach (var item in current.TargetOutfit)
+            {
+                if (item != null)
+                    targets.Add(item);
+            }
+
+            targets.Sort((a, b) => SlotRank(a.Slot).CompareTo(SlotRank(b.Slot)));
+            if (targets.Count == 0)
+                yield break;
+
+            var interval = database.ComparisonTime / targets.Count;
+            int playerMatched = 0, aiMatched = 0;
+
+            for (var i = 0; i < targets.Count; i++)
+            {
+                var target = targets[i];
+                var playerItem = WornIn(player, target.Slot);
+                var aiItem = hasAi ? WornIn(ai, target.Slot) : null;
+                var playerOk = playerItem == target;
+                var aiOk = hasAi && aiItem == target;
+                if (playerOk) playerMatched++;
+                if (aiOk) aiMatched++;
+
+                GameEvents.GameplayEvents.ComparisonItemShown.Raise(new ComparisonStep(target, playerItem, aiItem, playerOk, aiOk,
+                    Mathf.RoundToInt(100f * playerMatched / targets.Count), Mathf.RoundToInt(100f * aiMatched / targets.Count),
+                    i, targets.Count, hasAi));
+
+                yield return new WaitForSeconds(interval);
+            }
+        }
+
+        private static int SlotRank(OutfitSlot slot)
+        {
+            var index = System.Array.IndexOf(ComparisonOrder, slot);
+            return index < 0 ? ComparisonOrder.Length + (int)slot : index;
+        }
+
+        private static OutfitItem WornIn(RunnerController runner, OutfitSlot slot) =>
+            runner != null && runner.DollOutfit != null && runner.DollOutfit.Worn.TryGetValue(slot, out var item) ? item : null;
+
+        // Spawns the stage past the finish line (centred between the ramps, or on the player's) and works out
+        // where each doll stands on it. All positions are world space; frontZ is the stage's front edge in level space.
+        private bool TrySpawnStage(bool hasAi, out Vector3 playerSpot, out Vector3 aiSpot, out float frontZ)
+        {
+            playerSpot = aiSpot = player.transform.position;
+            frontZ = current.FinishDistance;
+
+            var prefab = database.StagePrefab;
+            if (prefab == null)
+                return false;
+
+            var aiX = hasAi && aiRamp != null ? aiRamp.localPosition.x : 0f;
+            var centreX = hasAi && database.StageBetweenRamps ? aiX * 0.5f : 0f;
+            var front = current.FinishDistance + database.StageGap;
+
+            // Child of the level root, so it goes with the level.
+            var stage = Instantiate(prefab, levelRoot.TransformPoint(new Vector3(centreX, 0f, front)), _rotation, levelRoot);
+            stage.name = "FinishStage";
+            if (!stage.activeSelf)
+                stage.SetActive(true);
+
+            // Resize to Stage Size (width x depth), then line it up: centred on centreX, front edge on 'front', whatever its pivot.
+            if (TryGetLocalBounds(stage.transform, levelRoot, out var min, out var max))
+            {
+                var size = database.StageSize;
+                var scale = stage.transform.localScale;
+                if (size.x > 0f && max.x - min.x > 0.01f)
+                    scale.x *= size.x / (max.x - min.x);
+                if (size.y > 0f && max.z - min.z > 0.01f)
+                    scale.z *= size.y / (max.z - min.z);
+                stage.transform.localScale = scale;
+                TryGetLocalBounds(stage.transform, levelRoot, out min, out max);
+
+                stage.transform.position += levelRoot.TransformVector(new Vector3(centreX - (min.x + max.x) * 0.5f, 0f, front - min.z));
+                TryGetLocalBounds(stage.transform, levelRoot, out min, out max);
+            }
+            else
+            {
+                min = new Vector3(centreX - 4f, 0f, front);
+                max = new Vector3(centreX + 4f, 0f, front + 4f);
+            }
+
+            frontZ = min.z;
+            var top = max.y;
+            var middleZ = (min.z + max.z) * 0.5f;
+            var spacing = database.StageSpotSpacing > 0f ? database.StageSpotSpacing : (max.x - min.x) * 0.5f;
+
+            if (!hasAi)
+            {
+                playerSpot = levelRoot.TransformPoint(new Vector3(centreX, top, middleZ));
+                return true;
+            }
+
+            // Each doll takes the side nearer her own ramp.
+            var playerSide = aiX >= 0f ? -1f : 1f;
+            playerSpot = levelRoot.TransformPoint(new Vector3(centreX + playerSide * spacing * 0.5f, top, middleZ));
+            aiSpot = levelRoot.TransformPoint(new Vector3(centreX - playerSide * spacing * 0.5f, top, middleZ));
+            return true;
+        }
+
+        // Straight on along her own ramp to the stage, up onto its front edge in line with her spot, then to the spot.
+        private List<Vector3> StagePath(Vector3 from, Vector3 spot, float frontZ)
+        {
+            var fromLocal = levelRoot.InverseTransformPoint(from);
+            var spotLocal = levelRoot.InverseTransformPoint(spot);
+
+            var path = new List<Vector3>();
+            if (fromLocal.z < frontZ - 0.6f)
+                path.Add(levelRoot.TransformPoint(new Vector3(fromLocal.x, fromLocal.y, frontZ - 0.6f)));
+            path.Add(levelRoot.TransformPoint(new Vector3(spotLocal.x, spotLocal.y, Mathf.Min(frontZ + 0.6f, spotLocal.z))));
+            path.Add(spot);
+            return path;
+        }
+
+        // Camera leaves the player and frames both spots on the stage.
+        private void FrameStage(Vector3 playerSpot, Vector3 aiSpot, Vector3 facing)
+        {
+            if (scene == null || scene.CameraFollow == null)
                 return;
 
+            var dollHeight = Mathf.Clamp(GetVisibleBounds(player.gameObject).size.y, 1f, 6f);
+            var centre = (playerSpot + aiSpot) * 0.5f;
+            var halfWidth = Vector3.Distance(playerSpot, aiSpot) * 0.5f + dollHeight * 0.35f;
+            scene.CameraFollow.ShowStage(centre + Vector3.up * dollHeight * 0.55f, facing, halfWidth, dollHeight * 0.6f);
+        }
+
+        // Works out pass / fail, saves progress and raises LevelCompleted / LevelFailed (result screens fill in,
+        // dolls play win / lose). Doesn't open the panel. Returns whether she passed.
+        private bool DecideResult()
+        {
             var runScore = player.Score;
             var coins = runScore != null ? runScore.Coins : 0;
 
@@ -599,17 +1012,14 @@ namespace _Core._Level
                 }
 
                 GameEvents.GameplayEvents.LevelCompleted.Raise(result);
-                GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelCompletePanel);
             }
             else
             {
                 var result = new LevelResult(current, CurrentLevelNumber, false, score, 0, coins, 0, match, hasAi, aiScore, aiMatch);
                 GameEvents.GameplayEvents.LevelFailed.Raise(result);
-                GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelFailedPanel);
             }
 
-            if (autoContinueDelay > 0f)
-                Invoke(passed ? nameof(LoadNext) : nameof(RestartCurrent), autoContinueDelay);
+            return passed;
         }
 
         private int GetAiScore()
@@ -617,6 +1027,19 @@ namespace _Core._Level
             if (current.HasTarget)
                 return aiMatch.Percent;
             return ai.Score != null ? ai.Score.Coins : 0;
+        }
+
+        // A retry / next level while the stage sequence is still running.
+        private void StopFinishSequence()
+        {
+            aiFinished = false;
+            if (finishRoutine == null)
+                return;
+
+            StopCoroutine(finishRoutine);
+            finishRoutine = null;
+            GameEvents.GameplayEvents.ComparisonEnded.Raise();
+            GameEvents.GameplayEvents.InputBlocked.Raise(false);
         }
 
         [ContextMenu("Reset Saved Progress")]

@@ -14,11 +14,15 @@ namespace Game.CameraRig
         [Tooltip("How much of the target's sideways movement the camera copies. 0 = stays centred, 1 = fully follows.")]
         [SerializeField, Range(0f, 1f)] private float lateralFollow = 0.4f;
 
+        [Tooltip("How much of the target's sideways movement the LOOK point copies. Higher than Lateral Follow, so the camera turns to keep her in view on narrow (portrait) screens while its position stays steady. 1 = always looks straight at her.")]
+        [SerializeField, Range(0f, 1f)] private float lookLateralFollow = 0.8f;
+
         [SerializeField, Min(0f)] private float smoothTime = 0.12f;
 
         public Vector3 Offset => offset;
         public Vector3 LookOffset => lookOffset;
         public float LateralFollow => lateralFollow;
+        public float LookLateralFollow => lookLateralFollow;
         public float SmoothTime => smoothTime;
     }
 }
