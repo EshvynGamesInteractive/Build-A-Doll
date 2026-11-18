@@ -271,6 +271,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   config: {fileID: 11400000, guid: c9d8530ebc026495cb4b94c1cb758329, type: 2}
+  stageSmoothTime: 0.6
+  stagePitch: 12
+  stagePadding: 0.5
+  stageZoomOut: 1.3
 --- !u!1 &712149077
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,7 +514,7 @@ MonoBehaviour:
   m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 1
+  m_SoftShadowQuality: 0
 --- !u!108 &1307331055
 Light:
   m_ObjectHideFlags: 0

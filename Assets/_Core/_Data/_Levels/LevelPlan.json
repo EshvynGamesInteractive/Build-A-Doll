@@ -632,12 +632,12 @@
    ]
   },
   {
-   "id": "scissors_one",
+   "id": "slime_one",
    "length": 12,
-   "note": "Scissors cut the DRESS: right after a dress gate.",
+   "note": "One slime tray in the middle, coins on the left (replaced the deleted Penalty_Scissors).",
    "items": [
     {
-     "prefab": "Penalty_Scissors",
+     "prefab": "Kit_SlimeTray",
      "offset": 0,
      "lateral": 0
     },
@@ -649,22 +649,22 @@
    ]
   },
   {
-   "id": "scissors_gauntlet",
+   "id": "slime_gauntlet",
    "length": 24,
-   "note": "Three scissors, one safe line.",
+   "note": "Three slime trays, one safe line (replaced the deleted Penalty_Scissors).",
    "items": [
     {
-     "prefab": "Penalty_Scissors",
+     "prefab": "Kit_SlimeTray",
      "offset": 0,
      "lateral": -2.5
     },
     {
-     "prefab": "Penalty_Scissors",
+     "prefab": "Kit_SlimeTray",
      "offset": 8,
      "lateral": 2.5
     },
     {
-     "prefab": "Penalty_Scissors",
+     "prefab": "Kit_SlimeTray",
      "offset": 16,
      "lateral": 0
     }
@@ -768,7 +768,7 @@
    "sections": [
     "coins_wave",
     "part",
-    "scissors_one",
+    "slime_one",
     "spinner_bar",
     "part",
     "low_blocks",
@@ -777,7 +777,7 @@
     "hurdle_row",
     "coin_bonanza"
    ],
-   "note": "SHOWCASE. Scissors after the dress, first spinner. Moving shoes gate."
+   "note": "SHOWCASE. Slime tray after the dress, first spinner. Moving shoes gate."
   },
   {
    "id": "Level_06",
@@ -834,7 +834,7 @@
    "sections": [
     "coins_line",
     "part",
-    "scissors_one",
+    "slime_one",
     "hurdle_double",
     "part",
     "sweep_arms",
@@ -843,7 +843,7 @@
     "part",
     "coins_wave"
    ],
-   "note": "Dress then scissors. Moving shoes, hat ring last."
+   "note": "Dress then a slime tray. Moving shoes, hat ring last."
   },
   {
    "id": "Level_09",
@@ -924,7 +924,7 @@
    "sections": [
     "coins_line",
     "part:moving",
-    "scissors_one",
+    "slime_one",
     "crusher_row",
     "part",
     "brick_zigzag",
@@ -933,7 +933,7 @@
     "part",
     "coin:x2,-20"
    ],
-   "note": "Moving dress straight into scissors. Hand item ring last."
+   "note": "Moving dress straight into a slime tray. Hand item ring last."
   },
   {
    "id": "Level_13",
@@ -947,7 +947,7 @@
    "sections": [
     "coins_line",
     "part",
-    "scissors_gauntlet",
+    "slime_gauntlet",
     "part",
     "fan_left",
     "part:moving",
@@ -1060,7 +1060,7 @@
    "sections": [
     "coins_line",
     "part",
-    "scissors_gauntlet",
+    "slime_gauntlet",
     "part",
     "pendulum_pair",
     "part:moving",
@@ -1068,7 +1068,7 @@
     "part",
     "coin:x3,-30"
    ],
-   "note": "Dress through the scissors. Moving shoes."
+   "note": "Dress through the slime trays. Moving shoes."
   },
   {
    "id": "Level_19",
@@ -1106,7 +1106,7 @@
    "sections": [
     "coins_line",
     "part",
-    "scissors_gauntlet",
+    "slime_gauntlet",
     "part",
     "closing_doors",
     "part:moving",

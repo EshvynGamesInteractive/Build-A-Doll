@@ -42,17 +42,17 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 28b0e1d8c22b24a22b73e50f0e70f995, type: 2}
     - {fileID: 11400000, guid: 278a87f527cdd4fb1bab29834be2fcb4, type: 2}
     coinGates: []
-  - prefab: {fileID: 8992507098036388250, guid: d428d702ee8154ffa98376441a6a80f0, type: 3}
+  - prefab: {fileID: 4996742669197746079, guid: 68293643bf6514e96b3b5c9e63783325, type: 3}
     distance: 50
     lateral: -2.5
     gateItems: []
     coinGates: []
-  - prefab: {fileID: 8992507098036388250, guid: d428d702ee8154ffa98376441a6a80f0, type: 3}
+  - prefab: {fileID: 4996742669197746079, guid: 68293643bf6514e96b3b5c9e63783325, type: 3}
     distance: 58
     lateral: 2.5
     gateItems: []
     coinGates: []
-  - prefab: {fileID: 8992507098036388250, guid: d428d702ee8154ffa98376441a6a80f0, type: 3}
+  - prefab: {fileID: 4996742669197746079, guid: 68293643bf6514e96b3b5c9e63783325, type: 3}
     distance: 66
     lateral: 0
     gateItems: []

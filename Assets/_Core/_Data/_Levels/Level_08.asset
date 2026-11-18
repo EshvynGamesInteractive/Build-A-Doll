@@ -47,7 +47,7 @@ MonoBehaviour:
     lateral: -2.5
     gateItems: []
     coinGates: []
-  - prefab: {fileID: 8992507098036388250, guid: d428d702ee8154ffa98376441a6a80f0, type: 3}
+  - prefab: {fileID: 4996742669197746079, guid: 68293643bf6514e96b3b5c9e63783325, type: 3}
     distance: 54
     lateral: 0
     gateItems: []

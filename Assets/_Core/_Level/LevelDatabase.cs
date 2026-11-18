@@ -108,8 +108,14 @@ namespace Game.Level
         [Tooltip("Used when a level doesn't set its own finish line.")]
         [SerializeField] private GameObject defaultFinishLine;
 
-        [Tooltip("Level number (1-based) to loop back to after the last one. Skips the tutorial levels.")]
+        [Tooltip("After the last level, levels are picked from this level number (1-based) onwards. Skips the tutorial levels.")]
         [SerializeField, Min(1)] private int loopFromLevel = 1;
+
+        [Tooltip("On: after the last level, a random level is picked each time (shuffled like a deck: no repeats until all have been played, never the same twice in a row). Off: they replay in order.")]
+        [SerializeField] private bool randomAfterLast = true;
+
+        [Tooltip("Changes the random order after the last level.")]
+        [SerializeField] private int randomSeed = 7919;
 
         public int Count => levels.Count;
         public GameObject DefaultFinishLine => defaultFinishLine;
@@ -140,7 +146,11 @@ namespace Game.Level
         public float ResultDelay => resultDelay;
         public float ResultAnimMaxTime => resultAnimMaxTime;
 
-        /// <summary>Level for a play-through index (0, 1, 2... forever), looping after the last one.</summary>
+        /// <summary>
+        /// Level for a play-through index (0, 1, 2... forever). Up to the last level: that level.
+        /// After it: a random level from Loop From Level on (or in order when Random After Last is off).
+        /// The same index always gives the same level, so Retry replays it and the level map stays consistent.
+        /// </summary>
         public LevelData GetLevel(int index)
         {
             if (levels.Count == 0)
@@ -151,7 +161,44 @@ namespace Game.Level
 
             var loopStart = Mathf.Clamp(loopFromLevel - 1, 0, levels.Count - 1);
             var loopLength = levels.Count - loopStart;
-            return levels[loopStart + (index - levels.Count) % loopLength];
+            var past = index - levels.Count;
+
+            // Two or fewer levels to pick from: alternating in order already never repeats.
+            if (!randomAfterLast || loopLength < 3)
+                return levels[loopStart + past % loopLength];
+
+            // Shuffled deck per round of loopLength picks: every level once per round, no back-to-back repeat between rounds.
+            var round = past / loopLength;
+            var deck = ShuffledRound(round, loopLength);
+            return levels[loopStart + deck[past % loopLength]];
+        }
+
+        private int[] ShuffledRound(int round, int length)
+        {
+            var deck = Shuffle(round, length);
+            if (round > 0)
+            {
+                var previous = Shuffle(round - 1, length);
+                // Swap the first two (never the last), so the next round's check against the plain shuffle stays right.
+                if (deck[0] == previous[length - 1])
+                    (deck[0], deck[1]) = (deck[1], deck[0]);
+            }
+            return deck;
+        }
+
+        private int[] Shuffle(int round, int length)
+        {
+            var deck = new int[length];
+            for (var i = 0; i < length; i++)
+                deck[i] = i;
+
+            var random = new System.Random(unchecked(randomSeed * 31 + round * 7919 + length));
+            for (var i = length - 1; i > 0; i--)
+            {
+                var j = random.Next(i + 1);
+                (deck[i], deck[j]) = (deck[j], deck[i]);
+            }
+            return deck;
         }
     }
 }
