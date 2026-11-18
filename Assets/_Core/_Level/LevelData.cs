@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Hurdles.Data;
 using Game.Outfit;
 using UnityEngine;
 
@@ -74,6 +75,11 @@ namespace Game.Level
         [Tooltip("What she wears when the level starts.")]
         [SerializeField] private OutfitItem[] startingOutfit;
 
+        [Header("Item collection")]
+        [Tooltip("Item levels (\"Collect These Kitchen Items\"): what she must put in the shopping cart. " +
+                 "Not empty and no target look = the result is the % of these collected, so Score To Pass and Star Scores become percentages.")]
+        [SerializeField] private CollectibleItemData[] collectItems;
+
         [SerializeField] private List<Entry> entries = new();
 
         [Header("Result")]
@@ -102,6 +108,10 @@ namespace Game.Level
         public GameObject DemoPrefab => TargetLook != null ? TargetLook.DemoPrefab : null;
         public IReadOnlyList<OutfitItem> StartingOutfit => startingOutfit;
         public IReadOnlyList<Entry> Entries => entries;
+        public IReadOnlyList<CollectibleItemData> CollectItems => collectItems;
+
+        /// <summary>An item level: the cart decides the result (unless there's also a target look).</summary>
+        public bool IsCollectLevel => collectItems != null && collectItems.Length > 0;
         public int ScoreToPass => scoreToPass;
         public int CompletionCoins => completionCoins;
 

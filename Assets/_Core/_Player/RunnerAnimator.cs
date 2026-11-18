@@ -280,6 +280,28 @@ namespace Game.Player
             _wasStumbling = stumbling;
         }
 
+        /// <summary>Fires a trigger if the Animator has it, e.g. "Roll" or "Die" from a track element.</summary>
+        public void PlayTrigger(string trigger)
+        {
+            if (animator == null || !enabled || string.IsNullOrEmpty(trigger))
+                return;
+
+            var hash = Animator.StringToHash(trigger);
+            if (HasParameter(hash, AnimatorControllerParameterType.Trigger))
+                animator.SetTrigger(hash);
+        }
+
+        /// <summary>Sets a bool if the Animator has it, e.g. "Ride", "Swim" or "OnFire".</summary>
+        public void SetBool(string parameter, bool value)
+        {
+            if (animator == null || !enabled || string.IsNullOrEmpty(parameter))
+                return;
+
+            var hash = Animator.StringToHash(parameter);
+            if (HasParameter(hash, AnimatorControllerParameterType.Bool))
+                animator.SetBool(hash, value);
+        }
+
         private bool HasParameter(int hash, AnimatorControllerParameterType type)
         {
             foreach (var parameter in animator.parameters)

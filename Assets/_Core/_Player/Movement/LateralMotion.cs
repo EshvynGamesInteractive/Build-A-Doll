@@ -22,6 +22,12 @@ namespace Game.Player.Movement
             _targetOffset = Mathf.Clamp(_targetOffset + screenFraction * sensitivity, -halfWidth, halfWidth);
         }
 
+        /// <summary>Sends her to a sideways position (e.g. a side-run wall), kept inside the track.</summary>
+        public void SetTarget(float offset, float halfWidth)
+        {
+            _targetOffset = Mathf.Clamp(offset, -halfWidth, halfWidth);
+        }
+
         public float Tick(float smoothTime, float deltaTime)
         {
             Offset = Mathf.SmoothDamp(Offset, _targetOffset, ref _velocity, smoothTime, Mathf.Infinity, deltaTime);

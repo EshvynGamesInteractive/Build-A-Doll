@@ -75,7 +75,16 @@ namespace Game.AI
                 return;
             }
 
-            var penalty = hurdle.GetComponentInChildren<PenaltyItem>();
+            // Effect gates and pickups (body, colour, kitchen items...): steer into a good one.
+            var choice = ChooseChoice(hurdle.GetComponentsInChildren<IAiChoice>(), profile);
+            if (choice != null)
+            {
+                var distance = ramp.InverseTransformPoint(choice.position).z;
+                steps.Add(new AiStep { Distance = distance - profile.GateLookAhead, Action = AiStep.Kind.SteerTo, Target = choice });
+                return;
+            }
+
+            var penalty = FindObstacle(hurdle);
             if (penalty == null || Random.value > profile.ObstacleSkill)
                 return; // coins, or the AI "doesn't see" this one
 
@@ -93,6 +102,43 @@ namespace Game.AI
                     steps.Add(new AiStep { Distance = bounds.min.z - SteerAroundLead, Action = AiStep.Kind.SteerTo, Lateral = dodge });
                     break;
             }
+        }
+
+        // The first part of the hurdle the AI should get past (penalties, Kill hurdles, effect hazards).
+        private static IAiObstacle FindObstacle(GameObject hurdle)
+        {
+            foreach (var obstacle in hurdle.GetComponentsInChildren<IAiObstacle>())
+            {
+                if (obstacle.AvoidByAi)
+                    return obstacle;
+            }
+
+            return null;
+        }
+
+        // A good option with 'GateAccuracy' chance, otherwise a bad one. Null when nothing good is on offer.
+        private static Transform ChooseChoice(IAiChoice[] choices, AiProfile profile)
+        {
+            var good = new List<IAiChoice>();
+            var bad = new List<IAiChoice>();
+            foreach (var choice in choices)
+            {
+                if (!choice.OffersChoice)
+                    continue;
+
+                if (choice.IsGoodChoice)
+                    good.Add(choice);
+                else
+                    bad.Add(choice);
+            }
+
+            if (good.Count == 0)
+                return null;
+
+            if (bad.Count == 0 || Random.value <= profile.GateAccuracy)
+                return good[Random.Range(0, good.Count)].transform;
+
+            return bad[Random.Range(0, bad.Count)].transform;
         }
 
         // Picks the gate with a target item with 'GateAccuracy' chance, otherwise a different one.
@@ -146,7 +192,7 @@ namespace Game.AI
             return false;
         }
 
-        private static PenaltyItem.AiAvoidance Classify(PenaltyItem penalty, Bounds bounds, float trackWidth)
+        private static PenaltyItem.AiAvoidance Classify(IAiObstacle penalty, Bounds bounds, float trackWidth)
         {
             if (penalty.AiAvoid != PenaltyItem.AiAvoidance.Auto)
                 return penalty.AiAvoid;
@@ -155,7 +201,7 @@ namespace Game.AI
                 return PenaltyItem.AiAvoidance.Slide;
 
             // Moving things are hard to steer around; jump them.
-            if (bounds.size.x >= trackWidth * TrackWideShare || penalty.GetComponentInParent<HurdleMover>() != null)
+            if (bounds.size.x >= trackWidth * TrackWideShare || penalty.gameObject.GetComponentInParent<HurdleMover>() != null)
                 return PenaltyItem.AiAvoidance.Jump;
 
             return PenaltyItem.AiAvoidance.SteerAround;
@@ -163,11 +209,11 @@ namespace Game.AI
 
         // Centre of the widest stretch of track (ramp space x) that none of the penalty's boxes cover.
         // Falls back to the old fixed dodge when nothing is wide enough for the doll.
-        private static float FindOpenLane(PenaltyItem penalty, Transform ramp, float halfWidth, Bounds bounds)
+        private static float FindOpenLane(IAiObstacle penalty, Transform ramp, float halfWidth, Bounds bounds)
         {
             const float minOpening = 1f;
             var blocked = new List<Vector2>();
-            foreach (var col in penalty.GetComponents<Collider>())
+            foreach (var col in penalty.gameObject.GetComponents<Collider>())
             {
                 var b = ToRamp(col.bounds, ramp);
                 blocked.Add(new Vector2(b.min.x, b.max.x));
@@ -212,10 +258,10 @@ namespace Game.AI
         }
 
         // All of the penalty's collider boxes together, in ramp space (x = sideways, y = up, z = along the ramp).
-        private static Bounds GetRampBounds(PenaltyItem penalty, Transform ramp)
+        private static Bounds GetRampBounds(IAiObstacle penalty, Transform ramp)
         {
-            var colliders = penalty.GetComponents<Collider>();
-            var world = colliders.Length > 0 ? colliders[0].bounds : new Bounds(penalty.transform.position, Vector3.one);
+            var colliders = penalty.gameObject.GetComponents<Collider>();
+            var world = colliders.Length > 0 ? colliders[0].bounds : new Bounds(penalty.gameObject.transform.position, Vector3.one);
             for (var i = 1; i < colliders.Length; i++)
                 world.Encapsulate(colliders[i].bounds);
 

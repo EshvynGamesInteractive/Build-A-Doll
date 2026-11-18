@@ -7,6 +7,7 @@ using Game.AI;
 using Game.Hurdles;
 using Game.Level;
 using Game.Outfit;
+using Game.Player.Features;
 using Game.Player.Input;
 using UnityEngine;
 
@@ -69,6 +70,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestRestartLevel.Register(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Register(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Register(OnTargetLookIntroDone);
+            GameEvents.TrackEvents.RunnerKilled.Register(OnRunnerKilled);
         }
 
         private void OnDisable()
@@ -80,6 +82,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestRestartLevel.Unregister(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Unregister(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Unregister(OnTargetLookIntroDone);
+            GameEvents.TrackEvents.RunnerKilled.Unregister(OnRunnerKilled);
         }
 
         // Cache scene references so the Home screen can start the saved level on demand.
@@ -147,6 +150,11 @@ namespace _Core._Level
                 outfit.SetStartingItems(level.StartingOutfit);
 
             SpawnAi(level);
+
+            // Item levels: both carts get the wanted list before the reset empties them.
+            SetCartTargets(player, level);
+            if (ai != null)
+                SetCartTargets(ai, level);
 
             // Puts the player, her outfit, score and any hurdles back to their start state.
             GameEvents.GameplayEvents.ResetRun.Raise();
@@ -264,6 +272,7 @@ namespace _Core._Level
                 var instance = Spawn(root, entry.prefab, entry.distance, entry.lateral);
                 ConfigureGates(instance, entry.gateItems, level.TargetOutfit);
                 ConfigureCoinGates(instance, entry.coinGates);
+                ConfigureForLevel(instance, level);
                 hurdles.Add(instance);
             }
 
@@ -478,6 +487,25 @@ namespace _Core._Level
                 gates[i].Configure(itemOverride, targetItems);
             }
         }
+
+        // Track elements that depend on the level (kitchen items, wearables vs the target look), then their red / green look.
+        private static void ConfigureForLevel(GameObject instance, LevelData level)
+        {
+            foreach (var configurable in instance.GetComponentsInChildren<ILevelConfigurable>())
+                configurable.Configure(level);
+
+            foreach (var hurdle in instance.GetComponentsInChildren<EffectHurdle>())
+                hurdle.RefreshDisplay();
+        }
+
+        private static void SetCartTargets(RunnerController runner, LevelData level)
+        {
+            if (runner.TryGetFeature(out ShoppingCart cart))
+                cart.SetWanted(level.IsCollectLevel ? level.CollectItems : null);
+        }
+
+        private static int CartPercent(RunnerController runner) =>
+            runner != null && runner.TryGetFeature(out ShoppingCart cart) ? cart.MatchPercent : 0;
 
         private static void ConfigureCoinGates(GameObject instance, CoinGate.Setting[] settings)
         {
@@ -997,7 +1025,8 @@ namespace _Core._Level
             var coins = runScore != null ? runScore.Coins : 0;
 
             // With a target look the result is how well she copied it (0..100); otherwise the coins gained this run.
-            var score = current.HasTarget ? match.Percent : coins;
+            // ...or, on item levels, the % of the wanted items in her cart.
+            var score = current.HasTarget ? match.Percent : current.IsCollectLevel ? CartPercent(player) : coins;
 
             // The level pass mark applies in every race. Against AI, ties also fail.
             var hasAi = ai != null;
@@ -1030,6 +1059,8 @@ namespace _Core._Level
         {
             if (current.HasTarget)
                 return aiMatch.Percent;
+            if (current.IsCollectLevel)
+                return CartPercent(ai);
             return ai.Score != null ? ai.Score.Coins : 0;
         }
 
@@ -1044,6 +1075,31 @@ namespace _Core._Level
             finishRoutine = null;
             GameEvents.GameplayEvents.ComparisonEnded.Raise();
             GameEvents.GameplayEvents.InputBlocked.Raise(false);
+        }
+
+        // A Kill hurdle: the AI just stops (it falls behind); the player fails the level.
+        private void OnRunnerKilled(RunnerController runner)
+        {
+            if (runner == null || runner != player || finished || current == null)
+                return;
+
+            finished = true;
+            finishRoutine = StartCoroutine(KilledSequence());
+        }
+
+        private IEnumerator KilledSequence()
+        {
+            GameEvents.GameplayEvents.InputBlocked.Raise(true);
+            yield return new WaitForSeconds(database.ResultDelay);
+
+            var coins = player.Score != null ? player.Score.Coins : 0;
+            var playerMatch = OutfitComparer.Compare(current.TargetOutfit, player.DollOutfit);
+            var result = new LevelResult(current, CurrentLevelNumber, false, 0, 0, coins, 0, playerMatch, ai != null, 0, default);
+            GameEvents.GameplayEvents.LevelFailed.Raise(result);
+
+            finishRoutine = null;
+            GameEvents.GameplayEvents.InputBlocked.Raise(false);
+            GameEvents.UIEvents.ShowByType.Raise(ScreenType.LevelFailedPanel);
         }
 
         [ContextMenu("Reset Saved Progress")]

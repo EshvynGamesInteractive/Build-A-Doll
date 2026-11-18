@@ -149,6 +149,16 @@ namespace Game.Outfit
             return true;
         }
 
+        /// <summary>Adds the renderers of every worn item to 'results' (e.g. for repainting the clothes).</summary>
+        public void GetItemRenderers(List<Renderer> results)
+        {
+            foreach (var spawned in _spawned.Values)
+            {
+                if (spawned != null)
+                    results.AddRange(spawned.GetComponentsInChildren<Renderer>(true));
+            }
+        }
+
         public void ClearAll()
         {
             foreach (var slot in new List<OutfitSlot>(_worn.Keys))

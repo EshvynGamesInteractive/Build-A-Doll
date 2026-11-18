@@ -53,6 +53,7 @@ namespace _Core._Player
         private readonly ForwardMotion _forward = new();
         private readonly LateralMotion _lateral = new();
         private readonly VerticalMotion _vertical = new();
+        private readonly RunnerModifiers _modifiers = new();
 
         private IDragInput _input;
         private IActionInput _actions;
@@ -153,6 +154,7 @@ namespace _Core._Player
             _isStumbling = false;
             _vertical.Reset();
             _forward.Reset();
+            _modifiers.Reset();
             _squash = 1f;
             if (visual != transform)
                 ApplySquash();
@@ -285,17 +287,19 @@ namespace _Core._Player
             }
 
             var deltaTime = Time.deltaTime;
-            var canControl = _phase == Phase.Running;
+            var canControl = _phase == Phase.Running && !_modifiers.IsHeld;
 
             if (canControl)
             {
-                _lateral.AddDrag(_input.HorizontalDelta, config.DragSensitivity, config.TrackHalfWidth);
+                if (!_modifiers.IsSteeringLocked)
+                    _lateral.AddDrag(_input.HorizontalDelta, config.DragSensitivity, config.TrackHalfWidth);
                 ReadActions();
             }
 
+            _modifiers.Tick(config.HeightOffsetSpeed, deltaTime);
             _distance += _forward.Tick(GetTargetSpeed(canControl), config.Acceleration, config.Deceleration, deltaTime);
             var offset = _lateral.Tick(config.LateralSmoothTime, deltaTime);
-            var height = _vertical.Tick(config.SlideDuration, deltaTime);
+            var height = _vertical.Tick(config.SlideDuration, deltaTime) + _modifiers.Height;
 
             transform.position = _startPosition + _trackForward * _distance + _trackRight * offset + Vector3.up * height;
             UpdateTurn(deltaTime);
@@ -347,14 +351,19 @@ namespace _Core._Player
             if (!canControl)
                 return 0f;
 
+            // Boosts (cannon, speed pads) carry her even when the finger is off the screen.
+            if (_modifiers.IsBoosting)
+                return _modifiers.BoostSpeed;
+
             var wantsToRun = !config.RunOnlyWhileHolding || _input.IsHolding;
             if (!wantsToRun)
                 return 0f;
 
+            var speed = config.ForwardSpeed * _modifiers.SpeedFactor;
             if (_isStumbling)
-                return config.ForwardSpeed * _stumbleSpeedFactor;
+                return speed * _stumbleSpeedFactor;
 
-            return config.ForwardSpeed;
+            return speed;
         }
 
         /// <summary>Slows the doll down for a moment, e.g. after hitting a minus item.</summary>
@@ -381,6 +390,62 @@ namespace _Core._Player
             var target = _visualBaseRotation * Quaternion.Euler(0f, yaw, 0f);
             var t = 1f - Mathf.Exp(-config.TurnLerpSpeed * deltaTime);
             visual.localRotation = Quaternion.Slerp(visual.localRotation, target, t);
+        }
+
+        // ---------- Track elements (gates, boosters, set pieces) ----------
+
+        /// <summary>True while something holds her in place (make-up step, cannon, rewarded offer).</summary>
+        public bool IsHeld => _modifiers.IsHeld;
+
+        /// <summary>Stops her on the spot and ignores input until every source has released her.</summary>
+        public void Hold(object source)
+        {
+            _modifiers.Hold(source);
+            _forward.SetSpeed(0f);
+        }
+
+        public void Release(object source) => _modifiers.Release(source);
+
+        /// <summary>Ignores sideways drags until unlocked (e.g. while running along a wall).</summary>
+        public void LockSteering(object source) => _modifiers.LockSteering(source);
+
+        public void UnlockSteering(object source) => _modifiers.UnlockSteering(source);
+
+        /// <summary>Multiplies her run speed while set (terrain, rides, statuses). Factors from different sources multiply.</summary>
+        public void SetSpeedFactor(object source, float factor) => _modifiers.SetSpeedFactor(source, factor);
+
+        public void ClearSpeedFactor(object source) => _modifiers.ClearSpeedFactor(source);
+
+        /// <summary>Lifts her above the track while set (flying, wall run). The highest offset wins; she eases to it.</summary>
+        public void SetHeightOffset(object source, float height) => _modifiers.SetHeightOffset(source, height);
+
+        public void ClearHeightOffset(object source) => _modifiers.ClearHeightOffset(source);
+
+        /// <summary>Runs at 'speed' for 'duration' seconds, even without holding the screen.</summary>
+        public void Boost(float speed, float duration)
+        {
+            _modifiers.Boost(speed, duration);
+            _forward.SetSpeed(speed);
+        }
+
+        /// <summary>Jumps without a swipe (jump patch). Only works on the ground.</summary>
+        public void ForceJump(float height, float airTime) => _vertical.Jump(height, airTime);
+
+        /// <summary>Slides without a swipe (slide patch, roll gate).</summary>
+        public void ForceSlide() => _vertical.Slide(config.SlideDuration, config.FastFallSpeed);
+
+        /// <summary>Sends her sideways to 'offset' from the track centre (kept inside the track).</summary>
+        public void SetLateralTarget(float offset) => _lateral.SetTarget(offset, config.TrackHalfWidth);
+
+        /// <summary>Shoots her 'distance' down the track in an arc 'height' high that lasts 'airTime' seconds (cannon).</summary>
+        public void Launch(float distance, float height, float airTime)
+        {
+            airTime = Mathf.Max(0.1f, airTime);
+            if (!_vertical.IsGrounded)
+                _vertical.Reset();
+
+            _vertical.Jump(height, airTime);
+            Boost(distance / airTime, airTime);
         }
 
         /// <summary>Starts this runner now (e.g. when the target-look intro ends), without waiting for a touch.</summary>
@@ -417,6 +482,7 @@ namespace _Core._Player
             _forward.Reset();
             _lateral.Reset();
             _vertical.Reset();
+            _modifiers.Reset();
 
             transform.position = _startPosition;
             visual.localRotation = _visualBaseRotation;

@@ -42,6 +42,10 @@ namespace Game.Player.Config
         [SerializeField] private bool squashVisualOnSlide = true;
         [SerializeField, Range(0.1f, 1f)] private float slideVisualScale = 0.45f;
 
+        [Header("Track elements")]
+        [Tooltip("How fast she rises to / drops from a height offset (flying, wall run), in units per second.")]
+        [SerializeField, Min(0.1f)] private float heightOffsetSpeed = 6f;
+
         [Header("Turning visual")]
         [Tooltip("Degrees of yaw per unit of sideways speed.")]
         [SerializeField, Min(0f)] private float turnAnglePerSpeed = 4f;
@@ -65,5 +69,6 @@ namespace Game.Player.Config
         public float TurnAnglePerSpeed => turnAnglePerSpeed;
         public float MaxTurnAngle => maxTurnAngle;
         public float TurnLerpSpeed => turnLerpSpeed;
+        public float HeightOffsetSpeed => heightOffsetSpeed;
     }
 }

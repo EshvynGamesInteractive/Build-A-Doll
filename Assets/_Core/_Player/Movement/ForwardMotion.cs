@@ -14,6 +14,12 @@ namespace Game.Player.Movement
             return CurrentSpeed * deltaTime;
         }
 
+        /// <summary>Jumps straight to a speed (e.g. stopped by a hold, or shot out of a cannon).</summary>
+        public void SetSpeed(float speed)
+        {
+            CurrentSpeed = Mathf.Max(0f, speed);
+        }
+
         public void ClampSpeed(float maxSpeed)
         {
             CurrentSpeed = Mathf.Min(CurrentSpeed, maxSpeed);

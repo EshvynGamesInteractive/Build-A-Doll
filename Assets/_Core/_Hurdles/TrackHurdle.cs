@@ -1,6 +1,7 @@
 using _Core._Player;
 using Core._GameEvent;
 using Game.Player;
+using Game.Player.Features;
 using UnityEngine;
 
 namespace Game.Hurdles
@@ -33,6 +34,12 @@ namespace Game.Hurdles
 
         public bool IsUsed { get; private set; }
 
+        /// <summary>Raised after the hit was handled, e.g. for a collection animation.</summary>
+        public event System.Action<RunnerController> PlayerHit;
+
+        /// <summary>Harmful hurdles are ignored while the doll has a shield (or an invulnerable ride).</summary>
+        protected virtual bool IsHazard => false;
+
         protected virtual void Awake()
         {
             _trigger = GetComponent<Collider>();
@@ -64,13 +71,29 @@ namespace Game.Hurdles
                 return;
 
             Use();
+
+            if (IsHazard && IsShielded(player))
+                return;
+
             OnPlayerHit(player);
+            PlayerHit?.Invoke(player);
 
             if (hitEffect != null)
                 Instantiate(hitEffect, other.ClosestPoint(transform.position), Quaternion.identity).Play();
 
             if (!player.IsAI && hitSound != null)
                 GameEvents.AudioEvents.PlaySfx.Raise(hitSound);
+        }
+
+        private static bool IsShielded(RunnerController player)
+        {
+            foreach (var shield in player.GetComponentsInChildren<IHazardShield>())
+            {
+                if (shield.TryBlock())
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>What this hurdle does to the player.</summary>

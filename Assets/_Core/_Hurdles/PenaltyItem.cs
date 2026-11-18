@@ -11,9 +11,18 @@ namespace Game.Hurdles
     /// <summary>
     /// A "minus" item: mud, scissors, paint splash... Hitting it costs coins,
     /// can make the doll stumble, and can take an item off her (e.g. scissors cut the dress).
+    /// A Kill hurdle ends the run instead: the level is failed.
     /// </summary>
-    public class PenaltyItem : TrackHurdle
+    public class PenaltyItem : TrackHurdle, IAiObstacle
     {
+        public enum HurdleType
+        {
+            [Tooltip("Slows her down (stumble animation) and costs coins.")]
+            Stumble,
+            [Tooltip("Ends the run: the level is failed.")]
+            Kill
+        }
+
         public enum AiAvoidance
         {
             [Tooltip("Decide from the shape: high = slide, track-wide = jump, small = steer around.")]
@@ -25,6 +34,12 @@ namespace Game.Hurdles
 
         [Tooltip("How the AI gets past this.")]
         [SerializeField] private AiAvoidance aiAvoid = AiAvoidance.Auto;
+
+        [Tooltip("Stumble: slows her down and costs coins. Kill: ends the run and fails the level.")]
+        [SerializeField] private HurdleType hurdleType = HurdleType.Stumble;
+
+        [Tooltip("Animator trigger played on a Kill hit.")]
+        [SerializeField] private string killTrigger = "Die";
 
         [Tooltip("Coins taken away when hit.")]
         [FormerlySerializedAs("pointsLost")]
@@ -41,9 +56,18 @@ namespace Game.Hurdles
         [SerializeField] private OutfitSlot slotToRemove = OutfitSlot.Dress;
 
         public AiAvoidance AiAvoid => aiAvoid;
+        public HurdleType Type => hurdleType;
+        public bool AvoidByAi => true;
+        protected override bool IsHazard => true;
 
         protected override void OnPlayerHit(RunnerController player)
         {
+            if (hurdleType == HurdleType.Kill)
+            {
+                Kill(player);
+                return;
+            }
+
             // Take the item off first so the score update below includes the lost style.
             if (removesItem)
             {
@@ -63,6 +87,15 @@ namespace Game.Hurdles
 
             if (!player.IsAI)
                 GameEvents.GameplayEvents.PenaltyTaken.Raise(coinCost);
+        }
+
+        private void Kill(RunnerController player)
+        {
+            player.Hold(this);
+            player.Stop();
+            if (player.Animator != null)
+                player.Animator.PlayTrigger(killTrigger);
+            GameEvents.TrackEvents.RunnerKilled.Raise(player);
         }
     }
 }
