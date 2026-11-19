@@ -19,6 +19,9 @@ namespace Core._GameEvent
             /// <summary>Notification: the doll put on an item (e.g. after running through a gate).</summary>
             public static readonly GameEvent<Game.Outfit.OutfitItem> OutfitItemEquipped = new();
 
+            /// <summary>Notification: a paint gate painted the player's face. Args: zone (lips / eye shadow / blush), colour.</summary>
+            public static readonly GameEvent<Game.Outfit.MakeupZone, UnityEngine.Color> MakeupPainted = new();
+
             /// <summary>Notification: the player completed an outfit variant for the first time (passed its level).</summary>
             public static readonly GameEvent<Game.Outfit.OutfitVariant> OutfitCompleted = new();
 

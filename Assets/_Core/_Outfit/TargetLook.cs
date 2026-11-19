@@ -25,6 +25,10 @@ namespace Game.Outfit
         [Tooltip("Optional: picture of the look for UI (e.g. a 'Make this look' card).")]
         [SerializeField] private Sprite preview;
 
+        [Header("Makeup")]
+        [Tooltip("Makeup to copy (paint gates): e.g. pink Eye Shadow, red Lips. Each counts like one item in the match %.")]
+        [SerializeField] private MakeupColor[] makeup;
+
         [Header("Judging")]
         [Tooltip("Match % needed to win.")]
         [SerializeField, Range(0, 100)] private int passPercent = 60;
@@ -37,6 +41,25 @@ namespace Game.Outfit
         public OutfitVariant Variant => variant;
         public IReadOnlyList<OutfitItem> Items => variant != null ? variant.AllParts : items;
         public bool HasItems => Items != null && Items.Count > 0;
+
+        public IReadOnlyList<MakeupColor> Makeup => makeup ?? System.Array.Empty<MakeupColor>();
+
+        /// <summary>Anything to judge at all: items or makeup.</summary>
+        public bool HasAnything => HasItems || Makeup.Count > 0;
+
+        public bool TryGetMakeup(MakeupZone zone, out MakeupColor color)
+        {
+            foreach (var m in Makeup)
+            {
+                if (m.zone == zone)
+                {
+                    color = m;
+                    return true;
+                }
+            }
+            color = default;
+            return false;
+        }
         public GameObject DemoPrefab => demoPrefab;
         public Sprite Preview => preview;
         public int PassPercent => passPercent;
@@ -44,7 +67,7 @@ namespace Game.Outfit
         public bool IsPass(int matchPercent) => matchPercent >= passPercent;
 
         /// <summary>A look made at runtime for a level that only names an outfit variant.</summary>
-        public static TargetLook CreateFor(OutfitVariant outfitVariant, int pass, int[] stars)
+        public static TargetLook CreateFor(OutfitVariant outfitVariant, int pass, int[] stars, MakeupColor[] makeupTargets = null)
         {
             var look = CreateInstance<TargetLook>();
             look.name = outfitVariant != null ? $"Look_{outfitVariant.name}" : "Look_Runtime";
@@ -52,6 +75,7 @@ namespace Game.Outfit
             look.variant = outfitVariant;
             look.passPercent = pass;
             look.starPercents = stars;
+            look.makeup = makeupTargets;
             return look;
         }
 

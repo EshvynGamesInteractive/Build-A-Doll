@@ -66,6 +66,15 @@ namespace Game.AI
                 return;
             }
 
+            var paintGates = hurdle.GetComponentsInChildren<PaintGate>();
+            if (paintGates.Length > 0)
+            {
+                var gate = ChoosePaintGate(paintGates, look, profile);
+                var distance = ramp.InverseTransformPoint(gate.transform.position).z;
+                steps.Add(new AiStep { Distance = distance - profile.GateLookAhead, Action = AiStep.Kind.SteerTo, Target = gate.transform });
+                return;
+            }
+
             var coinGates = hurdle.GetComponentsInChildren<CoinGate>();
             if (coinGates.Length > 0)
             {
@@ -112,6 +121,24 @@ namespace Game.AI
             if (right != null && (wrong.Count == 0 || Random.value <= profile.GateAccuracy))
                 return right;
 
+            return wrong.Count > 0 ? wrong[Random.Range(0, wrong.Count)] : gates[0];
+        }
+
+        // Picks the paint gate with the target colour with 'GateAccuracy' chance, otherwise a different one.
+        private static PaintGate ChoosePaintGate(PaintGate[] gates, TargetLook look, AiProfile profile)
+        {
+            PaintGate right = null;
+            var wrong = new List<PaintGate>();
+            foreach (var gate in gates)
+            {
+                if (right == null && gate.HelpsTarget(look))
+                    right = gate;
+                else
+                    wrong.Add(gate);
+            }
+
+            if (right != null && (wrong.Count == 0 || Random.value <= profile.GateAccuracy))
+                return right;
             return wrong.Count > 0 ? wrong[Random.Range(0, wrong.Count)] : gates[0];
         }
 

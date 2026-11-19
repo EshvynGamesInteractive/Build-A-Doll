@@ -29,6 +29,8 @@ namespace Game.Level
             [Tooltip("For gate prefabs: items for its ItemGates, in hierarchy order (left, right). Empty = keep the prefab's items.")]
             public OutfitItem[] gateItems;
 
+            [Tooltip("For paint gate prefabs: face zone and colour for its PaintGates in hierarchy order. Empty = keep the prefab's.")]
+            public Game.Hurdles.PaintGate.Setting[] paintGates;
             [Tooltip("For coin gate prefabs: maths for its CoinGates in hierarchy order (CoinGatePair: right gate first, then left), e.g. x2 and -10. Empty = keep the prefab's.")]
             public Game.Hurdles.CoinGate.Setting[] coinGates;
         }
@@ -50,6 +52,8 @@ namespace Game.Level
 
         [Tooltip("Match % for 1, 2 and 3 stars when the target comes from Outfit.")]
         [SerializeField] private int[] outfitStarPercents = { 50, 75, 100 };
+        [Tooltip("Makeup to copy when the target comes from Outfit (paint gates), e.g. pink Eye Shadow. Each counts like one item.")]
+        [SerializeField] private MakeupColor[] outfitMakeup;
 
         [Header("Target look")]
         [Tooltip("The look to copy: shown on the demo doll at the start and compared at the finish. Empty = use Outfit; both empty = no comparison (run score decides).")]
@@ -89,8 +93,8 @@ namespace Game.Level
         public OutfitVariant Outfit => outfit != null ? outfit : targetLook != null ? targetLook.Variant : null;
         public bool HasAiOpponent => hasAiOpponent;
         public Game.AI.AiProfile AiProfile => aiProfile;
-        public bool HasTarget => TargetLook != null && TargetLook.HasItems;
-        public IReadOnlyList<OutfitItem> TargetOutfit => HasTarget ? TargetLook.Items : null;
+        public bool HasTarget => TargetLook != null && TargetLook.HasAnything;
+        public IReadOnlyList<OutfitItem> TargetOutfit => HasTarget && TargetLook.HasItems ? TargetLook.Items : null;
         public GameObject DemoPrefab => TargetLook != null ? TargetLook.DemoPrefab : null;
         public IReadOnlyList<OutfitItem> StartingOutfit => startingOutfit;
         public IReadOnlyList<Entry> Entries => entries;
@@ -125,7 +129,7 @@ namespace Game.Level
 
             // Rebuilt if the outfit was changed in the inspector since it was made.
             if (_outfitLook == null || _outfitLook.Variant != outfit)
-                _outfitLook = TargetLook.CreateFor(outfit, outfitPassPercent, outfitStarPercents);
+                _outfitLook = TargetLook.CreateFor(outfit, outfitPassPercent, outfitStarPercents, outfitMakeup);
 
             return _outfitLook;
         }

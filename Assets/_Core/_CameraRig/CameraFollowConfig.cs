@@ -17,10 +17,11 @@ namespace Game.CameraRig
         [Tooltip("How much of the target's sideways movement the LOOK point copies. Higher than Lateral Follow, so the camera turns to keep her in view on narrow (portrait) screens while its position stays steady. 1 = always looks straight at her.")]
         [SerializeField, Range(0f, 1f)] private float lookLateralFollow = 0.8f;
 
+        [Tooltip("How loosely the run camera trails her (seconds). Fed into the CM Run camera's Follow damping (x3).")]
         [SerializeField, Min(0f)] private float smoothTime = 0.12f;
 
         [Header("Finish stage view")]
-        [Tooltip("Seconds the camera takes to settle on the stage.")]
+        [Tooltip("Seconds of the Cinemachine blend from the walking view into the settled stage view.")]
         [SerializeField, Min(0.01f)] private float stageSmoothTime = 0.6f;
         [Tooltip("Degrees the camera looks down at the stage.")]
         [SerializeField, Range(0f, 45f)] private float stagePitch = 12f;
@@ -30,7 +31,7 @@ namespace Game.CameraRig
         [SerializeField, Range(0.5f, 3f)] private float stageZoomOut = 1.3f;
 
         [Header("Walk to the stage")]
-        [Tooltip("Seconds the camera takes to travel from the finish line to its stage view while the dolls walk. Higher = slower, smoother move.")]
+        [Tooltip("Seconds of the Cinemachine blend from the run camera to the stage view while the dolls walk. Higher = slower, smoother move.")]
         [SerializeField, Min(0.01f)] private float stageMoveTime = 1.4f;
         [Tooltip("While the dolls walk the camera keeps looking at them: this high above their feet (metres). Used only when Fit Dolls In View is off.")]
         [SerializeField, Min(0f)] private float groupLookHeight = 1.2f;

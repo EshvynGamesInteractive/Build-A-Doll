@@ -93,6 +93,8 @@ namespace Game.EditorTools
             so.FindProperty("target").objectReferenceValue = target;
             so.FindProperty("config").objectReferenceValue = config;
             so.ApplyModifiedPropertiesWithoutUndo();
+            // Cinemachine: brain on the Main Camera + the Run / Stage Walk / Stage cameras.
+            CinemachineCameraSetup.Setup(follow);
         }
 
         // Uses an existing asset of this type wherever it is; otherwise makes one in the _Data folder.

@@ -203,6 +203,7 @@ GameObject:
   - component: {fileID: 1866456620900879706}
   - component: {fileID: 5075845110673585562}
   - component: {fileID: 1923471200727549708}
+  - component: {fileID: 161094756532165630}
   m_Layer: 0
   m_Name: '  1'
   m_TagString: Untagged
@@ -278,6 +279,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &161094756532165630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7460358354969027162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ad01c15ef6774bcab2d617172eecb27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slideDistance: 0
+  slideSpeed: 0.5
+  slideAxis: {x: 0, y: 0, z: 0}
+  bobHeight: 0
+  bobSpeed: 1
+  spinSpeed: 0
+  spinAxis: {x: 1, y: 0, z: 0}
+  swingAngle: 0
+  swingSpeed: 0.5
+  swingAxis: {x: 0, y: 0, z: 1}
+  phase: 0
 --- !u!1 &7781760468159050083
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,8 +360,8 @@ Transform:
   m_GameObject: {fileID: 8931711575822741457}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.107677, y: 0.40111825, z: -23.658745}
-  m_LocalScale: {x: 89.689476, y: 89.689476, z: 89.689476}
+  m_LocalPosition: {x: -9.107677, y: -0.05, z: -23.658745}
+  m_LocalScale: {x: 90, y: 90, z: 90}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8684406403388632829}

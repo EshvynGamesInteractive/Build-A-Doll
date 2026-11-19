@@ -222,7 +222,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 7207231866697296201}
-  trigger: Dance
+  trigger: 
+  rotationDuration: 2
 --- !u!1 &8754128394169180204
 GameObject:
   m_ObjectHideFlags: 0

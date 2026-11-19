@@ -246,6 +246,7 @@ namespace _Core._Level
             if (scene.CameraFollow != null)
                 scene.CameraFollow.SetTarget(player.transform);
 
+            MakeupOf(player);
             GameEvents.GameplayEvents.PlayerSpawned.Raise(player);
         }
 
@@ -311,6 +312,7 @@ namespace _Core._Level
 
                 ConfigureGates(instance, entry.gateItems, level.TargetOutfit);
                 ConfigureCoinGates(instance, entry.coinGates);
+                ConfigurePaintGates(instance, entry.paintGates, level.TargetLook);
                 hurdles.Add(instance);
             }
 
@@ -480,6 +482,7 @@ namespace _Core._Level
                 aiInput = instance.AddComponent<AiInput>();
 
             ai.SetAI(true);
+            MakeupOf(ai);
             ai.SetInput(aiInput, aiInput);
             ai.SetConfig(profile.MovementConfig);
 
@@ -504,6 +507,19 @@ namespace _Core._Level
             {
                 var itemOverride = items != null && i < items.Length ? items[i] : null;
                 gates[i].Configure(itemOverride, targetItems);
+            }
+        }
+
+        // Every paint gate learns the target look (green / red); the entry's settings, if any, replace the prefab's.
+        private static void ConfigurePaintGates(GameObject instance, PaintGate.Setting[] settings, TargetLook look)
+        {
+            var gates = instance.GetComponentsInChildren<PaintGate>();
+            for (var i = 0; i < gates.Length; i++)
+            {
+                if (settings != null && i < settings.Length)
+                    gates[i].Configure(settings[i], look);
+                else
+                    gates[i].Configure(look);
             }
         }
 
@@ -553,6 +569,16 @@ namespace _Core._Level
                 demoOutfit.SetStartingItems(level.TargetOutfit); // worn in its Start
             else
                 Debug.LogWarning($"Demo prefab '{prefab.name}' has no {nameof(DollOutfit)}, so it can't show the look.", prefab);
+
+            // The demo also wears the target makeup (painted in its Start).
+            if (level.TargetLook != null && level.TargetLook.Makeup.Count > 0)
+            {
+                var demoMakeup = demo.GetComponentInChildren<DollMakeup>();
+                if (demoMakeup == null)
+                    demoMakeup = demo.AddComponent<DollMakeup>();
+                demoMakeup.RaiseEvents = false;
+                demoMakeup.SetStartingMakeup(level.TargetLook.Makeup);
+            }
 
             var onStage = demoCamera != null;
             if (onStage)
@@ -784,8 +810,8 @@ namespace _Core._Level
                 scene.CameraFollow.SettleOnStage();
 
             // 2. Item-by-item comparison.
-            match = OutfitComparer.Compare(current.TargetOutfit, player.DollOutfit);
-            aiMatch = hasAi ? OutfitComparer.Compare(current.TargetOutfit, ai.DollOutfit) : default;
+            match = OutfitComparer.Compare(current.TargetLook, player.DollOutfit, MakeupOf(player));
+            aiMatch = hasAi ? OutfitComparer.Compare(current.TargetLook, ai.DollOutfit, MakeupOf(ai)) : default;
 
             // The demo image goes away for the comparison: nothing left to film.
             SetDemoViewActive(false);
@@ -821,10 +847,13 @@ namespace _Core._Level
         private IEnumerator CompareItems(bool hasAi)
         {
             var targets = new List<OutfitItem>();
-            foreach (var item in current.TargetOutfit)
+            if (current.TargetOutfit != null)
             {
-                if (item != null)
-                    targets.Add(item);
+                foreach (var item in current.TargetOutfit)
+                {
+                    if (item != null)
+                        targets.Add(item);
+                }
             }
 
             targets.Sort((a, b) => SlotRank(a.Slot).CompareTo(SlotRank(b.Slot)));
@@ -844,12 +873,33 @@ namespace _Core._Level
                 if (playerOk) playerMatched++;
                 if (aiOk) aiMatched++;
 
+                // Out of everything judged (items + makeup); the makeup part fills in step by step, so the last step shows the final %.
+                var shareDone = (i + 1f) / targets.Count;
                 GameEvents.GameplayEvents.ComparisonItemShown.Raise(new ComparisonStep(target, playerItem, aiItem, playerOk, aiOk,
-                    Mathf.RoundToInt(100f * playerMatched / targets.Count), Mathf.RoundToInt(100f * aiMatched / targets.Count),
+                    RunningPercent(playerMatched, match, shareDone), hasAi ? RunningPercent(aiMatched, aiMatch, shareDone) : 0,
                     i, targets.Count, hasAi));
 
                 yield return new WaitForSeconds(interval);
             }
+        }
+
+        private static int RunningPercent(int itemsMatched, OutfitMatch final, float shareDone)
+        {
+            if (final.AllChecks <= 0)
+                return 100;
+            return Mathf.RoundToInt(100f * (itemsMatched + final.MakeupMatched * shareDone) / final.AllChecks);
+        }
+
+        // The doll's makeup (paint gates), added if the prefab has none so every doll can be painted and judged.
+        private static DollMakeup MakeupOf(RunnerController runner)
+        {
+            if (runner == null)
+                return null;
+            var makeup = runner.GetComponentInChildren<DollMakeup>();
+            if (makeup == null)
+                makeup = runner.gameObject.AddComponent<DollMakeup>();
+            makeup.RaiseEvents = !runner.IsAI;
+            return makeup;
         }
 
         private static int SlotRank(OutfitSlot slot)
