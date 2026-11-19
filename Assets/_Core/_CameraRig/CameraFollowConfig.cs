@@ -19,10 +19,47 @@ namespace Game.CameraRig
 
         [SerializeField, Min(0f)] private float smoothTime = 0.12f;
 
+        [Header("Finish stage view")]
+        [Tooltip("Seconds the camera takes to settle on the stage.")]
+        [SerializeField, Min(0.01f)] private float stageSmoothTime = 0.6f;
+        [Tooltip("Degrees the camera looks down at the stage.")]
+        [SerializeField, Range(0f, 45f)] private float stagePitch = 12f;
+        [Tooltip("Extra room around the dolls, as a fraction of the stage view width (stages without a Camera Point).")]
+        [SerializeField, Range(0f, 2f)] private float stagePadding = 0.5f;
+        [Tooltip("Multiplies the stage view distance (stages without a Camera Point). Higher = more zoomed out.")]
+        [SerializeField, Range(0.5f, 3f)] private float stageZoomOut = 1.3f;
+
+        [Header("Walk to the stage")]
+        [Tooltip("Seconds the camera takes to travel from the finish line to its stage view while the dolls walk. Higher = slower, smoother move.")]
+        [SerializeField, Min(0.01f)] private float stageMoveTime = 1.4f;
+        [Tooltip("While the dolls walk the camera keeps looking at them: this high above their feet (metres). Used only when Fit Dolls In View is off.")]
+        [SerializeField, Min(0f)] private float groupLookHeight = 1.2f;
+        [Tooltip("How quickly the camera turns to keep the walking dolls in view. Higher = snappier.")]
+        [SerializeField, Min(0.1f)] private float groupTurnSpeed = 4f;
+
+        [Header("Keep both dolls in frame")]
+        [Tooltip("Stages WITHOUT a Camera Point: the camera moves to where both dolls, standing on their spots, fully fit on screen, centred. Stages with a Camera Point always use it exactly.")]
+        [SerializeField] private bool fitDollsInView = true;
+        [Tooltip("Empty border kept around the dolls, as a fraction of the screen (0.15 = 15% each side).")]
+        [SerializeField, Range(0f, 0.45f)] private float frameMargin = 0.15f;
+        [Tooltip("Closest the camera may get to the dolls on the stage view (metres).")]
+        [SerializeField, Min(0.5f)] private float minStageDistance = 4f;
+
         public Vector3 Offset => offset;
         public Vector3 LookOffset => lookOffset;
         public float LateralFollow => lateralFollow;
         public float LookLateralFollow => lookLateralFollow;
         public float SmoothTime => smoothTime;
+
+        public float StageSmoothTime => stageSmoothTime;
+        public float StagePitch => stagePitch;
+        public float StagePadding => stagePadding;
+        public float StageZoomOut => stageZoomOut;
+        public float StageMoveTime => stageMoveTime;
+        public float GroupLookHeight => groupLookHeight;
+        public float GroupTurnSpeed => groupTurnSpeed;
+        public bool FitDollsInView => fitDollsInView;
+        public float FrameMargin => frameMargin;
+        public float MinStageDistance => minStageDistance;
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.CameraRig
@@ -12,25 +13,8 @@ namespace Game.CameraRig
         [SerializeField] private Transform target;
         [SerializeField] private CameraFollowConfig config;
 
-        [Header("Finish stage view")]
-        [Tooltip("Seconds the camera takes to settle on the stage.")]
-        [SerializeField, Min(0.01f)] private float stageSmoothTime = 0.6f;
-        [Tooltip("Degrees the camera looks down at the stage.")]
-        [SerializeField, Range(0f, 45f)] private float stagePitch = 12f;
-        [Tooltip("Extra room around the dolls, as a fraction of the stage view width.")]
-        [SerializeField, Range(0f, 2f)] private float stagePadding = 0.5f;
-        [Tooltip("Multiplies the stage view distance. Higher = more zoomed out.")]
-        [SerializeField, Range(0.5f, 3f)] private float stageZoomOut = 1.3f;
-
-        [Header("Walk to the stage")]
-        [Tooltip("Seconds the camera takes to travel from the finish line to its stage view while the dolls walk. Higher = slower, smoother move.")]
-        [SerializeField, Min(0.01f)] private float stageMoveTime = 1.4f;
-        [Tooltip("While the dolls walk the camera keeps looking at them: this high above their feet (metres).")]
-        [SerializeField, Min(0f)] private float groupLookHeight = 1.2f;
-        [Tooltip("How quickly the camera turns to keep the walking dolls in view. Higher = snappier.")]
-        [SerializeField, Min(0.1f)] private float groupTurnSpeed = 4f;
-
         private Vector3 _velocity;
+        private readonly Dictionary<Transform, Renderer[]> _rendererCache = new();
         private bool _stageMode;
         private Vector3 _stagePosition;
         private Quaternion _stageRotation;
@@ -39,6 +23,11 @@ namespace Game.CameraRig
 
         // Dolls the camera keeps looking at while it travels to the stage view (null = look straight at the stage view).
         private Transform[] _group;
+
+        // Final framed view, worked out once from where the dolls will stand (FocusStageSpots).
+        private bool _hasFinalPosition;
+        private bool _exactPose; // the stage has its own Camera Point: go exactly there
+        private Vector3 _finalPosition;
         private bool _settled = true;
 
         private void Start()
@@ -69,6 +58,8 @@ namespace Game.CameraRig
             _stageMode = false;
             _group = null;
             _settled = true;
+            _hasFinalPosition = false;
+            _exactPose = false;
             _velocity = Vector3.zero;
             _trackOrigin = target.position;
             _trackRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(target.forward, Vector3.up), Vector3.up);
@@ -88,17 +79,18 @@ namespace Game.CameraRig
             var aspect = cam != null ? cam.aspect : 9f / 16f;
             var hHalf = Mathf.Atan(Mathf.Tan(vHalf) * aspect);
 
-            var width = halfWidth * (1f + stagePadding);
-            var height = halfHeight * (1f + stagePadding);
-            var distance = Mathf.Max(width / Mathf.Tan(hHalf), height / Mathf.Tan(vHalf)) * stageZoomOut;
+            var width = halfWidth * (1f + config.StagePadding);
+            var height = halfHeight * (1f + config.StagePadding);
+            var distance = Mathf.Max(width / Mathf.Tan(hHalf), height / Mathf.Tan(vHalf)) * config.StageZoomOut;
 
             var forward = Vector3.ProjectOnPlane(facing, Vector3.up).normalized;
             if (forward == Vector3.zero)
                 forward = -(_trackRotation * Vector3.forward);
 
-            var lookDirection = Quaternion.AngleAxis(stagePitch, Vector3.Cross(Vector3.up, -forward)) * -forward;
+            var lookDirection = Quaternion.AngleAxis(config.StagePitch, Vector3.Cross(Vector3.up, -forward)) * -forward;
             _stagePosition = lookPoint - lookDirection.normalized * distance;
             _stageRotation = Quaternion.LookRotation(lookPoint - _stagePosition, Vector3.up);
+            _exactPose = false;
             BeginStageMove();
         }
 
@@ -107,7 +99,33 @@ namespace Game.CameraRig
         {
             _stagePosition = position;
             _stageRotation = Quaternion.LookRotation(rotation * Vector3.forward, Vector3.up); // no roll
+            _exactPose = true;
+            _hasFinalPosition = false;
             BeginStageMove();
+        }
+
+        /// <summary>
+        /// Call after ShowStage / ShowStagePose with the spots the dolls will stand on. Works out the final view
+        /// (both dolls centred) right away, so the camera travels straight to it while they walk.
+        /// 'dolls' are only used to measure their size (any null = a 0.6 x 1.8 m doll).
+        /// </summary>
+        public void FocusStageSpots(Vector3[] spots, params Transform[] dolls)
+        {
+            _hasFinalPosition = false;
+            if (_exactPose || config == null || !config.FitDollsInView || spots == null || spots.Length == 0)
+                return;
+
+            _rendererCache.Clear();
+            var size = new Vector3(0.6f, 1.8f, 0.6f);
+            if (dolls != null && TryGetGroupBounds(dolls, out var measured, singleDollSize: true))
+                size = measured.size;
+
+            var bounds = new Bounds(spots[0] + Vector3.up * size.y * 0.5f, size);
+            for (var i = 1; i < spots.Length; i++)
+                bounds.Encapsulate(new Bounds(spots[i] + Vector3.up * size.y * 0.5f, size));
+
+            _finalPosition = FitBounds(bounds);
+            _hasFinalPosition = true;
         }
 
         /// <summary>
@@ -118,11 +136,17 @@ namespace Game.CameraRig
         {
             _group = dolls;
             _settled = false;
+            _rendererCache.Clear(); // outfits change between levels, so look their renderers up again
         }
 
         /// <summary>The dolls are on their spots: stop watching them and ease into the exact stage view.</summary>
         public void SettleOnStage()
         {
+            if (_hasFinalPosition)
+                _stagePosition = _finalPosition;
+            else if (!_exactPose && config.FitDollsInView && TryGetGroupBounds(_group, out var bounds))
+                _stagePosition = FitBounds(bounds);
+
             _group = null;
             _settled = true;
         }
@@ -140,8 +164,12 @@ namespace Game.CameraRig
             if (_stageMode)
             {
                 var dt = Time.deltaTime;
-                var moveTime = _settled ? stageSmoothTime : stageMoveTime;
-                transform.position = Vector3.SmoothDamp(transform.position, _stagePosition, ref _velocity, moveTime);
+                var moveTime = _settled ? config.StageSmoothTime : config.StageMoveTime;
+
+                // Travel straight to the final view (worked out from the dolls' spots), or to the stage view itself.
+                var goal = _hasFinalPosition ? _finalPosition : _stagePosition;
+
+                transform.position = Vector3.SmoothDamp(transform.position, goal, ref _velocity, moveTime);
 
                 // Walking: look at the dolls. Arrived: turn to the stage view itself.
                 var wanted = _stageRotation;
@@ -151,11 +179,11 @@ namespace Game.CameraRig
                     var toGroup = centre - transform.position;
                     if (toGroup.sqrMagnitude > 0.01f)
                         wanted = Quaternion.LookRotation(toGroup, Vector3.up);
-                    turn = 1f - Mathf.Exp(-dt * groupTurnSpeed);
+                    turn = 1f - Mathf.Exp(-dt * config.GroupTurnSpeed);
                 }
                 else
                 {
-                    turn = 1f - Mathf.Exp(-dt * 3f / stageSmoothTime);
+                    turn = 1f - Mathf.Exp(-dt * 3f / config.StageSmoothTime);
                 }
 
                 transform.rotation = Quaternion.Slerp(transform.rotation, wanted, turn);
@@ -188,8 +216,82 @@ namespace Game.CameraRig
             if (count == 0)
                 return false;
 
-            centre = centre / count + Vector3.up * groupLookHeight;
+            centre = centre / count + Vector3.up * config.GroupLookHeight;
+            if (config.FitDollsInView && TryGetGroupBounds(_group, out var bounds))
+                centre = bounds.center;
             return true;
+        }
+
+        // Camera position along the stage view's direction (_stageRotation) that fits 'bounds' on screen with both
+        // dolls centred (no extra zoom-out). Never closer than the stage view itself (e.g. a Camera Point) or MinStageDistance.
+        private Vector3 FitBounds(Bounds bounds)
+        {
+            var cam = GetComponent<Camera>();
+            var vHalf = (cam != null ? cam.fieldOfView : 60f) * 0.5f * Mathf.Deg2Rad;
+            var aspect = cam != null ? cam.aspect : 9f / 16f;
+            var tanV = Mathf.Max(0.01f, Mathf.Tan(vHalf) * (1f - config.FrameMargin * 2f));
+            var tanH = Mathf.Max(0.01f, Mathf.Tan(vHalf) * aspect * (1f - config.FrameMargin * 2f));
+
+            var forward = _stageRotation * Vector3.forward;
+            var inverse = Quaternion.Inverse(_stageRotation);
+            var centre = bounds.center;
+
+            // Distance from the centre so that each corner of the bounds is inside the view.
+            var fit = 0f;
+            var min = bounds.min;
+            var max = bounds.max;
+            for (var i = 0; i < 8; i++)
+            {
+                var corner = new Vector3((i & 1) == 0 ? min.x : max.x, (i & 2) == 0 ? min.y : max.y, (i & 4) == 0 ? min.z : max.z);
+                var local = inverse * (corner - centre);
+                fit = Mathf.Max(fit, Mathf.Max(Mathf.Abs(local.x) / tanH, Mathf.Abs(local.y) / tanV) - local.z);
+            }
+
+            var viewDistance = Vector3.Dot(centre - _stagePosition, forward);
+            var distance = Mathf.Max(fit, viewDistance, config.MinStageDistance);
+            return centre - forward * distance;
+        }
+
+        // Combined renderer bounds of the active dolls.
+        private bool TryGetGroupBounds(Transform[] dolls, out Bounds bounds, bool singleDollSize = false)
+        {
+            bounds = default;
+            var found = false;
+            foreach (var doll in dolls)
+            {
+                if (doll == null || !doll.gameObject.activeInHierarchy)
+                    continue;
+
+                if (!_rendererCache.TryGetValue(doll, out var renderers) || renderers == null)
+                {
+                    renderers = doll.GetComponentsInChildren<Renderer>(true);
+                    _rendererCache[doll] = renderers;
+                }
+
+                var dollFound = false;
+                foreach (var r in renderers)
+                {
+                    if (r == null || !r.enabled || !r.gameObject.activeInHierarchy ||
+                        r is ParticleSystemRenderer || r is TrailRenderer || r is LineRenderer)
+                        continue;
+
+                    if (!found) { bounds = r.bounds; found = true; }
+                    else bounds.Encapsulate(r.bounds);
+                    dollFound = true;
+                }
+
+                if (!dollFound)
+                {
+                    // No renderers: a 0.6 x 1.8 m box standing on her position.
+                    var box = new Bounds(doll.position + Vector3.up * 0.9f, new Vector3(0.6f, 1.8f, 0.6f));
+                    if (!found) { bounds = box; found = true; }
+                    else bounds.Encapsulate(box);
+                }
+
+                if (singleDollSize && found)
+                    return true; // just the first doll: her size is all that's wanted
+            }
+            return found;
         }
 
         private Vector3 GetDesiredPosition() => GetFollowPoint(config.Offset, config.LateralFollow);

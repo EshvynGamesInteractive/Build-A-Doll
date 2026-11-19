@@ -733,7 +733,9 @@ namespace _Core._Level
             {
                 player.WalkTo(StagePath(player.transform.position, playerSpot, frontZ, _stageLayout != null ? _stageLayout.PlayerWaypoints : null), database.StageWalkSpeed, playerFacing, () => playerArrived = true);
                 FrameStage(playerSpot, hasAi ? aiSpot : playerSpot, playerFacing);
-                WatchDolls(false);
+                if (scene != null && scene.CameraFollow != null)
+                    scene.CameraFollow.FocusStageSpots(hasAi ? new[] { playerSpot, aiSpot } : new[] { playerSpot }, player.transform);
+                WatchDolls(hasAi); // both from the start, so the AI on its own ramp stays in shot too
             }
             else
             {
