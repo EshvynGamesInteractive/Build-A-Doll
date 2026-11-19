@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Level
@@ -20,9 +21,40 @@ namespace Game.Level
         [Tooltip("Optional. The camera moves to this exact position and rotation for the comparison. Empty = it frames the two spots automatically.")]
         [SerializeField] private Transform cameraPoint;
 
+        [Header("Walk paths (optional)")]
+        [Tooltip("Points the player walks through, in order, from her finish line to her spot. Empty = the path is worked out automatically.")]
+        [SerializeField] private List<Transform> playerWaypoints = new();
+
+        [Tooltip("Points the AI walks through, in order, from its finish line to its spot. Empty = the path is worked out automatically.")]
+        [SerializeField] private List<Transform> aiWaypoints = new();
+
         public Transform PlayerSpot => playerSpot;
         public Transform AiSpot => aiSpot;
         public Transform CameraPoint => cameraPoint;
+        public IReadOnlyList<Transform> PlayerWaypoints => playerWaypoints;
+        public IReadOnlyList<Transform> AiWaypoints => aiWaypoints;
+
+        /// <summary>Adds a waypoint child to the end of the player's path (in front of her spot, or after the last waypoint).</summary>
+        [ContextMenu("Add Player Waypoint")]
+        public void AddPlayerWaypoint() => AddWaypoint(playerWaypoints, playerSpot, "PlayerWaypoint");
+
+        /// <summary>Adds a waypoint child to the end of the AI's path (in front of its spot, or after the last waypoint).</summary>
+        [ContextMenu("Add AI Waypoint")]
+        public void AddAiWaypoint() => AddWaypoint(aiWaypoints, aiSpot, "AiWaypoint");
+
+        private void AddWaypoint(List<Transform> list, Transform spot, string prefix)
+        {
+            list.RemoveAll(t => t == null);
+            Vector3 local;
+            if (list.Count > 0)
+                local = transform.InverseTransformPoint(list[list.Count - 1].position) + Vector3.forward * 1f;
+            else if (spot != null)
+                local = transform.InverseTransformPoint(spot.position) + Vector3.back * 2f;
+            else
+                local = Vector3.zero;
+
+            list.Add(CreateChild($"{prefix}_{list.Count + 1}", local, Quaternion.identity));
+        }
 
         /// <summary>
         /// Adds PlayerSpot / AiSpot children on top of the stage for any that are empty: player on the left,
@@ -109,6 +141,8 @@ namespace Game.Level
         {
             DrawSpot(playerSpot, new Color(0.2f, 0.6f, 1f));
             DrawSpot(aiSpot, new Color(1f, 0.35f, 0.35f));
+            DrawPath(playerWaypoints, playerSpot, new Color(0.2f, 0.6f, 1f));
+            DrawPath(aiWaypoints, aiSpot, new Color(1f, 0.35f, 0.35f));
 
             if (cameraPoint != null)
             {
@@ -116,6 +150,27 @@ namespace Game.Level
                 Gizmos.DrawWireCube(cameraPoint.position, Vector3.one * 0.4f);
                 Gizmos.DrawRay(cameraPoint.position, cameraPoint.forward * 2f);
             }
+        }
+
+        private static void DrawPath(List<Transform> points, Transform spot, Color color)
+        {
+            if (points == null || points.Count == 0)
+                return;
+
+            Gizmos.color = color;
+            Vector3? previous = null;
+            foreach (var point in points)
+            {
+                if (point == null)
+                    continue;
+                Gizmos.DrawWireCube(point.position + Vector3.up * 0.1f, Vector3.one * 0.25f);
+                if (previous.HasValue)
+                    Gizmos.DrawLine(previous.Value + Vector3.up * 0.1f, point.position + Vector3.up * 0.1f);
+                previous = point.position;
+            }
+
+            if (previous.HasValue && spot != null)
+                Gizmos.DrawLine(previous.Value + Vector3.up * 0.1f, spot.position + Vector3.up * 0.1f);
         }
 
         private static void DrawSpot(Transform spot, Color color)

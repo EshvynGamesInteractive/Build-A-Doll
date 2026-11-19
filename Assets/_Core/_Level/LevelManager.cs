@@ -721,9 +721,17 @@ namespace _Core._Level
             var playerFacing = _stagePlayerFacing;
             var aiFacing = _stageAiFacing;
 
+            // Long hand-made walk paths get extra time before the dolls are snapped onto their spots.
+            var walkTimeout = StageWalkTimeout;
+            if (hasStage && _stageLayout != null)
+            {
+                var longest = Mathf.Max(PathLength(_stageLayout.PlayerWaypoints), hasAi ? PathLength(_stageLayout.AiWaypoints) : 0f);
+                walkTimeout += longest / Mathf.Max(0.1f, database.StageWalkSpeed);
+            }
+
             if (hasStage)
             {
-                player.WalkTo(StagePath(player.transform.position, playerSpot, frontZ), database.StageWalkSpeed, playerFacing, () => playerArrived = true);
+                player.WalkTo(StagePath(player.transform.position, playerSpot, frontZ, _stageLayout != null ? _stageLayout.PlayerWaypoints : null), database.StageWalkSpeed, playerFacing, () => playerArrived = true);
                 FrameStage(playerSpot, hasAi ? aiSpot : playerSpot, playerFacing);
                 WatchDolls(false);
             }
@@ -745,7 +753,7 @@ namespace _Core._Level
                     else if (aiFinished)
                     {
                         aiStarted = true;
-                        ai.WalkTo(StagePath(ai.transform.position, aiSpot, frontZ), database.StageWalkSpeed, aiFacing, () => aiArrived = true);
+                        ai.WalkTo(StagePath(ai.transform.position, aiSpot, frontZ, _stageLayout != null ? _stageLayout.AiWaypoints : null), database.StageWalkSpeed, aiFacing, () => aiArrived = true);
                         WatchDolls(true);
                     }
                     else if (playerArrived && (waitedForAi += Time.deltaTime) >= database.AiFinishWait)
@@ -757,7 +765,7 @@ namespace _Core._Level
                     }
                 }
 
-                if (elapsed > StageWalkTimeout)
+                if (elapsed > walkTimeout)
                 {
                     if (!playerArrived)
                         player.PlaceAt(playerSpot, playerFacing);
@@ -968,9 +976,24 @@ namespace _Core._Level
             return forward.sqrMagnitude > 0.0001f ? forward.normalized : fallback;
         }
 
-        // Straight on along her own ramp to the stage, up onto its front edge in line with her spot, then to the spot.
-        private List<Vector3> StagePath(Vector3 from, Vector3 spot, float frontZ)
+        // The stage's own waypoints (if it has any) then her spot. Otherwise: straight on along her own ramp to the
+        // stage, up onto its front edge in line with her spot, then to the spot.
+        private List<Vector3> StagePath(Vector3 from, Vector3 spot, float frontZ, IReadOnlyList<Transform> waypoints = null)
         {
+            if (waypoints != null && waypoints.Count > 0)
+            {
+                var authored = new List<Vector3>();
+                foreach (var point in waypoints)
+                    if (point != null)
+                        authored.Add(point.position);
+
+                if (authored.Count > 0)
+                {
+                    authored.Add(spot);
+                    return authored;
+                }
+            }
+
             var fromLocal = ToTrack(from);
             var spotLocal = ToTrack(spot);
 
@@ -980,6 +1003,24 @@ namespace _Core._Level
             path.Add(FromTrack(new Vector3(spotLocal.x, spotLocal.y, Mathf.Min(frontZ + 0.6f, spotLocal.z))));
             path.Add(spot);
             return path;
+        }
+
+        private static float PathLength(IReadOnlyList<Transform> points)
+        {
+            if (points == null)
+                return 0f;
+
+            var length = 0f;
+            Transform previous = null;
+            foreach (var point in points)
+            {
+                if (point == null)
+                    continue;
+                if (previous != null)
+                    length += Vector3.Distance(previous.position, point.position);
+                previous = point;
+            }
+            return length;
         }
 
         // While the dolls walk to the stage the camera keeps them in frame (the AI once it's walking too).
