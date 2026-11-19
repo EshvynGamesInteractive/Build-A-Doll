@@ -96,7 +96,6 @@ namespace Game.EditorTools
 
             var database = CreateDatabase(levels, finish);
             SetIfEmpty(database, "defaultDemoPrefab", demoDoll);
-            SetIfEmpty(database, "rampPrefab", ramp);
             SetIfEmpty(database, "defaultAiProfile", aiProfile);
 
             AssetDatabase.SaveAssets();
@@ -423,7 +422,7 @@ namespace Game.EditorTools
         private static LevelDatabase CreateDatabase(List<LevelData> levels, GameObject finish)
         {
             var database = EditorPaths.FindAsset<LevelDatabase>();
-            if (database != null && !HasBrokenReferences(database) && database.Count > 0 && database.DefaultFinishLine != null)
+            if (database != null && !HasBrokenReferences(database) && database.Count > 0)
                 return database;
 
             if (database == null)
@@ -437,7 +436,6 @@ namespace Game.EditorTools
             list.arraySize = levels.Count;
             for (var i = 0; i < levels.Count; i++)
                 list.GetArrayElementAtIndex(i).objectReferenceValue = levels[i];
-            so.FindProperty("defaultFinishLine").objectReferenceValue = finish;
             so.FindProperty("loopFromLevel").intValue = 2;
             so.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(database);

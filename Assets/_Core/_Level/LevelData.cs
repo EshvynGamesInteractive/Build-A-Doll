@@ -35,14 +35,8 @@ namespace Game.Level
 
         [SerializeField] private string displayName;
 
-        [Tooltip("Optional: ground, walls, decoration for this level. Spawned at the track start.")]
-        [SerializeField] private GameObject environmentPrefab;
-
-        [Tooltip("Where the finish line is, from the start of the track.")]
+        [Tooltip("Length the level was designed for. The real finish is the ramp's End Point in the Gameplay scene; hurdles at or past it are skipped. Used only when the scene has no End Point.")]
         [SerializeField, Min(1f)] private float finishDistance = 120f;
-
-        [Tooltip("Optional: overrides the database's default finish line prefab.")]
-        [SerializeField] private GameObject finishLinePrefab;
 
         [Tooltip("Optional: a different doll for this level. Empty = the database's default player.")]
         [SerializeField] private GameObject playerPrefab;
@@ -87,9 +81,7 @@ namespace Game.Level
         [SerializeField, Min(0)] private int completionCoins = 50;
 
         public string DisplayName => string.IsNullOrEmpty(displayName) ? name : displayName;
-        public GameObject EnvironmentPrefab => environmentPrefab;
         public float FinishDistance => finishDistance;
-        public GameObject FinishLinePrefab => finishLinePrefab;
         public GameObject PlayerPrefab => playerPrefab;
         public TargetLook TargetLook => targetLook != null ? targetLook : GetOutfitLook();
 

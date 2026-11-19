@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _Core;
 using Core._GameEvent;
 using Game.CameraRig;
@@ -7,41 +8,65 @@ using UnityEngine.SceneManagement;
 namespace Game.Level
 {
     /// <summary>
-    /// Put one in the Gameplay scene. Holds the scene's own references (where the player spawns,
-    /// the follow camera) and hands them to the persistent LevelManager when the scene is ready,
-    /// so nothing has to search the scene.
+    /// Put one in the Gameplay scene. Holds everything that is placed in the scene by hand (ramps, their
+    /// start / end points, finish stages, the demo doll's spot, camera and light, the follow camera) and hands
+    /// them to the persistent LevelManager when the scene is ready. Nothing here is created by code.
     /// Pressing Play in this scene directly loads Bootstrap first, so the game always starts the same way.
     /// </summary>
     public class GameplayScene : MonoBehaviour
     {
-        [Tooltip("Player spawns here, facing its forward. The track starts here too.")]
-        [SerializeField] private Transform playerSpawnPoint;
+        [Header("Player ramp")]
+        [Tooltip("The player's ramp in the scene. Hurdles of the level are put under it.")]
+        [SerializeField] private GameObject playerRamp;
 
+        [Tooltip("Player spawns here, facing its blue (forward) arrow. Hurdle distances count from here. Keep its scale at 1.")]
+        [SerializeField] private Transform playerStartPoint;
+
+        [Tooltip("End of the player's run. Put the player's FinishLine here.")]
+        [SerializeField] private Transform playerEndPoint;
+
+        [Header("AI ramp")]
+        [Tooltip("The AI's ramp in the scene. Hidden on levels without an AI opponent.")]
+        [SerializeField] private GameObject aiRamp;
+
+        [Tooltip("AI spawns here, facing its blue (forward) arrow. The AI plans its run in this point's space, so keep its scale at 1 and its forward along the ramp.")]
+        [SerializeField] private Transform aiStartPoint;
+
+        [Tooltip("End of the AI's run. Put the AI's FinishLine here.")]
+        [SerializeField] private Transform aiEndPoint;
+
+        [Header("Camera")]
         [SerializeField] private CameraFollow cameraFollow;
 
-        [Tooltip("Optional: where the target-look demo doll stands at level start. Empty = a few metres down the track, facing the player.")]
-        [SerializeField] private Transform demoPoint;
+        [Header("Finish stages")]
+        [Tooltip("Finish stages placed in THIS scene. One is picked at random each level and shown, the rest are hidden. " +
+                 "Give each a FinishStage component with its PlayerSpot / AiSpot (and optional CameraPoint).")]
+        [SerializeField] private List<GameObject> sceneStages = new();
 
-        [Tooltip("Optional: a player already placed in THIS scene (not a prefab). Used only when no player prefab is set on the level or database.")]
-        [SerializeField] private _Core._Player.RunnerController scenePlayer;
+        [Header("Demo doll (target look)")]
+        [Tooltip("The demo doll is spawned here, facing its forward. Place it far from the track so the main camera never sees it.")]
+        [SerializeField] private Transform demoSpawnPoint;
 
-        /// <summary>Spawn point if set, else where the scene player stands, else this object.</summary>
-        public Transform PlayerSpawnPoint
-        {
-            get
-            {
-                if (playerSpawnPoint != null)
-                    return playerSpawnPoint;
-                return ScenePlayer != null ? ScenePlayer.transform : transform;
-            }
-        }
+        [Tooltip("Camera that films the demo doll into the demo render texture. Placed and framed by hand.")]
+        [SerializeField] private Camera demoCamera;
+
+        [Tooltip("Optional: light for the demo doll. Switched on and off together with the demo camera.")]
+        [SerializeField] private Light demoLight;
+
+        public GameObject PlayerRamp => playerRamp;
+        public Transform PlayerStartPoint => playerStartPoint;
+        public Transform PlayerEndPoint => playerEndPoint;
+
+        public GameObject AiRamp => aiRamp;
+        public Transform AiStartPoint => aiStartPoint;
+        public Transform AiEndPoint => aiEndPoint;
 
         public CameraFollow CameraFollow => cameraFollow;
-        public Transform DemoPoint => demoPoint;
+        public IReadOnlyList<GameObject> SceneStages => sceneStages;
 
-        /// <summary>The scene player, or null. A prefab asset put in the field by mistake is ignored.</summary>
-        public _Core._Player.RunnerController ScenePlayer =>
-            scenePlayer != null && scenePlayer.gameObject.scene.IsValid() ? scenePlayer : null;
+        public Transform DemoSpawnPoint => demoSpawnPoint;
+        public Camera DemoCamera => demoCamera;
+        public Light DemoLight => demoLight;
 
         private void Start()
         {
@@ -57,11 +82,14 @@ namespace Game.Level
 
         private void OnValidate()
         {
-            // A prefab from the Project window isn't a scene object; using it would change the prefab itself.
-            if (scenePlayer != null && !scenePlayer.gameObject.scene.IsValid())
+            // Only objects in this scene: a prefab from the Project window would change the prefab itself.
+            for (var i = sceneStages.Count - 1; i >= 0; i--)
             {
-                Debug.LogWarning($"'{scenePlayer.name}' is a prefab, not a player in this scene. Put player prefabs on the {nameof(LevelDatabase)} (Default Player Prefab) instead; cleared Scene Player.", this);
-                scenePlayer = null;
+                if (sceneStages[i] != null && !sceneStages[i].scene.IsValid())
+                {
+                    Debug.LogWarning($"'{sceneStages[i].name}' is a prefab, not a stage in this scene. Place the stage in the scene and drag the scene object in; removed it from Scene Stages.", this);
+                    sceneStages.RemoveAt(i);
+                }
             }
         }
     }

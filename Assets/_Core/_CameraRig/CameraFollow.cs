@@ -22,12 +22,24 @@ namespace Game.CameraRig
         [Tooltip("Multiplies the stage view distance. Higher = more zoomed out.")]
         [SerializeField, Range(0.5f, 3f)] private float stageZoomOut = 1.3f;
 
+        [Header("Walk to the stage")]
+        [Tooltip("Seconds the camera takes to travel from the finish line to its stage view while the dolls walk. Higher = slower, smoother move.")]
+        [SerializeField, Min(0.01f)] private float stageMoveTime = 1.4f;
+        [Tooltip("While the dolls walk the camera keeps looking at them: this high above their feet (metres).")]
+        [SerializeField, Min(0f)] private float groupLookHeight = 1.2f;
+        [Tooltip("How quickly the camera turns to keep the walking dolls in view. Higher = snappier.")]
+        [SerializeField, Min(0.1f)] private float groupTurnSpeed = 4f;
+
         private Vector3 _velocity;
         private bool _stageMode;
         private Vector3 _stagePosition;
         private Quaternion _stageRotation;
         private Vector3 _trackOrigin;
         private Quaternion _trackRotation;
+
+        // Dolls the camera keeps looking at while it travels to the stage view (null = look straight at the stage view).
+        private Transform[] _group;
+        private bool _settled = true;
 
         private void Start()
         {
@@ -55,6 +67,8 @@ namespace Game.CameraRig
 
             enabled = true;
             _stageMode = false;
+            _group = null;
+            _settled = true;
             _velocity = Vector3.zero;
             _trackOrigin = target.position;
             _trackRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(target.forward, Vector3.up), Vector3.up);
@@ -85,8 +99,39 @@ namespace Game.CameraRig
             var lookDirection = Quaternion.AngleAxis(stagePitch, Vector3.Cross(Vector3.up, -forward)) * -forward;
             _stagePosition = lookPoint - lookDirection.normalized * distance;
             _stageRotation = Quaternion.LookRotation(lookPoint - _stagePosition, Vector3.up);
+            BeginStageMove();
+        }
+
+        /// <summary>Leaves the target and moves to an exact position / rotation (a stage's Camera Point). SetTarget goes back to following.</summary>
+        public void ShowStagePose(Vector3 position, Quaternion rotation)
+        {
+            _stagePosition = position;
+            _stageRotation = Quaternion.LookRotation(rotation * Vector3.forward, Vector3.up); // no roll
+            BeginStageMove();
+        }
+
+        /// <summary>
+        /// While travelling to the stage view, keep these dolls in frame (the camera looks at their middle).
+        /// Call again to change who's watched, e.g. when the AI starts walking too.
+        /// </summary>
+        public void WatchGroup(params Transform[] dolls)
+        {
+            _group = dolls;
+            _settled = false;
+        }
+
+        /// <summary>The dolls are on their spots: stop watching them and ease into the exact stage view.</summary>
+        public void SettleOnStage()
+        {
+            _group = null;
+            _settled = true;
+        }
+
+        private void BeginStageMove()
+        {
+            // Keep the current velocity so leaving the follow view doesn't jerk.
             _stageMode = true;
-            _velocity = Vector3.zero;
+            _settled = _group == null;
             enabled = true;
         }
 
@@ -94,9 +139,26 @@ namespace Game.CameraRig
         {
             if (_stageMode)
             {
-                transform.position = Vector3.SmoothDamp(transform.position, _stagePosition, ref _velocity, stageSmoothTime);
-                var t = 1f - Mathf.Exp(-Time.deltaTime * 3f / stageSmoothTime);
-                transform.rotation = Quaternion.Slerp(transform.rotation, _stageRotation, t);
+                var dt = Time.deltaTime;
+                var moveTime = _settled ? stageSmoothTime : stageMoveTime;
+                transform.position = Vector3.SmoothDamp(transform.position, _stagePosition, ref _velocity, moveTime);
+
+                // Walking: look at the dolls. Arrived: turn to the stage view itself.
+                var wanted = _stageRotation;
+                float turn;
+                if (!_settled && TryGetGroupCentre(out var centre))
+                {
+                    var toGroup = centre - transform.position;
+                    if (toGroup.sqrMagnitude > 0.01f)
+                        wanted = Quaternion.LookRotation(toGroup, Vector3.up);
+                    turn = 1f - Mathf.Exp(-dt * groupTurnSpeed);
+                }
+                else
+                {
+                    turn = 1f - Mathf.Exp(-dt * 3f / stageSmoothTime);
+                }
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, wanted, turn);
                 return;
             }
 
@@ -105,6 +167,29 @@ namespace Game.CameraRig
 
             transform.position = Vector3.SmoothDamp(transform.position, GetDesiredPosition(), ref _velocity, config.SmoothTime);
             LookAtTarget();
+        }
+
+        // Middle of the watched dolls, at look height.
+        private bool TryGetGroupCentre(out Vector3 centre)
+        {
+            centre = Vector3.zero;
+            if (_group == null)
+                return false;
+
+            var count = 0;
+            foreach (var doll in _group)
+            {
+                if (doll == null || !doll.gameObject.activeInHierarchy)
+                    continue;
+                centre += doll.position;
+                count++;
+            }
+
+            if (count == 0)
+                return false;
+
+            centre = centre / count + Vector3.up * groupLookHeight;
+            return true;
         }
 
         private Vector3 GetDesiredPosition() => GetFollowPoint(config.Offset, config.LateralFollow);
