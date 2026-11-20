@@ -576,10 +576,11 @@ namespace _Core._Level
             if (level.TargetLook != null && level.TargetLook.Makeup.Count > 0)
             {
                 var demoMakeup = demo.GetComponentInChildren<DollMakeup>();
-                if (demoMakeup == null)
-                    demoMakeup = demo.AddComponent<DollMakeup>();
-                demoMakeup.RaiseEvents = false;
-                demoMakeup.SetStartingMakeup(level.TargetLook.Makeup);
+                if (demoMakeup != null)
+                {
+                    demoMakeup.RaiseEvents = false;
+                    demoMakeup.SetStartingMakeup(level.TargetLook.Makeup);
+                }
             }
 
             var onStage = demoCamera != null;
@@ -898,9 +899,8 @@ namespace _Core._Level
             if (runner == null)
                 return null;
             var makeup = runner.GetComponentInChildren<DollMakeup>();
-            if (makeup == null)
-                makeup = runner.gameObject.AddComponent<DollMakeup>();
-            makeup.RaiseEvents = !runner.IsAI;
+            if (makeup != null)
+                makeup.RaiseEvents = !runner.IsAI;
             return makeup;
         }
 

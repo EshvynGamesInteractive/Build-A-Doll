@@ -1,0 +1,57 @@
+PAINT TOOL — MANUAL UNITY SETUP REQUIRED
+
+No scene or prefab objects have been created or modified for this implementation.
+Existing runtime-generated DollMakeup overlays have been replaced with authored overlays.
+Until the following references are assigned, gates report missing setup and do not open makeup.
+
+1. PLAYER AND DEMO PREFABS
+Manually add DollMakeup to the doll if missing. Assign a Lips zone and an EyeShadow zone.
+For each region, provide an existing fitted face-overlay renderer and an empty face-aligned
+Transform under the head bone. Eyes need separate left/right regions; lips need one region.
+The volumes' local XY planes cover each region; local Z points out of the face.
+Their local XY size of 1 maps to the full paint area. Scale them to fit the eyelids/lips.
+Overlays must be authored meshes fitted to the face, skinned to the same head, with vertex
+alpha 1 inside and optionally fading at edges. Use Resources/BuildADoll/MakeupOverlay.mat.
+Do not assign the body/face renderer as an overlay: coverage toggles the assigned renderer.
+Volumes and overlays arrays must have matching order and length. Assign overlays on the
+demo and AI too, so target makeup and comparison continue to work.
+No mesh Read/Write flag is needed with authored overlays.
+
+2. SCENE UI
+Manually add PaintToolView to an always-active UI parent. Create a separate child panel
+(initially inactive), a title TMP_Text, a filled Image for progress, an optional brush
+RectTransform, and palette Buttons. Assign them to PaintToolView.
+The parent must remain active when the panel is hidden, and must be an ancestor of the
+painting input surface. A full-panel UI Image with Raycast Target enabled receives drag
+input and bubbles it to PaintToolView. Set decorative images, progress, title and brush
+Raycast Target OFF. Place palette buttons over the input surface; wire OnClick to
+PaintToolView.SelectColor(index). The palette array defines those colors. A gate's own
+color is selected initially. Changing palette color clears coverage for the current zone.
+Use the project's existing Canvas/EventSystem and InputSystemUIInputModule.
+Optional cancel/skip button can call PaintToolView.Cancel; incomplete makeup is restored.
+Palette purchases, ads and patterned makeup from the reference are outside this task.
+
+3. CLOSE-UP CAMERA
+Manually create a CinemachineCamera in the scene; assign it and the Main Camera to the view.
+Set priority above 20 (e.g. 100). Disable the CinemachineCamera initially. Do not add a
+tracking/body/aim component that overrides its authored pose. PaintToolView positions it
+relative to the runner using Camera Offset / Focus Offset. Tune these to frame your doll's
+face. Set an appropriate FOV, and use the existing Main Camera CinemachineBrain.
+The session freezes the player's movement and animator, enables this camera and panel,
+and restores them when complete/cancelled/reset/stopped. AI continues running independently.
+
+4. PAINT GATES
+Use the existing PaintGatePair_Eyes / PaintGatePair_Lips prefabs and level Paint Gates settings.
+Manually assign TMP labels where desired; labels are no longer generated.
+Ensure a Rigidbody exists on the gate or runner for trigger events (kinematic, no gravity).
+PaintGate does not add a Rigidbody. Optional gate hit effects must be existing particle
+systems: they are played in place rather than instantiated.
+
+BEHAVIOR / VERIFICATION
+Drag across both eyelids or lips. Only new cells in each region count (12x12 coverage grid);
+holding still cannot fill the region. Shader masks reveal paint where the brush passes.
+Progress completes at the configured coverage threshold; completed makeup uses the existing
+MakeupPainted scoring event. Movement resumes after completion delay and pointer release.
+Check palette changes, both eye regions, repeated gates, touch and mouse, pause, retry/reset,
+scene unload, AI colors, target demo colors and finish scoring in Unity Play Mode.
+C# build can verify scripts; Unity must validate shader compilation and face/camera fitting.

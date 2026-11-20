@@ -6,6 +6,7 @@ Shader "BuildADoll/MakeupOverlay"
     {
         _BaseColor ("Paint Colour", Color) = (1, 0.4, 0.7, 1)
         _Strength ("Strength", Range(0, 1)) = 0.85
+        [HideInInspector] _UsePaintMask ("Use Paint Mask", Float) = 0
         _Ambient ("Ambient", Range(0, 1)) = 0.55
     }
 
@@ -34,6 +35,9 @@ Shader "BuildADoll/MakeupOverlay"
                 half4 _BaseColor;
                 half _Strength;
                 half _Ambient;
+                float _UsePaintMask;
+                float4x4 _WorldToPaint;
+                float _PaintMask[144];
             CBUFFER_END
 
             struct Attributes
@@ -49,6 +53,7 @@ Shader "BuildADoll/MakeupOverlay"
                 float4 positionCS : SV_POSITION;
                 float3 normalWS : TEXCOORD0;
                 half4 color : COLOR;
+                float3 positionWS : TEXCOORD1;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -60,6 +65,7 @@ Shader "BuildADoll/MakeupOverlay"
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 output.color = input.color;
+                output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
                 return output;
             }
 
@@ -69,7 +75,18 @@ Shader "BuildADoll/MakeupOverlay"
                 half ndl = saturate(dot(normalize(input.normalWS), light.direction));
                 half lighting = lerp(_Ambient, 1.0h, ndl);
                 half3 rgb = _BaseColor.rgb * lighting * light.color;
-                return half4(rgb, _BaseColor.a * input.color.a * _Strength);
+                half mask = 1;
+                if (_UsePaintMask > 0.5)
+                {
+                    float2 uv = mul(_WorldToPaint, float4(input.positionWS, 1)).xy + 0.5;
+                    if (any(uv < 0) || any(uv >= 1)) mask = 0;
+                    else
+                    {
+                        int2 cell = min((int2)(uv * 12), int2(11, 11));
+                        mask = _PaintMask[cell.y * 12 + cell.x];
+                    }
+                }
+                return half4(rgb, _BaseColor.a * input.color.a * _Strength * mask);
             }
             ENDHLSL
         }

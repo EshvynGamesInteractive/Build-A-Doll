@@ -2,6 +2,7 @@ using System;
 using _Core._Player;
 using Game.Outfit;
 using TMPro;
+using Game.UI;
 using UnityEngine;
 
 namespace Game.Hurdles
@@ -29,15 +30,15 @@ namespace Game.Hurdles
         [Header("Look")]
         [Tooltip("Optional renderers tinted with the paint colour (e.g. a brush tip, a paint panel on the gate).")]
         [SerializeField] private Renderer[] swatches;
-        [Tooltip("Optional. Left empty, a label is created in front of the gate.")]
+        [Tooltip("Optional, manually assigned gate label.")]
         [SerializeField] private TMP_Text label;
-        [SerializeField] private float labelHeight = 0.3f;
-        [SerializeField, Min(0.1f)] private float labelFontSize = 10f;
 
         private TargetLook _look;
         private MaterialPropertyBlock _block;
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int ColorId = Shader.PropertyToID("_Color");
+
+        protected override bool AllowRuntimeObjects => false;
 
         public MakeupZone Zone => zone;
         public Color Color => color;
@@ -46,8 +47,6 @@ namespace Game.Hurdles
         protected override void Awake()
         {
             base.Awake();
-            if (label == null)
-                label = GateLabel.Create(transform, labelHeight, labelFontSize, color);
             Refresh();
         }
 
@@ -73,12 +72,16 @@ namespace Game.Hurdles
         protected override void OnPlayerHit(RunnerController player)
         {
             var makeup = player.GetComponentInChildren<DollMakeup>();
-            if (makeup == null)
+            if (makeup == null || !makeup.CanPaint(zone))
             {
-                makeup = player.gameObject.AddComponent<DollMakeup>(); // makes default zones on the head
-                makeup.RaiseEvents = !player.IsAI;
+                Debug.LogWarning("Paint gate needs an authored DollMakeup zone on the runner.", player);
+                return;
             }
-            makeup.Paint(zone, color);
+            makeup.RaiseEvents = !player.IsAI;
+            if (player.IsAI)
+                makeup.Paint(zone, color);
+            else if (PaintToolView.Instance == null || !PaintToolView.Instance.TryBegin(player, makeup, zone, color))
+                Debug.LogWarning("Paint gate needs a configured, active PaintToolView in the scene.", this);
         }
 
         public string Text => $"{(string.IsNullOrEmpty(colorName) ? "" : colorName.ToUpperInvariant() + " ")}{MakeupColor.ZoneName(zone)}";

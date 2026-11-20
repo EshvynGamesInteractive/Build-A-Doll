@@ -71,10 +71,10 @@ namespace _Core._Player
         private Vector3 _hitboxCenter;
         private float _squash = 1f;
 
-        public bool IsRunning => _phase == Phase.Walking ? _walkSpeedNow > MovingThreshold : _forward.CurrentSpeed > MovingThreshold;
+        public bool IsRunning => !MakeupActive && (_phase == Phase.Walking ? _walkSpeedNow > MovingThreshold : _forward.CurrentSpeed > MovingThreshold);
 
         public float NormalizedSpeed =>
-            config.ForwardSpeed <= 0f ? 0f
+            MakeupActive || config.ForwardSpeed <= 0f ? 0f
             : (_phase == Phase.Walking ? _walkSpeedNow : _forward.CurrentSpeed) / config.ForwardSpeed;
 
         /// <summary>True while a scripted walk (WalkTo) is still going.</summary>
@@ -262,9 +262,11 @@ namespace _Core._Player
             GameEvents.GameplayEvents.ResetRun.Unregister(ResetRun);
         }
 
+        public bool MakeupActive { get; set; }
+
         private void Update()
         {
-            if (Time.timeScale == 0f)
+            if (Time.timeScale == 0f || MakeupActive)
                 return;
 
             if (_phase == Phase.Walking)
@@ -407,6 +409,7 @@ namespace _Core._Player
 
         private void ResetRun()
         {
+            MakeupActive = false;
             _phase = Phase.Idle;
             _walkPath.Clear();
             _walkArrived = null;

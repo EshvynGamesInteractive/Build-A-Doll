@@ -33,16 +33,21 @@ namespace Game.Hurdles
 
         public bool IsUsed { get; private set; }
 
+        protected virtual bool AllowRuntimeObjects => true;
+
         protected virtual void Awake()
         {
             _trigger = GetComponent<Collider>();
             _trigger.isTrigger = true;
 
             // Trigger events need a Rigidbody on one side; a kinematic one costs nothing.
-            if (!TryGetComponent<Rigidbody>(out var body))
+            if (!TryGetComponent<Rigidbody>(out var body) && AllowRuntimeObjects)
                 body = gameObject.AddComponent<Rigidbody>();
-            body.isKinematic = true;
-            body.useGravity = false;
+            if (body != null)
+            {
+                body.isKinematic = true;
+                body.useGravity = false;
+            }
 
             _group = GetComponentInParent<HurdleGroup>();
         }
@@ -67,7 +72,12 @@ namespace Game.Hurdles
             OnPlayerHit(player);
 
             if (hitEffect != null)
-                Instantiate(hitEffect, other.ClosestPoint(transform.position), Quaternion.identity).Play();
+            {
+                if (AllowRuntimeObjects)
+                    Instantiate(hitEffect, other.ClosestPoint(transform.position), Quaternion.identity).Play();
+                else
+                    hitEffect.Play();
+            }
 
             if (!player.IsAI && hitSound != null)
                 GameEvents.AudioEvents.PlaySfx.Raise(hitSound);
