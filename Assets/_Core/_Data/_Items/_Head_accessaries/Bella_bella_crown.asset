@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bella Hat
   slot: 8
   prefab: {fileID: 3634786514402219032, guid: 66c9743a98d244a7cb46c82a193a4ec4, type: 3}
-  icon: {fileID: 21300000, guid: 8408f51ad412f4d40b974b83509d1b49, type: 3}
+  icon: {fileID: 21300000, guid: 1e88551d16c114a60a7fdbdd49a49503, type: 3}
   styleScore: 1
   alsoClears: 

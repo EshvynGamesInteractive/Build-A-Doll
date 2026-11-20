@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Jumpsuit Dress
   slot: 4
   prefab: {fileID: 3675676076572620148, guid: 92b41edb5d11b419cb2b72c06772ac48, type: 3}
-  icon: {fileID: 21300000, guid: 65101b16bef0d412ebbee47be917bb2f, type: 3}
+  icon: {fileID: 21300000, guid: d65999ad95e3e4b3481e3d39e3ff9dee, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

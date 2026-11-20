@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Wedding Dress
   slot: 4
   prefab: {fileID: 4084877297824139732, guid: 0c833e61c4bb04ba2908d3c20601cfa0, type: 3}
-  icon: {fileID: 21300000, guid: 1a83294fc2b9d4843831f392c79970dc, type: 3}
+  icon: {fileID: 21300000, guid: 794aac1d7ba234bf99780dd7114c2d5b, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

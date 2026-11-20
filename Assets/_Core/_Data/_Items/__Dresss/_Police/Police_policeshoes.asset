@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Police Shoes
   slot: 5
   prefab: {fileID: 146569721846629334, guid: 8f6e814b1818c431c856aa5992c1b49e, type: 3}
-  icon: {fileID: 21300000, guid: f894cd7ee8059424694af31b0f422ae1, type: 3}
+  icon: {fileID: 21300000, guid: 100bb8799bba749f9aa2c3b90d6642ad, type: 3}
   styleScore: 1
   alsoClears: 

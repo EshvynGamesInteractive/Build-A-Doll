@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cinderella Shirt
   slot: 2
   prefab: {fileID: 8252381553988951264, guid: ad3929c1328284f67a3652dada15aba2, type: 3}
-  icon: {fileID: 21300000, guid: 6f2fdf6e0a7634467b4c1717fd65c917, type: 3}
+  icon: {fileID: 21300000, guid: 6d1fd95fe34c44c9f86d67487f6d9f96, type: 3}
   styleScore: 1
   alsoClears: 

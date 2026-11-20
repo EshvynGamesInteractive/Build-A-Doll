@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Casual Pants
   slot: 3
   prefab: {fileID: 3461167967123419403, guid: 75114ba6a978347808b4204cff6894f0, type: 3}
-  icon: {fileID: 21300000, guid: 57514e128431b44189b77071d2a802fc, type: 3}
+  icon: {fileID: 21300000, guid: 6e98ae5d6d2d645f8be59f9febae0f28, type: 3}
   styleScore: 1
   alsoClears: 

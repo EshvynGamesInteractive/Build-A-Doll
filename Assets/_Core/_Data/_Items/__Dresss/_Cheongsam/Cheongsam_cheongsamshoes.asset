@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cheongsam Shoes
   slot: 5
   prefab: {fileID: 4077502125342556963, guid: 699cb03ff2041436d9d2b704baccd371, type: 3}
-  icon: {fileID: 21300000, guid: b7cb6bdd735b84cb3ac7218b59013d77, type: 3}
+  icon: {fileID: 21300000, guid: 87490b56172254a5fa21581beeed1380, type: 3}
   styleScore: 1
   alsoClears: 

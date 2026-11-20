@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Maid Dress
   slot: 4
   prefab: {fileID: 5174246482993189175, guid: 7a2b9040dd711452183c18a7f5b051bf, type: 3}
-  icon: {fileID: 21300000, guid: 015f77f1310964e898daf1ff73ce4b99, type: 3}
+  icon: {fileID: 21300000, guid: e3be343f3c93b40caae35beff347762c, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

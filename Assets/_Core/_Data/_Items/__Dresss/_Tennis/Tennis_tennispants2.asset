@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tennis Pants
   slot: 3
   prefab: {fileID: 5395209247316600650, guid: a15292cce87e043888eb50ba3e724da8, type: 3}
-  icon: {fileID: 21300000, guid: 2be09d153e13e487bbd9fe3250db0b33, type: 3}
+  icon: {fileID: 21300000, guid: bc65ce34e70994e72be2b5d117d61087, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bunny Shoes
   slot: 5
   prefab: {fileID: 4767181566601040142, guid: fbcca891f0dcc47e885bfbd2212bcc82, type: 3}
-  icon: {fileID: 21300000, guid: 8efb448f953b64140ba56dd6edd5f613, type: 3}
+  icon: {fileID: 21300000, guid: 3aa982cd7324743ce99fa64ea9f8b844, type: 3}
   styleScore: 1
   alsoClears: 

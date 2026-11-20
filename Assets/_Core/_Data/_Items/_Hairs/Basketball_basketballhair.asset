@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basketball Hair
   slot: 0
   prefab: {fileID: 7631354202969622368, guid: 737a92e2b7dc74e9890e40f9224d336d, type: 3}
-  icon: {fileID: 21300000, guid: a1a052d2e92304e0f8d0425ab9020b07, type: 3}
+  icon: {fileID: 21300000, guid: 0ff855501f08f4d2398b63ba53cd8329, type: 3}
   styleScore: 1
   alsoClears: 

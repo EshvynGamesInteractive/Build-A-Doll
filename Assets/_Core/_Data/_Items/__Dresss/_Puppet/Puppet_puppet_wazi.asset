@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Puppet Socks
   slot: 12
   prefab: {fileID: 2634350370620847715, guid: de929f1b3bea04e8e83ca0a197c10a95, type: 3}
-  icon: {fileID: 21300000, guid: d32e53d14120a4a4c8793951c07dbfae, type: 3}
+  icon: {fileID: 21300000, guid: 57c2b276577784cc69d75a0d3fb09625, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Wings Wings
   slot: 11
   prefab: {fileID: 633846488008108032, guid: 816f6c120358f42138e1ee951d473151, type: 3}
-  icon: {fileID: 21300000, guid: 7f98305bfe4854967a38f44484e2f444, type: 3}
+  icon: {fileID: 21300000, guid: c299c375191cc44ce8298e376e5b0be6, type: 3}
   styleScore: 1
   alsoClears: 

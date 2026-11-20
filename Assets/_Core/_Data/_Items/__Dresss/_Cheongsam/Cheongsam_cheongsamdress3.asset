@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cheongsam Dress
   slot: 4
   prefab: {fileID: 2816889406317263455, guid: 51c399151266449589e9df17dee05f3c, type: 3}
-  icon: {fileID: 21300000, guid: 2b246f7437e0c4903a22ccd5ea09f1ca, type: 3}
+  icon: {fileID: 21300000, guid: 6126d8769bc424cc1baf31d4330563fb, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

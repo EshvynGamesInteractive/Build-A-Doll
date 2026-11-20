@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Date Dress
   slot: 4
   prefab: {fileID: 2570066929725944755, guid: a1cf98a2ecc284794b960efc6da434c3, type: 3}
-  icon: {fileID: 21300000, guid: 0c002d4a63c5f4cb3b44437e41cf489a, type: 3}
+  icon: {fileID: 21300000, guid: ebca34ce54b434c4da2b7ea8766489ba, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

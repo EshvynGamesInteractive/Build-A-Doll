@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Baseball Shoes
   slot: 5
   prefab: {fileID: 4552761060039256243, guid: b413d78d2a3414faba8df730f52ba64e, type: 3}
-  icon: {fileID: 21300000, guid: cc851cb0dc5da40dbb6d8b90134d128f, type: 3}
+  icon: {fileID: 21300000, guid: c8a70cd8dee294503aeaf3a15c253cfb, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Wedding Hair
   slot: 0
   prefab: {fileID: 9222147207669720552, guid: 180edcde27c534a8cbb528f1e2a4ef53, type: 3}
-  icon: {fileID: 21300000, guid: 140bab53dee4549fcb5cd7bca83a62b4, type: 3}
+  icon: {fileID: 21300000, guid: 68683cc933964461aaae674b0eada5f9, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Snow White Hat
   slot: 8
   prefab: {fileID: 8621414234367424114, guid: 282ef6a05828f4fbdb6b580a737cce24, type: 3}
-  icon: {fileID: 21300000, guid: 36b30528db6b947b5af311ca13ac5237, type: 3}
+  icon: {fileID: 21300000, guid: 63354b36434fe4f628bae6272e32ef3a, type: 3}
   styleScore: 1
   alsoClears: 

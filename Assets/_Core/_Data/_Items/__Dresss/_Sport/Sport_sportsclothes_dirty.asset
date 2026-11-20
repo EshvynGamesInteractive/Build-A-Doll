@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Sport Shirt
   slot: 2
   prefab: {fileID: 894190973988408917, guid: 1b9d20744d9f94604bffe47ad61b073b, type: 3}
-  icon: {fileID: 21300000, guid: affc356b1f69f4fb3a0ba2d3f788ba7e, type: 3}
+  icon: {fileID: 21300000, guid: ff36d615e727f4c0ea30000de3f23317, type: 3}
   styleScore: 1
   alsoClears: 

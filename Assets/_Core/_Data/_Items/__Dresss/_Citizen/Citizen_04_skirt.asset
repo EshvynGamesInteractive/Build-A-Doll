@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Citizen Pants
   slot: 3
   prefab: {fileID: 4008199800327906946, guid: 76f661cb949bc488e8c1676e8e0a7479, type: 3}
-  icon: {fileID: 21300000, guid: c259f9fc41d4d4ddc929035647a0a9f1, type: 3}
+  icon: {fileID: 21300000, guid: bd4e3672a5c1a486b892a0eec2cafa02, type: 3}
   styleScore: 1
   alsoClears: 

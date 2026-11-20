@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Forest Fairy Hair
   slot: 0
   prefab: {fileID: 5706497659255581113, guid: 01f066e37e4184e8a9902ea1250c63c1, type: 3}
-  icon: {fileID: 21300000, guid: 223e60d39c64c4f039ac20d031ce157b, type: 3}
+  icon: {fileID: 21300000, guid: d44be8e5068424b9abff866b8d9c935a, type: 3}
   styleScore: 1
   alsoClears: 

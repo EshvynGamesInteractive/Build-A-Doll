@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Kimono Dress
   slot: 4
   prefab: {fileID: 1844693390952442564, guid: 02b8575c95b86405a98c1c388c8eaf40, type: 3}
-  icon: {fileID: 21300000, guid: dcc8067d4546e4109983b7328ac698b9, type: 3}
+  icon: {fileID: 21300000, guid: eae0ff08df24444d89132e4dc8500ace, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

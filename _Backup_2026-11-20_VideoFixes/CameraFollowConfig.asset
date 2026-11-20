@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ceb5477604e4e74a5e46efd49be8a8, type: 3}
+  m_Name: CameraFollowConfig
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 4.5, z: -4.25}
+  lookOffset: {x: 0, y: 2.85, z: 0}
+  lateralFollow: 0.4
+  lookLateralFollow: 0.8
+  smoothTime: 0.12
+  stageSmoothTime: 0.6
+  stagePitch: 12
+  stagePadding: 0.5
+  stageZoomOut: 0.5
+  stageMoveTime: 1.4
+  groupLookHeight: 1.2
+  groupTurnSpeed: 4
+  fitDollsInView: 1
+  frameMargin: 0.15
+  minStageDistance: 4

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Sleep Shoes
   slot: 5
   prefab: {fileID: 4131424378483430202, guid: f28cc1bb0b35843769f3c3bb04addee1, type: 3}
-  icon: {fileID: 21300000, guid: e659abdeca0aa4895b92f052bec41beb, type: 3}
+  icon: {fileID: 21300000, guid: 80bc35b9e67ea4a108b81686a47812f3, type: 3}
   styleScore: 1
   alsoClears: 

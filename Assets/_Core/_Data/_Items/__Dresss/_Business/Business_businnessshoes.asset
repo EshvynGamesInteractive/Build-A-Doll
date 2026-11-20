@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Business Shoes
   slot: 5
   prefab: {fileID: 3652738010066184291, guid: 4f5ee9e5177c34a809ef7ad7d4ab9814, type: 3}
-  icon: {fileID: 21300000, guid: e1edb161aceda43ca92240e6059f5bcb, type: 3}
+  icon: {fileID: 21300000, guid: 947c6b81bcd2c40ae8f150be8225b692, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Baseball Hat
   slot: 8
   prefab: {fileID: 8725065269281994057, guid: 2e22168652ab844c4899a7f04efed061, type: 3}
-  icon: {fileID: 21300000, guid: 5cea6df38bdcf4dab802603645b37268, type: 3}
+  icon: {fileID: 21300000, guid: 3793d3cb3dae548679075186eb3acb9f, type: 3}
   styleScore: 1
   alsoClears: 

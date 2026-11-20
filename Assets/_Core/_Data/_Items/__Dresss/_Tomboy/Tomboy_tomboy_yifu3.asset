@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tomboy Shirt
   slot: 2
   prefab: {fileID: 723360918587571865, guid: 9a3d3896b17c74b439a19c4585eefc80, type: 3}
-  icon: {fileID: 21300000, guid: c65233155003f43c9a894d997666d43b, type: 3}
+  icon: {fileID: 21300000, guid: da69d1f8d9ae949ddbb9ec91cf30b2f4, type: 3}
   styleScore: 1
   alsoClears: 

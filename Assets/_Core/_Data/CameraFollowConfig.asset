@@ -21,7 +21,7 @@ MonoBehaviour:
   stagePitch: 12
   stagePadding: 0.5
   stageZoomOut: 0.5
-  stageMoveTime: 1.4
+  stageMoveTime: 0
   groupLookHeight: 1.2
   groupTurnSpeed: 4
   fitDollsInView: 1

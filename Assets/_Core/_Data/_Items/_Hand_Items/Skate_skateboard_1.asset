@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Skate Hand Item
   slot: 9
   prefab: {fileID: 2368006264707496254, guid: efc56eabb87894f519b557d7477f45ba, type: 3}
-  icon: {fileID: 21300000, guid: b338df68e1765434a8218f134ce73bec, type: 3}
+  icon: {fileID: 21300000, guid: a432aedb3be9e4a2cb100591e0806866, type: 3}
   styleScore: 1
   alsoClears: 

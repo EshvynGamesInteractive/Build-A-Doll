@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Dress Hair
   slot: 0
   prefab: {fileID: 8052994103111510690, guid: 32e64e3f0c9a749e6a5dac57ad5f692d, type: 3}
-  icon: {fileID: 21300000, guid: 1ff0c13f13f9f4e978676bc391299178, type: 3}
+  icon: {fileID: 21300000, guid: 3784e73207c5c4e75aba41ebc83eda91, type: 3}
   styleScore: 1
   alsoClears: 

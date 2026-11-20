@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Puppet Shoes
   slot: 5
   prefab: {fileID: 4951678776356472814, guid: 0f4777eb7a0904afe8e3d3ed1803d5c5, type: 3}
-  icon: {fileID: 21300000, guid: d5fded91ea39d422f9ae5c69ed288c49, type: 3}
+  icon: {fileID: 21300000, guid: ccc7b1c84b55a4f6ca2873f8fad52d43, type: 3}
   styleScore: 1
   alsoClears: 

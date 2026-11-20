@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Puppet Hair
   slot: 0
   prefab: {fileID: 3519102394292667251, guid: cdaf405bae3bc4932adc01a85dca0198, type: 3}
-  icon: {fileID: 21300000, guid: 85c1e9ebc87964a94bfdb021e1c8998d, type: 3}
+  icon: {fileID: 21300000, guid: e7eb61699ef134e25af30523d90f70af, type: 3}
   styleScore: 1
   alsoClears: 

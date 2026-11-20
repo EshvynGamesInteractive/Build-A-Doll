@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Winter Shirt
   slot: 2
   prefab: {fileID: 1522856714897963445, guid: cc34ed529401c4204a4933b16584aae4, type: 3}
-  icon: {fileID: 21300000, guid: 86a6ab6a4d4f24c1cb139da902d20213, type: 3}
+  icon: {fileID: 21300000, guid: d886afe99d6ab4949a02c26b503d80f2, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Sport Pants
   slot: 3
   prefab: {fileID: 2148176071860948899, guid: b94ff1d9e546a4673b67891f3616b9c7, type: 3}
-  icon: {fileID: 21300000, guid: e357bab527219475d9bf00ceed17eb21, type: 3}
+  icon: {fileID: 21300000, guid: 9006848c7b9d543cdb10f999f8df337e, type: 3}
   styleScore: 1
   alsoClears: 

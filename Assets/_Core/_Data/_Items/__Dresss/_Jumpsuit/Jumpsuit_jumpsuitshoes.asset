@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Jumpsuit Shoes
   slot: 5
   prefab: {fileID: 5759894333923820543, guid: 83a60e87f976d499b9687640de5cc120, type: 3}
-  icon: {fileID: 21300000, guid: c4067f0f3458448b39d46b31b330c699, type: 3}
+  icon: {fileID: 21300000, guid: c139090b52c164d62bbe0abb1d9922a0, type: 3}
   styleScore: 1
   alsoClears: 

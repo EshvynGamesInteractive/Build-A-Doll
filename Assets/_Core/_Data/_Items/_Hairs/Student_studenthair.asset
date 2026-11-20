@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Student Hair
   slot: 0
   prefab: {fileID: 6021141576988311080, guid: c00d854013d9e419a864485c6348b3e6, type: 3}
-  icon: {fileID: 21300000, guid: cb9364b2e8c7246a9a8b157e24153eac, type: 3}
+  icon: {fileID: 21300000, guid: 27a91c02e5451406e831c4ff126e9754, type: 3}
   styleScore: 1
   alsoClears: 

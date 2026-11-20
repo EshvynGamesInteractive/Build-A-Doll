@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Princess Pants
   slot: 3
   prefab: {fileID: 818391201606590833, guid: 1f0c6650d8fed47af80eea080aaffa1e, type: 3}
-  icon: {fileID: 21300000, guid: 21ccddfb1e740406f8522f8ac3427c19, type: 3}
+  icon: {fileID: 21300000, guid: 6d201d2337aa04c5fbb8f9c2fda82175, type: 3}
   styleScore: 1
   alsoClears: 

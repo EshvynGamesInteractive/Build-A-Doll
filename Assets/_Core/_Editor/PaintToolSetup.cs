@@ -75,7 +75,9 @@ namespace Game.EditorTools
                 title.alignment = TextAlignmentOptions.Center;
                 title.color = TitleColor;
                 title.raycastTarget = false;
-                Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -250f), new Vector2(1000f, 120f));
+                // Left of the target-look picture (top-right corner, 320×460), so they don't overlap.
+                title.fontSize = 70f;
+                Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(-180f, -250f), new Vector2(660f, 110f));
 
                 // Progress bar under the title (Slider, not touchable).
                 var slider = panel.Find("ProgressBar")?.GetComponent<Slider>();
@@ -86,7 +88,7 @@ namespace Game.EditorTools
                     slider.minValue = 0f;
                     slider.maxValue = 1f;
                     slider.value = 0f;
-                    Place(slider.transform as RectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -360f), new Vector2(760f, 60f));
+                    Place(slider.transform as RectTransform, new Vector2(0.5f, 1f), new Vector2(-180f, -350f), new Vector2(600f, 55f));
                     var handleArea = slider.transform.Find("Handle Slide Area");
                     if (handleArea != null) handleArea.gameObject.SetActive(false);
                     var back = slider.transform.Find("Background")?.GetComponent<Image>();
@@ -99,8 +101,13 @@ namespace Game.EditorTools
                 }
 
                 // Face icon: decorative, never blocks the drag.
+                // Face icon: decorative, never blocks the drag; hidden while it has no sprite (it showed as a white square).
                 var face = panel.Find("FaceIcon")?.GetComponent<Image>();
-                if (face != null) face.raycastTarget = false;
+                if (face != null)
+                {
+                    face.raycastTarget = false;
+                    face.gameObject.SetActive(face.sprite != null);
+                }
 
                 // Brush: long handle, tip at the pivot (top), follows the finger (shown while dragging).
                 var brush = panel.Find("Brush") as RectTransform;

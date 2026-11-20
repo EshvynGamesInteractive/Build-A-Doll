@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Nurse Hat
   slot: 8
   prefab: {fileID: 8430657798593788322, guid: 4c3cac578514b438cbebf6a87d06ef5d, type: 3}
-  icon: {fileID: 21300000, guid: 57dc8dfee697e419ea8743a62d5aac9b, type: 3}
+  icon: {fileID: 21300000, guid: d2ce635f08ba74f94b40e2624caef570, type: 3}
   styleScore: 1
   alsoClears: 

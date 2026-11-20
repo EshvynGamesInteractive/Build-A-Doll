@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Nurse Shoes
   slot: 5
   prefab: {fileID: 3884146674130331733, guid: db085c7c1d70648d083de8dcb1688646, type: 3}
-  icon: {fileID: 21300000, guid: 1306c210b2df0404f95cbf77b3e3193f, type: 3}
+  icon: {fileID: 21300000, guid: 357a0d5df03c94cb183323f1116aec99, type: 3}
   styleScore: 1
   alsoClears: 

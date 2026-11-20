@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Sport Hair
   slot: 0
   prefab: {fileID: 8084039699090264424, guid: 17288a90c497f4949b2556eaff598a20, type: 3}
-  icon: {fileID: 21300000, guid: 3b992fa3240a6461fbfa00c41b564594, type: 3}
+  icon: {fileID: 21300000, guid: 7c2da0b0b49ae4628b46ead795730d74, type: 3}
   styleScore: 1
   alsoClears: 

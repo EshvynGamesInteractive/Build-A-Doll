@@ -21,6 +21,9 @@ namespace Game.Hurdles
             new() { name = "Brown", color = new Color(0.55f, 0.27f, 0.07f), price = PaintToolView.PriceType.Coins, cost = 500 },
             new() { name = "Purple", color = new Color(0.6f, 0.3f, 0.9f), price = PaintToolView.PriceType.RewardedAd }
         };
+        [Tooltip("Hidden while the player does her makeup (and after), so they don't block the face close-up. " +
+                 "Empty = children named Glass and Sign.")]
+        [SerializeField] private GameObject[] hideWhenUsed;
         [Tooltip("Chance the AI picks the target colour (if it's in the palette).")]
         [SerializeField, Range(0f, 1f)] private float aiTargetChance = 0.6f;
 
@@ -34,6 +37,26 @@ namespace Game.Hurdles
         {
             base.Awake();
             SetChoiceMatch(true);
+            if (hideWhenUsed == null || hideWhenUsed.Length == 0)
+            {
+                var found = new List<GameObject>();
+                foreach (var t in GetComponentsInChildren<Transform>(true))
+                    if (t.name == "Glass" || t.name == "Sign") found.Add(t.gameObject);
+                hideWhenUsed = found.ToArray();
+            }
+        }
+
+        public override void ResetHurdle()
+        {
+            base.ResetHurdle();
+            SetHidden(false);
+        }
+
+        private void SetHidden(bool hidden)
+        {
+            if (hideWhenUsed == null) return;
+            foreach (var go in hideWhenUsed)
+                if (go != null) go.SetActive(!hidden);
         }
 
         /// <summary>Level entry overrides: zone, name and colour per palette slot (prices stay as on the prefab).</summary>
@@ -71,6 +94,7 @@ namespace Game.Hurdles
 
             // Without authored face overlays the paint tool opens in UI preview (nothing is painted).
             if (makeup != null) makeup.RaiseEvents = true;
+            SetHidden(true);
 
             var first = options.Count > 0 ? options[0].color : Color.white;
             if (PaintToolView.Instance == null || !PaintToolView.Instance.TryBegin(player, makeup, zone, first, options))

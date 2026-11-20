@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Skate Pants
   slot: 3
   prefab: {fileID: 5091271450062826671, guid: eff4dc42d76834bd4945e9ad9b7517c2, type: 3}
-  icon: {fileID: 21300000, guid: 2c012799a689044ae9843e87ed543af9, type: 3}
+  icon: {fileID: 21300000, guid: fd38efc52f915481693cfb08d01fb3f9, type: 3}
   styleScore: 1
   alsoClears: 

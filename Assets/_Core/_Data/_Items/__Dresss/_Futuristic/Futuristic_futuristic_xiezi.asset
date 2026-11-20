@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Futuristic Shoes
   slot: 5
   prefab: {fileID: 7963650696919049473, guid: 9510c1f7998d049e7afb1c08063295ff, type: 3}
-  icon: {fileID: 21300000, guid: 957a2645d6ba94933896a61a7eda417e, type: 3}
+  icon: {fileID: 21300000, guid: e7221900e17e242a0afe3bc455a13b91, type: 3}
   styleScore: 1
   alsoClears: 

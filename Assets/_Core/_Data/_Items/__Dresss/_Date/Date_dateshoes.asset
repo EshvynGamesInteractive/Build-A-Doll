@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Date Shoes
   slot: 5
   prefab: {fileID: 2604237576519883426, guid: 91edd7ee1067c49219af0341d159c711, type: 3}
-  icon: {fileID: 21300000, guid: daa0f139ae0454244af32ebf5e828129, type: 3}
+  icon: {fileID: 21300000, guid: e9d610023619a4c4e898fe7b05a177d9, type: 3}
   styleScore: 1
   alsoClears: 

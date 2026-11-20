@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bella Hair
   slot: 0
   prefab: {fileID: 5800630874970956118, guid: 59c562b5066be484ba1424e7b80b0b2c, type: 3}
-  icon: {fileID: 21300000, guid: cff628610c2bd4487950c2cbc02194a5, type: 3}
+  icon: {fileID: 21300000, guid: 90e2ff7e00fbd467fac26f5a5b2feac3, type: 3}
   styleScore: 1
   alsoClears: 

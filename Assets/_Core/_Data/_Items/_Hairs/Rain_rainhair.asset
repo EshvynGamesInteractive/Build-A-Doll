@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Rain Hair
   slot: 0
   prefab: {fileID: 7070918712152827516, guid: 77a06091d515f481ebcdec0bbc0a7bd0, type: 3}
-  icon: {fileID: 21300000, guid: 4f01f9d6fb267491684b045a6cf8acd3, type: 3}
+  icon: {fileID: 21300000, guid: 53dfd44c658eb4226b81321b07cd4fe5, type: 3}
   styleScore: 1
   alsoClears: 

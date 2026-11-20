@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cinderella Pants
   slot: 3
   prefab: {fileID: 2028088717710949031, guid: 5486508a28b7d4da2a9ec8d562d78a8a, type: 3}
-  icon: {fileID: 21300000, guid: 688fd796376d149f884120fd9dcfbff5, type: 3}
+  icon: {fileID: 21300000, guid: d3d33ad717d4c4c088676df7a309ffc2, type: 3}
   styleScore: 1
   alsoClears: 

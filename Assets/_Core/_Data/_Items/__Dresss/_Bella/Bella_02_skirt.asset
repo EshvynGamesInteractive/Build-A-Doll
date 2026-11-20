@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bella Pants
   slot: 3
   prefab: {fileID: 1430977202585274642, guid: a73913b9411bd44b0a1d34912c20f494, type: 3}
-  icon: {fileID: 21300000, guid: 5fb6707ca4c894fd794e303259977a81, type: 3}
+  icon: {fileID: 21300000, guid: a9ed4f7d9b55746a5ad828d8720f10a3, type: 3}
   styleScore: 1
   alsoClears: 

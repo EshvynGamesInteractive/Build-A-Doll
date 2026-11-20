@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tomboy Shoes
   slot: 5
   prefab: {fileID: 859959288209243529, guid: 655db8ada39b74658b928a05a821e9db, type: 3}
-  icon: {fileID: 21300000, guid: 60843727afcb84ff3b7bc4913b734c3a, type: 3}
+  icon: {fileID: 21300000, guid: 7c69553b752264fbb8f277afbbf79895, type: 3}
   styleScore: 1
   alsoClears: 

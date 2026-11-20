@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Killer Pants
   slot: 3
   prefab: {fileID: 2477282142607485316, guid: 8f0845b2c384a4eb8b97a653826b55d7, type: 3}
-  icon: {fileID: 21300000, guid: db0d3de4747544ca5861c4eb9272f875, type: 3}
+  icon: {fileID: 21300000, guid: d520658aee7ab40fe88e6c888b99da3d, type: 3}
   styleScore: 1
   alsoClears: 

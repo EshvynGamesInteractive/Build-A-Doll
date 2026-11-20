@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Sleep Hair
   slot: 0
   prefab: {fileID: 6998593138337306407, guid: 28560affc71d343b0b1f96ebb17c9601, type: 3}
-  icon: {fileID: 21300000, guid: 5d6524063f01a4bd2819124e43647a99, type: 3}
+  icon: {fileID: 21300000, guid: 9c03788727f2d4c3d87994952959903e, type: 3}
   styleScore: 1
   alsoClears: 

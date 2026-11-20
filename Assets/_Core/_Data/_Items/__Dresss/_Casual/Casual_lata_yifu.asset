@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Casual Shirt
   slot: 2
   prefab: {fileID: 4440871875799407558, guid: 80cd7a191a8e84ac08202304d01766cc, type: 3}
-  icon: {fileID: 21300000, guid: d320ffb6a323c4dc7a4654bbd5910a77, type: 3}
+  icon: {fileID: 21300000, guid: 6362bfdd4a3464a958f4729f03a18396, type: 3}
   styleScore: 1
   alsoClears: 

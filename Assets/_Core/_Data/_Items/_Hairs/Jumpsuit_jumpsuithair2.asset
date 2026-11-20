@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Jumpsuit Hair
   slot: 0
   prefab: {fileID: 2591495338657534358, guid: 0285b8564490c49c89deb5c1af9ff473, type: 3}
-  icon: {fileID: 21300000, guid: d539003e192f644ec9c25036b0b88926, type: 3}
+  icon: {fileID: 21300000, guid: 85255eb4a09b64c00813261767cfe024, type: 3}
   styleScore: 1
   alsoClears: 

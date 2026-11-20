@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Maid Hair
   slot: 0
   prefab: {fileID: 299422094386929865, guid: dc5d7a8afcc154b449f938085012870a, type: 3}
-  icon: {fileID: 21300000, guid: a5c55b337e4f945d989b6e3bbee0aac3, type: 3}
+  icon: {fileID: 21300000, guid: 12d2aaadf9fb548daae5bb17a8e013d3, type: 3}
   styleScore: 1
   alsoClears: 

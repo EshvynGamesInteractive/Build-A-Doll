@@ -406,8 +406,10 @@ namespace Game.EditorTools
 
             // Hit box (moves with the lift): from slide height up to the roller's top while it's up,
             // so sliding gets under it; when it's down the box top is the roller's top, so jumping clears it.
+            // Roller + 0.5 under it: up (bottom ≈ 3.2) it hits her standing (hitbox 3.2 tall) but not sliding (0.9);
+            // halfway it still needs a slide; down (top ≈ 0.9) she jumps over it.
             var zone = new Bounds();
-            zone.SetMinMax(new Vector3(fb.min.x + 0.3f, Mathf.Min(SlideBottom, rb.min.y), barBounds.min.z),
+            zone.SetMinMax(new Vector3(fb.min.x + 0.3f, rb.min.y - 0.5f, barBounds.min.z),
                            new Vector3(fb.max.x - 0.3f, barBounds.max.y, barBounds.max.z));
             Box(lift.gameObject, zone, 1f);
             Penalty(lift.gameObject, Avoid.Jump, 3, 0.7f);

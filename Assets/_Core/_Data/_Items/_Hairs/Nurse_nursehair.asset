@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Nurse Hair
   slot: 0
   prefab: {fileID: 8564062042335681760, guid: 63c730cedfd354500abb88e1fc9f8c0b, type: 3}
-  icon: {fileID: 21300000, guid: e254102aa2be54916a9ed8e807e13e86, type: 3}
+  icon: {fileID: 21300000, guid: d368ae71c45a040aa8a4463a0a6ad764, type: 3}
   styleScore: 1
   alsoClears: 

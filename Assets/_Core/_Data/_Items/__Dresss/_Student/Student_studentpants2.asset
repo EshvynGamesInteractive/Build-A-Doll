@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Student Pants
   slot: 3
   prefab: {fileID: 5445552135029143011, guid: 74860f837fd39459bbe6cd79474a56dd, type: 3}
-  icon: {fileID: 21300000, guid: edc4160a738b8404e880d58c1272926b, type: 3}
+  icon: {fileID: 21300000, guid: d2fdcd4fd0fd14624b55587f4cc121c4, type: 3}
   styleScore: 1
   alsoClears: 

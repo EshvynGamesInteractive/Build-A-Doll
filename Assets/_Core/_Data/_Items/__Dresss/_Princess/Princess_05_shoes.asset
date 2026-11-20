@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Princess Shoes
   slot: 5
   prefab: {fileID: 7331936611870625888, guid: 418c2e2c13ca24cfeaf795d6481dc828, type: 3}
-  icon: {fileID: 21300000, guid: 41735f7dbbc72407b9ff1f722db32bc6, type: 3}
+  icon: {fileID: 21300000, guid: 850bf6e52bcea4ad3a6f6c7e52696efe, type: 3}
   styleScore: 1
   alsoClears: 

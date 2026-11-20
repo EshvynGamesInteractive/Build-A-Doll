@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bikini Shoes
   slot: 5
   prefab: {fileID: 2182299684802952386, guid: 348f99b1c27cf44ef8c88ded43a92335, type: 3}
-  icon: {fileID: 21300000, guid: 72251f7b911c44f8c9e476d233ee4827, type: 3}
+  icon: {fileID: 21300000, guid: ba1cfa29e26b24322992ec5a19acc3b5, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Sport 2 Shoes
   slot: 5
   prefab: {fileID: 2476827467001012547, guid: fac912e10490740e4ae0741e1bba82ef, type: 3}
-  icon: {fileID: 21300000, guid: 40b00939ffdff464385f8614f5b90698, type: 3}
+  icon: {fileID: 21300000, guid: 76e5c80bb03f94f91bacd635696a9fba, type: 3}
   styleScore: 1
   alsoClears: 

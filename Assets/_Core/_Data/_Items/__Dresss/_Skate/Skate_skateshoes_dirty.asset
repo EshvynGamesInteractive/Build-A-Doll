@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Skate Shoes
   slot: 5
   prefab: {fileID: 5908442928724637890, guid: b9b0d6dd0cf714bf0a76df7aba6de06d, type: 3}
-  icon: {fileID: 21300000, guid: b31dcf93ebec44a1bae2cc8c6ba15f09, type: 3}
+  icon: {fileID: 21300000, guid: 2d5f7944bcc134457a01ff415505a720, type: 3}
   styleScore: 1
   alsoClears: 

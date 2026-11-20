@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Disney Dress
   slot: 4
   prefab: {fileID: 7444399864414828969, guid: 90f366fdd3ebb4949aca30ef34e8439d, type: 3}
-  icon: {fileID: 21300000, guid: b773b1992ec7d48cc88c0643cf14a74c, type: 3}
+  icon: {fileID: 21300000, guid: 9557d05d92adc430380738bdbbd99516, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

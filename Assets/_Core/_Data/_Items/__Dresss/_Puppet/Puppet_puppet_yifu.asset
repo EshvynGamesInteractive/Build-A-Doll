@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Puppet Shirt
   slot: 2
   prefab: {fileID: 8822627012961513056, guid: f253c5959ba1548f19cdd9fa0f44c02c, type: 3}
-  icon: {fileID: 21300000, guid: 727a6fca409cd4644ad95c02dc5f6e31, type: 3}
+  icon: {fileID: 21300000, guid: 8ce75ac40e2014983824fed6c1d9aa7f, type: 3}
   styleScore: 1
   alsoClears: 

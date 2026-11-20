@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Dress Dress
   slot: 4
   prefab: {fileID: 2350845813400073647, guid: 0db37a3352d2e47dfa2e88f6d672c84e, type: 3}
-  icon: {fileID: 21300000, guid: 5a7226bf2bc754e1495ffaf4c614109e, type: 3}
+  icon: {fileID: 21300000, guid: f5c1618f62cf54f0db4d936a643a5ea3, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

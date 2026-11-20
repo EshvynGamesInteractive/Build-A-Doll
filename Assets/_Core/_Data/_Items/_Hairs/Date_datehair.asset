@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Date Hair
   slot: 0
   prefab: {fileID: 1743899960285836607, guid: a88df7f9500c042298f46938294bfa35, type: 3}
-  icon: {fileID: 21300000, guid: b1e1d34e582614a7caf721d937549846, type: 3}
+  icon: {fileID: 21300000, guid: 75784715d12694f0199aaaeb778c162a, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cinderella Hat
   slot: 8
   prefab: {fileID: 7085469180971102825, guid: b068db4b1a6664eda872bbb321843d06, type: 3}
-  icon: {fileID: 21300000, guid: 8727baf377bbc488b858f912aa584a49, type: 3}
+  icon: {fileID: 21300000, guid: 7efca718bc7fd4f908a51e04801b254f, type: 3}
   styleScore: 1
   alsoClears: 

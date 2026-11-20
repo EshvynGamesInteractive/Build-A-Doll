@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Police Hair
   slot: 0
   prefab: {fileID: 5296014950607447061, guid: 24073aac7a8f3416486f30ad2afa719a, type: 3}
-  icon: {fileID: 21300000, guid: e2998622f58e149459156375590a7b2b, type: 3}
+  icon: {fileID: 21300000, guid: b3e19efb4e37742739409e1bcd5d98bf, type: 3}
   styleScore: 1
   alsoClears: 

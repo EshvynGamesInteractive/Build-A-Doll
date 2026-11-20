@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Uniform Pants
   slot: 3
   prefab: {fileID: 4028728320084971709, guid: 6ff74ab9cd37548fcad14f73d7c6dab0, type: 3}
-  icon: {fileID: 21300000, guid: 554ef410a0b3347cbb52e2375e5fdaf6, type: 3}
+  icon: {fileID: 21300000, guid: 6fff7631904e540abbc8c74f8088f583, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Skate Hat
   slot: 8
   prefab: {fileID: 1893275528738800197, guid: 537fbf57eae024a60a5a7f55c6a457b6, type: 3}
-  icon: {fileID: 21300000, guid: f71f620361da144d9b73d381d269aad7, type: 3}
+  icon: {fileID: 21300000, guid: 6398dd47853ca4ed79fb35598461e94e, type: 3}
   styleScore: 1
   alsoClears: 

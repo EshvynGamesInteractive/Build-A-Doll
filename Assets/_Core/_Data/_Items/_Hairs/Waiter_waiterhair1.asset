@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Waiter Hair
   slot: 0
   prefab: {fileID: 3946977791407718997, guid: ec7da1a4999b143bb84d5e047a77d190, type: 3}
-  icon: {fileID: 21300000, guid: 05a3a312f6103429796b0e0fff72bf04, type: 3}
+  icon: {fileID: 21300000, guid: 607ec2444906041569faad462dff8e37, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basketball Shirt
   slot: 2
   prefab: {fileID: 3024804334362860009, guid: 0d5c1875ee300487e9a7b961bf554196, type: 3}
-  icon: {fileID: 21300000, guid: 72a023c26edb5404b999cae16bf7702c, type: 3}
+  icon: {fileID: 21300000, guid: c3115135fb8594e6a8b90e153e0dea74, type: 3}
   styleScore: 1
   alsoClears: 

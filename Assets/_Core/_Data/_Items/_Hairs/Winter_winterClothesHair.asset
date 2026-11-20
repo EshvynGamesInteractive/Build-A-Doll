@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Winter Hair
   slot: 0
   prefab: {fileID: 2623382539526485347, guid: e7843b570eac3404db75dc90fa665357, type: 3}
-  icon: {fileID: 21300000, guid: 8122b4cb69b164048b0500d0387bd327, type: 3}
+  icon: {fileID: 21300000, guid: c70b18651a9a948feaf2475969e2b735, type: 3}
   styleScore: 1
   alsoClears: 

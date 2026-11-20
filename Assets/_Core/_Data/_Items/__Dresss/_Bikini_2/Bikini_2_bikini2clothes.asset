@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bikini 2 Shirt
   slot: 2
   prefab: {fileID: 475840495964630208, guid: 93fd817a1bd3543ee80860ff141bdba2, type: 3}
-  icon: {fileID: 21300000, guid: 19a463eb422f5410d8c0961ed8ae9516, type: 3}
+  icon: {fileID: 21300000, guid: 543d2358b3b544bda861f705db366e16, type: 3}
   styleScore: 1
   alsoClears: 

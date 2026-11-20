@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basketball Pants
   slot: 3
   prefab: {fileID: 3814331217609335180, guid: 026de3de49c6b4f42a57977f31a12e2b, type: 3}
-  icon: {fileID: 21300000, guid: 88792635b89e04d4dbaa40f9b68061f7, type: 3}
+  icon: {fileID: 21300000, guid: 4a7de7d5dcc414967af2b9d3faf9d1ec, type: 3}
   styleScore: 1
   alsoClears: 

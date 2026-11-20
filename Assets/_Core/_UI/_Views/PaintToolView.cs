@@ -103,8 +103,9 @@ namespace Game.UI
         [Header("Close-up on the face")]
         [Tooltip("Frame the head bone of a humanoid doll (works with any doll scale). Off = Camera Offset / Focus Offset.")]
         [SerializeField] private bool focusHeadBone = true;
-        [Tooltip("Camera distance in front of the face, × the doll's scale.")]
-        [SerializeField, Min(0.05f)] private float faceDistance = 0.55f;
+        [Tooltip("How much of the doll fills the screen height in the close-up, × the doll's scale (0.38 ≈ the face, like the reference). " +
+                 "The camera distance is worked out from the camera's field of view.")]
+        [SerializeField, Min(0.05f)] private float faceViewHeight = 0.38f;
         [Tooltip("Moves the look point up from the head bone, × the doll's scale (the head bone is at the neck end).")]
         [SerializeField] private float faceHeight = 0.08f;
 
@@ -129,6 +130,7 @@ namespace Game.UI
         private bool _hadColor;
         private Color _previousColor;
         private float _closeAt;
+        private Game.CameraRig.CameraFollow _follow; // fallback close-up when there's no makeup camera
         private bool _preview;          // UI preview: no overlays, progress from drag distance
         private float _previewDragged;
         private Vector2 _lastPoint;
@@ -187,9 +189,7 @@ namespace Game.UI
                 return false;
             if (!paintable)
                 Debug.Log("[PaintTool] UI preview: the doll has no paintable DollMakeup zone yet, so nothing is painted (see _Documentation/PaintToolSetup.txt).", runner);
-            if (makeupCamera == null)
-                Debug.LogWarning($"[PaintTool] No makeup camera: assign one or add a CinemachineCamera named '{makeupCameraName}' to the scene " +
-                                 "(Build A Doll > Paint Tool > Add Makeup Camera To Open Scene).", this);
+
             _preview = !paintable;
             _previewDragged = 0f;
             _runner = runner;
@@ -219,11 +219,20 @@ namespace Game.UI
                 _animationSpeed = _animator.speed;
                 _animator.speed = 0f;
             }
+            GetFacePose(runner, out var eye, out var focus);
+            var look = Quaternion.LookRotation(focus - eye, Vector3.up);
             if (makeupCamera != null)
             {
-                PlaceCamera(runner);
+                makeupCamera.transform.SetPositionAndRotation(eye, look);
                 makeupCamera.PreviousStateIsValid = false;
                 makeupCamera.enabled = true;
+            }
+            else
+            {
+                // No makeup camera in the scene: borrow the follow camera's stage shot for the close-up.
+                _follow = FindFirstObjectByType<Game.CameraRig.CameraFollow>();
+                if (_follow != null) _follow.ShowStagePose(eye, look);
+                else Debug.LogWarning($"[PaintTool] No makeup camera ('{makeupCameraName}') and no CameraFollow: the view stays behind the doll.", this);
             }
             if (instruction != null)
                 instruction.text = zone switch { MakeupZone.EyeShadow => eyeShadowTitle, MakeupZone.Lips => lipsTitle, _ => blushTitle };
@@ -249,25 +258,24 @@ namespace Game.UI
         }
 
         // Close-up: in front of the head bone (scaled with the doll), or the old fixed offsets.
-        private void PlaceCamera(RunnerController runner)
+        private void GetFacePose(RunnerController runner, out Vector3 eye, out Vector3 focus)
         {
             var animator = runner.GetComponentInChildren<Animator>();
             var head = focusHeadBone && animator != null && animator.isHuman ? animator.GetBoneTransform(HumanBodyBones.Head) : null;
-            Vector3 eye, focus;
             if (head != null)
             {
                 var scale = Mathf.Max(0.01f, animator.transform.lossyScale.y);
                 var forward = Vector3.ProjectOnPlane(runner.transform.forward, Vector3.up).normalized;
+                var fov = makeupCamera != null ? makeupCamera.Lens.FieldOfView : renderCamera != null ? renderCamera.fieldOfView : 60f;
+                var distance = faceViewHeight * scale * 0.5f / Mathf.Tan(Mathf.Clamp(fov, 10f, 120f) * 0.5f * Mathf.Deg2Rad);
                 focus = head.position + Vector3.up * (faceHeight * scale);
-                eye = focus + forward * (faceDistance * scale);
+                eye = focus + forward * distance;
             }
             else
             {
                 eye = runner.transform.TransformPoint(cameraOffset);
                 focus = runner.transform.TransformPoint(focusOffset);
             }
-
-            makeupCamera.transform.SetPositionAndRotation(eye, Quaternion.LookRotation(focus - eye, Vector3.up));
         }
 
         // ---------- Palette ----------
@@ -486,6 +494,8 @@ namespace Game.UI
                 for (var i = 0; i < entry.overlays.Length; i++)
                     _makeup.SetCoverage(_zone, i, _previousColor, _hadColor ? 1f : 0f);
             }
+            if (_follow != null && _runner != null) _follow.SetTarget(_runner.transform); // back to following her
+            _follow = null;
             if (_animator != null) _animator.speed = _animationSpeed;
             _animator = null;
             if (_runner != null) _runner.MakeupActive = false;

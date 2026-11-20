@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Puppet Pants
   slot: 3
   prefab: {fileID: 1582674854863249142, guid: bf7c8a5d87c754e80a1e8a0d1da0e89a, type: 3}
-  icon: {fileID: 21300000, guid: fc1b73f1b3a9f4c56a8c7f83f756cdd9, type: 3}
+  icon: {fileID: 21300000, guid: 41ef8bf845fac43ed964551fc4fa85be, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Citizen Hair
   slot: 0
   prefab: {fileID: 3535574841591289245, guid: cbc3b0dfa51e140ad80f968b59a35395, type: 3}
-  icon: {fileID: 21300000, guid: 5135043716ec14c028aa082563cbb453, type: 3}
+  icon: {fileID: 21300000, guid: 6809cdafbc5d549ec83f7a0116aa22d9, type: 3}
   styleScore: 1
   alsoClears: 

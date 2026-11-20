@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Nurse Dress
   slot: 4
   prefab: {fileID: 455329299545311590, guid: 29e08e1574137413f89689ff22c15b1b, type: 3}
-  icon: {fileID: 21300000, guid: 26e77080990904d95985842e7c10ccc2, type: 3}
+  icon: {fileID: 21300000, guid: 06733c83ca13b4504a7db492560055c9, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

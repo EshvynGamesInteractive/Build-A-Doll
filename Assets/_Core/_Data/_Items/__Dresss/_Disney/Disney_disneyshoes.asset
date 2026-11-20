@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Disney Shoes
   slot: 5
   prefab: {fileID: 7188993057477340088, guid: a87a032151b924d3f8586ccd0a4b1fca, type: 3}
-  icon: {fileID: 21300000, guid: e2545fd5b0b654d5596e19ccf3f830da, type: 3}
+  icon: {fileID: 21300000, guid: dc414cdab95d64d7e982814207423ad2, type: 3}
   styleScore: 1
   alsoClears: 

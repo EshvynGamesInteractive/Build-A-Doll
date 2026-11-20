@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Squid Hair
   slot: 0
   prefab: {fileID: 6792547615605978168, guid: 9e19ba3f657cf4d2ba45eee3f7f7ac33, type: 3}
-  icon: {fileID: 21300000, guid: a985884f778434f8d9b40f6a79009f36, type: 3}
+  icon: {fileID: 21300000, guid: 0dfddf2d9665e45f481624a9080f5099, type: 3}
   styleScore: 1
   alsoClears: 

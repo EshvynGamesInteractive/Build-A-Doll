@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Casual Hair
   slot: 0
   prefab: {fileID: 5870800810264185278, guid: ab2d04fc394324322a8f5cdb92579992, type: 3}
-  icon: {fileID: 21300000, guid: 46a9dd306d3b245bba3a4cb98fb2ea51, type: 3}
+  icon: {fileID: 21300000, guid: 4a657e9bc4e6e4f4693202857491ea2e, type: 3}
   styleScore: 1
   alsoClears: 

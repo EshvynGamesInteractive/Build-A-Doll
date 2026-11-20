@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tennis Shirt
   slot: 2
   prefab: {fileID: 7891870363097351773, guid: 453b2f561ee1540709388e5194a8dd3f, type: 3}
-  icon: {fileID: 21300000, guid: 1205f76fa0b614109a6c930c505f0505, type: 3}
+  icon: {fileID: 21300000, guid: 0d8919cb6612e489eb97f7313e12c5aa, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bunny Hat
   slot: 8
   prefab: {fileID: 6555548266004262819, guid: 4056f4d7ba39b49ff93f49d3d8b979db, type: 3}
-  icon: {fileID: 21300000, guid: a538f2cdc7e1a476eabf7a51503fffa4, type: 3}
+  icon: {fileID: 21300000, guid: a7d06cf6cc23748c981595fd97d00adb, type: 3}
   styleScore: 1
   alsoClears: 

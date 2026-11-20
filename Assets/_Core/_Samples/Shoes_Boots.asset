@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Shoes Boots
   slot: 5
   prefab: {fileID: 7347519806370067686, guid: 0faba3f88a18346108a06f480ff89851, type: 3}
-  icon: {fileID: 21300000, guid: a02254bd8e9d9443a937f5ae754a2cad, type: 3}
+  icon: {fileID: 21300000, guid: ee0ffe70c2466487a8388eb152bf520c, type: 3}
   styleScore: 0
   alsoClears: 

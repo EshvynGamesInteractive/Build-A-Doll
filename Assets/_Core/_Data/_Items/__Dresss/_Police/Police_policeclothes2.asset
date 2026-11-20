@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Police Shirt
   slot: 2
   prefab: {fileID: 275731736068607696, guid: a886287cec442418c83624e3e66f2f34, type: 3}
-  icon: {fileID: 21300000, guid: 7168afd92e8e447efbb0d0f2c6d33b8f, type: 3}
+  icon: {fileID: 21300000, guid: 4efd4a21f585a4632a769853779cb9ee, type: 3}
   styleScore: 1
   alsoClears: 

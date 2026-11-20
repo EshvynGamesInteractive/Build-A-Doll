@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Maid Hat
   slot: 8
   prefab: {fileID: 4303495851632840179, guid: 266ca4863fb744890953947560188e7a, type: 3}
-  icon: {fileID: 21300000, guid: 72f19358098154924a64782af00574ea, type: 3}
+  icon: {fileID: 21300000, guid: a5f2a1041c50f43d2a7c84db37ed7748, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tennis Hair
   slot: 0
   prefab: {fileID: 969984006404351854, guid: c46ca1bffce4c486eadf11c05add49b4, type: 3}
-  icon: {fileID: 21300000, guid: 8a3add37799f0405e822277786b0621b, type: 3}
+  icon: {fileID: 21300000, guid: 8bed664350e9c4daa80e4b6cdadbdb6e, type: 3}
   styleScore: 1
   alsoClears: 

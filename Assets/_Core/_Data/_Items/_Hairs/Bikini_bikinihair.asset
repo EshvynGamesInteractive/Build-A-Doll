@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bikini Hair
   slot: 0
   prefab: {fileID: 4311272216517822435, guid: a94b69706f0d041709bf502121a4a193, type: 3}
-  icon: {fileID: 21300000, guid: edce56fa96b9c4f57869bd02aa853580, type: 3}
+  icon: {fileID: 21300000, guid: d324ee3e4706f4f579213713b66099da, type: 3}
   styleScore: 1
   alsoClears: 

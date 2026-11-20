@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Police Hat
   slot: 8
   prefab: {fileID: 962769178382763028, guid: 79a317d11be7d4d7c956a18244ac590a, type: 3}
-  icon: {fileID: 21300000, guid: 01fa89dca401a4ecfb9ba20f3c838beb, type: 3}
+  icon: {fileID: 21300000, guid: 4998867744cd5475dbf8b30c5820226b, type: 3}
   styleScore: 1
   alsoClears: 

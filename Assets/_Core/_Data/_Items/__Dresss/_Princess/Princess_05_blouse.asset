@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Princess Shirt
   slot: 2
   prefab: {fileID: 6769428970776180321, guid: 04e43e0884eee4be9bccdb30b05e6e28, type: 3}
-  icon: {fileID: 21300000, guid: b023a5db248c544969d256afa428a28c, type: 3}
+  icon: {fileID: 21300000, guid: 786dab7f7b52a4aecb1c5132c35e46ae, type: 3}
   styleScore: 1
   alsoClears: 

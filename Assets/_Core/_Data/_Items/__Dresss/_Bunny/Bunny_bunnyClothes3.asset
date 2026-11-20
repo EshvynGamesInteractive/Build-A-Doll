@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bunny Dress
   slot: 4
   prefab: {fileID: 5340347076447061114, guid: 563a299dc6a0349849302a951cdb893a, type: 3}
-  icon: {fileID: 21300000, guid: 7fdb87c959bf04fa3b1db4deaef27144, type: 3}
+  icon: {fileID: 21300000, guid: 4e2f256674abf457cab3ebcf1523f8ea, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

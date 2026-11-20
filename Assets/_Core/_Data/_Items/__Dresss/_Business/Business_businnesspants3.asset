@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Business Pants
   slot: 3
   prefab: {fileID: 3669933694801349532, guid: c0679425c6ecd4b429a7561b882bcaec, type: 3}
-  icon: {fileID: 21300000, guid: 1063d509747314313831e53b3543e535, type: 3}
+  icon: {fileID: 21300000, guid: 2c5ffc84353ff4815884281942843713, type: 3}
   styleScore: 1
   alsoClears: 

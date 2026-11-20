@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Citizen Shoes
   slot: 5
   prefab: {fileID: 1412878656804230546, guid: 7ba82515de0ed45b592351c946904549, type: 3}
-  icon: {fileID: 21300000, guid: 96a8ffc709f0e40c585a2a8bb850a0f0, type: 3}
+  icon: {fileID: 21300000, guid: ca80b6282990946648df1b2e71bb949e, type: 3}
   styleScore: 1
   alsoClears: 

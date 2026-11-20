@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Rain Shirt
   slot: 2
   prefab: {fileID: 6344214044655765029, guid: 16d23053ecef043b68ea2d0d5344ee17, type: 3}
-  icon: {fileID: 21300000, guid: 628a7dddea9ee4a4788b439e4f405a83, type: 3}
+  icon: {fileID: 21300000, guid: 2de7bef1336794e199af883d88b57387, type: 3}
   styleScore: 1
   alsoClears: 

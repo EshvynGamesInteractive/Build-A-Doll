@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Maid Socks
   slot: 12
   prefab: {fileID: 7598867809117593569, guid: a7c701430a4aa4edbac375e42f03b1cb, type: 3}
-  icon: {fileID: 21300000, guid: 9470b37b6fecc482083a5a2f23eb6cd4, type: 3}
+  icon: {fileID: 21300000, guid: 2e3a0c683151b40cfa8b5a315415a3b5, type: 3}
   styleScore: 1
   alsoClears: 

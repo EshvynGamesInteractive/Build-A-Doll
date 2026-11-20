@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basics Shirt
   slot: 2
   prefab: {fileID: 3926956670513640097, guid: 94c41bd1e75f5497a99a8c5613a9f25a, type: 3}
-  icon: {fileID: 21300000, guid: 8e1a690bb91c84e9ab888239dd14bb6c, type: 3}
+  icon: {fileID: 21300000, guid: 46e6783193dd34ef7b1241d721edc2f0, type: 3}
   styleScore: 1
   alsoClears: 

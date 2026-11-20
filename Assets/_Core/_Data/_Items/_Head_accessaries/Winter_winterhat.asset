@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Winter Hat
   slot: 8
   prefab: {fileID: 1315187798929252171, guid: eeb7bbab1a3b243d3853948956324593, type: 3}
-  icon: {fileID: 21300000, guid: b6ff0f62a51294cc39ab05b56a31f308, type: 3}
+  icon: {fileID: 21300000, guid: 95aa13df8bdf649269f4b807d597b84a, type: 3}
   styleScore: 1
   alsoClears: 

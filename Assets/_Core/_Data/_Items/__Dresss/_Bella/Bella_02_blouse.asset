@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bella Shirt
   slot: 2
   prefab: {fileID: 2235389060388832514, guid: 383ebbad73c1f4172bdc11beacc0a0ae, type: 3}
-  icon: {fileID: 21300000, guid: bd3614babd57541929798ad7d4837c7a, type: 3}
+  icon: {fileID: 21300000, guid: e624dce0169f646b28a55c81113402e1, type: 3}
   styleScore: 1
   alsoClears: 

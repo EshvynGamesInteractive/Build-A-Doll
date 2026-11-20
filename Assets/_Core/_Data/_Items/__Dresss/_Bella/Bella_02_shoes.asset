@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bella Shoes
   slot: 5
   prefab: {fileID: 4023203129465747815, guid: 3216b232838964b218546b11533aef77, type: 3}
-  icon: {fileID: 21300000, guid: d336a4dbb07f14a33be0961da7c2f82b, type: 3}
+  icon: {fileID: 21300000, guid: 2a1c5b48e97c24da780e7c05f5c0b0c5, type: 3}
   styleScore: 1
   alsoClears: 

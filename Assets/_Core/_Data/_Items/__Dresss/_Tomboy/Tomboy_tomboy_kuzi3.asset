@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tomboy Pants
   slot: 3
   prefab: {fileID: 5612524445360278829, guid: 6f06f6d68d7884f7e8646958e34d345d, type: 3}
-  icon: {fileID: 21300000, guid: db4c2457a95a1409ba05649353efffcc, type: 3}
+  icon: {fileID: 21300000, guid: 599a448f5b885427fbe5879a4390495a, type: 3}
   styleScore: 1
   alsoClears: 

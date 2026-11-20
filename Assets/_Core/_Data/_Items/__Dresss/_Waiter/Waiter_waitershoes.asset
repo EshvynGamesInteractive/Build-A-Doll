@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Waiter Shoes
   slot: 5
   prefab: {fileID: 6790877353946736890, guid: ddccbea60651a4f94ab94fbe096bba1e, type: 3}
-  icon: {fileID: 21300000, guid: 88fd6c2c23c684952abec1bf63e603aa, type: 3}
+  icon: {fileID: 21300000, guid: 9d369b5b5c31a4f84a6bf4cb20292107, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Rain Shoes
   slot: 5
   prefab: {fileID: 173419846744573863, guid: c0397342c02eb471aac8c10d1e6e79c3, type: 3}
-  icon: {fileID: 21300000, guid: 143f7da3af07a4963b8fffca38f91316, type: 3}
+  icon: {fileID: 21300000, guid: 461a712a7409d48e1abd709f11764fc5, type: 3}
   styleScore: 1
   alsoClears: 

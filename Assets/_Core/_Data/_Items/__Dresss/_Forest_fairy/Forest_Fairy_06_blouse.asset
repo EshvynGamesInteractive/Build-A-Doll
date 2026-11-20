@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Forest Fairy Shirt
   slot: 2
   prefab: {fileID: 9167411487999639443, guid: e4d3616f861fd41248c20900b82615a0, type: 3}
-  icon: {fileID: 21300000, guid: 1760541c10a5c439aa65c01a07bb7c18, type: 3}
+  icon: {fileID: 21300000, guid: be00cfc3553454a74be2159546eabe67, type: 3}
   styleScore: 1
   alsoClears: 

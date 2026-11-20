@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Snow White Pants
   slot: 3
   prefab: {fileID: 6477192031160401472, guid: fbfbc1dc6b67b4db2ad3c431e1861848, type: 3}
-  icon: {fileID: 21300000, guid: c98bd7567e28e41ecb6501122889a4f9, type: 3}
+  icon: {fileID: 21300000, guid: 859a7b97991b74791be5089af77a47ba, type: 3}
   styleScore: 1
   alsoClears: 

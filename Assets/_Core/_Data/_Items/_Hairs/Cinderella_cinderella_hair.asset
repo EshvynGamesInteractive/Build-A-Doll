@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cinderella Hair
   slot: 0
   prefab: {fileID: 3859790941406491276, guid: 8b0e1d3c8eb5e4ba2aaae62e6de6ab17, type: 3}
-  icon: {fileID: 21300000, guid: a3602ec95656048a7b0528ee8a29cb51, type: 3}
+  icon: {fileID: 21300000, guid: 8a32ffe8587ca4a9885182a57ac7a50a, type: 3}
   styleScore: 1
   alsoClears: 

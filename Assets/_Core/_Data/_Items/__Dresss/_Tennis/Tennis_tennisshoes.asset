@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tennis Shoes
   slot: 5
   prefab: {fileID: 6500172531560293317, guid: d36e57c8bc21e4da5b0f00ca839b2c18, type: 3}
-  icon: {fileID: 21300000, guid: eb8d7f37e4fe94bfa81c92fbf1481c73, type: 3}
+  icon: {fileID: 21300000, guid: d8c468a7fb53b45298c4ebefaf25792f, type: 3}
   styleScore: 1
   alsoClears: 

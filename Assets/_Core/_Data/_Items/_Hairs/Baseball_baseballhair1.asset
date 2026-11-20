@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Baseball Hair
   slot: 0
   prefab: {fileID: 722239528271342243, guid: ef9011a4393b043c9ae421cdd82776b6, type: 3}
-  icon: {fileID: 21300000, guid: 9eed6f800b78b47c7802a5bbc777e9b8, type: 3}
+  icon: {fileID: 21300000, guid: b81d1b7e753824a6daffed3119cbc0f4, type: 3}
   styleScore: 1
   alsoClears: 

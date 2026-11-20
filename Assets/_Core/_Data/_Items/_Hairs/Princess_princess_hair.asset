@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Princess Hair
   slot: 0
   prefab: {fileID: 4509842577803791432, guid: 9d7938677e2a04e79a7d8806b42f0d33, type: 3}
-  icon: {fileID: 21300000, guid: 6842404cf64a5479b99333a215557403, type: 3}
+  icon: {fileID: 21300000, guid: 11224d74efb6a4661a8a05bda7b7f8b9, type: 3}
   styleScore: 1
   alsoClears: 

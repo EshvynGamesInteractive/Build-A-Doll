@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Snow White Shirt
   slot: 2
   prefab: {fileID: 7294571282787361886, guid: 6fe857c195b6e41e9b8f022fd97f9420, type: 3}
-  icon: {fileID: 21300000, guid: 4c5a4d1459e5f4ce78afc2a1f058c8d2, type: 3}
+  icon: {fileID: 21300000, guid: 05e87d293c45b43029f949dc6e335094, type: 3}
   styleScore: 1
   alsoClears: 

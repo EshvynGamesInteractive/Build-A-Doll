@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Uniform Hair
   slot: 0
   prefab: {fileID: 6229283905987617783, guid: 271d067c490d84dd8a6d7125900a2266, type: 3}
-  icon: {fileID: 21300000, guid: 193900e920fab4d6fa070f12dc616a1f, type: 3}
+  icon: {fileID: 21300000, guid: 9d169806bdf074d5ea9b09c30cf3e135, type: 3}
   styleScore: 1
   alsoClears: 

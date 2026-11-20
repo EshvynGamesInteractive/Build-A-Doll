@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Princess Hat
   slot: 8
   prefab: {fileID: 6791207909228762976, guid: 5e26a2b766d504dd18112dbac99c7b47, type: 3}
-  icon: {fileID: 21300000, guid: e2b27f34790c54e98ad88ff394eca834, type: 3}
+  icon: {fileID: 21300000, guid: 20b0cdc77e0d84f6ebfc55a42df327ad, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Winter Pants
   slot: 3
   prefab: {fileID: 2823074605718371282, guid: b9470bf313781458c9e8c249c70cdbad, type: 3}
-  icon: {fileID: 21300000, guid: 03f5df5a3ce6d453eb975a5733078abe, type: 3}
+  icon: {fileID: 21300000, guid: 858da402612354bcfa32a01722d00a0e, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Sleep Dress
   slot: 4
   prefab: {fileID: 8131762216847349315, guid: 42f902dd4b01441f8b3d3fef035cd380, type: 3}
-  icon: {fileID: 21300000, guid: d101924d9da824b5595fb0114a82baf2, type: 3}
+  icon: {fileID: 21300000, guid: 44f73b0e08a384fdb8cb73bacce865c8, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

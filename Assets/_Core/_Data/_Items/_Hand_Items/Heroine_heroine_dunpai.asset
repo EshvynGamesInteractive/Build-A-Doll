@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Heroine Hand Item
   slot: 9
   prefab: {fileID: 2338733323125141303, guid: 6ba2d95a476424464ba12295efbfcc0b, type: 3}
-  icon: {fileID: 21300000, guid: 8bae7767518774488ab98b9a4d736fc1, type: 3}
+  icon: {fileID: 21300000, guid: 75310d01b7cfd4a26aa784b2bc3cd62c, type: 3}
   styleScore: 1
   alsoClears: 

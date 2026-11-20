@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Forest Fairy Shoes
   slot: 5
   prefab: {fileID: 3728559943879484000, guid: 6756090e4d68b4c1992b44c003fa613c, type: 3}
-  icon: {fileID: 21300000, guid: b9a0fbd64975d448892b5dcb67048c04, type: 3}
+  icon: {fileID: 21300000, guid: 0816124ead1c34c59bc72719d9ab1cbf, type: 3}
   styleScore: 1
   alsoClears: 

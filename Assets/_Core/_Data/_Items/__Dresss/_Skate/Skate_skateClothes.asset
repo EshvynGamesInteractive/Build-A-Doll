@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Skate Shirt
   slot: 2
   prefab: {fileID: 7632084098432093971, guid: 473320d9179cc443481592ae7413202a, type: 3}
-  icon: {fileID: 21300000, guid: 8e11765917e5e448ebb86f4b9ce74a7d, type: 3}
+  icon: {fileID: 21300000, guid: 839290e4381304a718fe0ae9cd11cd40, type: 3}
   styleScore: 1
   alsoClears: 

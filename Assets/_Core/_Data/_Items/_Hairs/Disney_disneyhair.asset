@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Disney Hair
   slot: 0
   prefab: {fileID: 7373482161089717938, guid: d05ca4f7bf029401b93f27cc8c758c52, type: 3}
-  icon: {fileID: 21300000, guid: cd8b5393293184f25b4236129c08f150, type: 3}
+  icon: {fileID: 21300000, guid: 319e5d437606b46c4ac3dc67c8b1c211, type: 3}
   styleScore: 1
   alsoClears: 

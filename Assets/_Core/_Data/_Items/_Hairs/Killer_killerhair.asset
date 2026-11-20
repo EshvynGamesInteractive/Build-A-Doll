@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Killer Hair
   slot: 0
   prefab: {fileID: 8240273134191929256, guid: 6171d97628cf140b0bc1e68f7cb228bc, type: 3}
-  icon: {fileID: 21300000, guid: 4145aeab702464db59611acf1959dced, type: 3}
+  icon: {fileID: 21300000, guid: 78787e39f00a848dd98a3fd00ce16351, type: 3}
   styleScore: 1
   alsoClears: 

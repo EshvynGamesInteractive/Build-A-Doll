@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Uniform Shirt
   slot: 2
   prefab: {fileID: 8416235821639746625, guid: e4474f518c62f42b38c3e1cdfbdc31b7, type: 3}
-  icon: {fileID: 21300000, guid: c6d4f1b9d94884660a1f449a3c4146c1, type: 3}
+  icon: {fileID: 21300000, guid: 41d443b475f4045d08580b7cf2830aea, type: 3}
   styleScore: 1
   alsoClears: 

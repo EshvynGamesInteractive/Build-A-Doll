@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Heroine Dress
   slot: 4
   prefab: {fileID: 7167991382326977707, guid: 0a4733c91211b483ab9854dcd3a0189e, type: 3}
-  icon: {fileID: 21300000, guid: 1e6d6c5a752e641b597b186bcee78109, type: 3}
+  icon: {fileID: 21300000, guid: 01a31293337174a40a764ae12fcc4b86, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Kimono Hair
   slot: 0
   prefab: {fileID: 1112077941266400931, guid: 8301183aa23fa46acbcbc051f05838e6, type: 3}
-  icon: {fileID: 21300000, guid: 155d2418842134dd1b8ab3bf2926f861, type: 3}
+  icon: {fileID: 21300000, guid: eae4897dec1354f3daa012c39d91f6b4, type: 3}
   styleScore: 1
   alsoClears: 

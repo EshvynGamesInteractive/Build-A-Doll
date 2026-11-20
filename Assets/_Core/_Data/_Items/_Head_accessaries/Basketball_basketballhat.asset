@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basketball Hat
   slot: 8
   prefab: {fileID: 7707391808056055784, guid: a07d74b5b034149b2a63151e8f9b7548, type: 3}
-  icon: {fileID: 21300000, guid: 8ac6090e62fb04c6ab7f096d2e729582, type: 3}
+  icon: {fileID: 21300000, guid: 3df0ee59af5a44efba4b3857dedc9dc0, type: 3}
   styleScore: 1
   alsoClears: 

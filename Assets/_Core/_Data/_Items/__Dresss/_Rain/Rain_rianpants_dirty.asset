@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Rain Pants
   slot: 3
   prefab: {fileID: 8778601477270359675, guid: ce2ef2f9861454c7e8ddcc386e3236d6, type: 3}
-  icon: {fileID: 21300000, guid: 0b7724ab1bb134caf98d6331191be3cf, type: 3}
+  icon: {fileID: 21300000, guid: 66a122b4ddc274356875d74aa7989296, type: 3}
   styleScore: 1
   alsoClears: 

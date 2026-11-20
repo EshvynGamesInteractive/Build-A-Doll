@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basketball Shoes
   slot: 5
   prefab: {fileID: 1711218452569585038, guid: 7ad9dd50b9c924a23bd5b1acd429489d, type: 3}
-  icon: {fileID: 21300000, guid: f545c430407804dc99a3fbc94fc406b7, type: 3}
+  icon: {fileID: 21300000, guid: 670d2a558f5bd4644bb5bf629c1cca9d, type: 3}
   styleScore: 1
   alsoClears: 

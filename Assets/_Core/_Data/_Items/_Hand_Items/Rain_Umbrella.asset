@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Rain Hand Item
   slot: 9
   prefab: {fileID: 311684976134584951, guid: d9267d0f96409476d8eb32ea230ed9eb, type: 3}
-  icon: {fileID: 21300000, guid: 09539cc9bf3f346b9a0a5b1cc82e2a74, type: 3}
+  icon: {fileID: 21300000, guid: cc8d23d0d6eb441d6b5542deba2dcf36, type: 3}
   styleScore: 1
   alsoClears: 

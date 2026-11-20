@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tennis Hand Item
   slot: 9
   prefab: {fileID: 8806521631562575836, guid: 8da9a4b9a43ab4370a2ef9cbbbdc22ad, type: 3}
-  icon: {fileID: 21300000, guid: c4cfe957ca8a94d1db3c8292e9042700, type: 3}
+  icon: {fileID: 21300000, guid: 877a1e17c749145fda4482077c5afa5b, type: 3}
   styleScore: 1
   alsoClears: 

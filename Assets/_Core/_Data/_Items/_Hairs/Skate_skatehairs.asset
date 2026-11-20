@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Skate Hair
   slot: 0
   prefab: {fileID: 6297236961334458869, guid: 4a3923533d48a48e68d4adcd7da11b67, type: 3}
-  icon: {fileID: 21300000, guid: 06577ff9fab7942dc81a1304efaa8a23, type: 3}
+  icon: {fileID: 21300000, guid: d3bc14fcb178142688565972b7da3b8d, type: 3}
   styleScore: 1
   alsoClears: 

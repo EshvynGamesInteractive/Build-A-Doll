@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Baseball Hand Item
   slot: 9
   prefab: {fileID: 3680511158708171170, guid: 1c0f0c29a29064504a70ca571cce85ca, type: 3}
-  icon: {fileID: 21300000, guid: 36e0304276c714a4d959bfb0e88618e2, type: 3}
+  icon: {fileID: 21300000, guid: 2c318106e4f194d079203d53a3d5eae4, type: 3}
   styleScore: 1
   alsoClears: 

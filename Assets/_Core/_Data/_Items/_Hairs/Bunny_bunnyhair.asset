@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bunny Hair
   slot: 0
   prefab: {fileID: 7179960001107867935, guid: bbf55d33e13dc47df9f72027854ac5f2, type: 3}
-  icon: {fileID: 21300000, guid: dfe19c84f121f46de94f539a5b05e860, type: 3}
+  icon: {fileID: 21300000, guid: 30b0b8e01d462455a86a607873bc5afe, type: 3}
   styleScore: 1
   alsoClears: 

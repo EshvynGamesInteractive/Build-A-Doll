@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Squid Shoes
   slot: 5
   prefab: {fileID: 2091992649854703591, guid: 6ae80a468d3144ed5bd4a5343faab5b4, type: 3}
-  icon: {fileID: 21300000, guid: 66430873d097b4fe189565ebf0f1ab96, type: 3}
+  icon: {fileID: 21300000, guid: 2e90a4dcef3fd46ea8fc7e938529fc4b, type: 3}
   styleScore: 1
   alsoClears: 

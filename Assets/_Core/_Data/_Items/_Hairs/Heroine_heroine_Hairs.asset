@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Heroine Hair
   slot: 0
   prefab: {fileID: 4650889735553959113, guid: 7bf7a56f18c754d45ad2c8e2cbbafce1, type: 3}
-  icon: {fileID: 21300000, guid: 9c65022dd7e1a449f94269f88b813734, type: 3}
+  icon: {fileID: 21300000, guid: 58a79c54edfa940f2b7ec3ac1816d9be, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Disney Hat
   slot: 8
   prefab: {fileID: 7400353391105632312, guid: bff6ba49de7bb445aa8e440dc181f549, type: 3}
-  icon: {fileID: 21300000, guid: 20566121e8dd3402bb2d098c0865b1bc, type: 3}
+  icon: {fileID: 21300000, guid: 65105ef17b1584a39a090a2bc6dde2de, type: 3}
   styleScore: 1
   alsoClears: 

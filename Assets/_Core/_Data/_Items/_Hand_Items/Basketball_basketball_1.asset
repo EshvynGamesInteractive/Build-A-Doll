@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basketball Hand Item
   slot: 9
   prefab: {fileID: 7647493896288194587, guid: f8e7b323d567e4c29af8a133cc43cf29, type: 3}
-  icon: {fileID: 21300000, guid: 58ef96d341ac04b5dae7f758895597f1, type: 3}
+  icon: {fileID: 21300000, guid: 2e216e78ad3884cd8bef7d251ecc9354, type: 3}
   styleScore: 1
   alsoClears: 

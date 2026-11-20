@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Snow White Shoes
   slot: 5
   prefab: {fileID: 5651364157228236477, guid: b858a1628c76d4726bb37869d3c35242, type: 3}
-  icon: {fileID: 21300000, guid: 06cb615043bbb45b1bf14b54fd36f788, type: 3}
+  icon: {fileID: 21300000, guid: 7dccf19faff2048f0ae81e9fd8dc81e3, type: 3}
   styleScore: 1
   alsoClears: 

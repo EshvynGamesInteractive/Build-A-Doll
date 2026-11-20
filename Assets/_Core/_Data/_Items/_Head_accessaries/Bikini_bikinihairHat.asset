@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Bikini Hat
   slot: 8
   prefab: {fileID: 7231580079934096978, guid: 27c766a2936f5493698e8c0e00ab6d4c, type: 3}
-  icon: {fileID: 21300000, guid: afcf0e9e5ed214d66b51aea955b28c4e, type: 3}
+  icon: {fileID: 21300000, guid: 46097ca4c05af4c2a878fa8b4c14b2da, type: 3}
   styleScore: 1
   alsoClears: 

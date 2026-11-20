@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tennis Hat
   slot: 8
   prefab: {fileID: 706411630822828464, guid: cd5bebcfec1be48f99384f4809bedb1c, type: 3}
-  icon: {fileID: 21300000, guid: f0ae94007ab9847cd9b92e95672398c9, type: 3}
+  icon: {fileID: 21300000, guid: bc84620f8bc6f40d8918c5e3f7e3cfaf, type: 3}
   styleScore: 1
   alsoClears: 

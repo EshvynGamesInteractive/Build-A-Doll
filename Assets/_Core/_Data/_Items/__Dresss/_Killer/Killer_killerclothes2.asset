@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Killer Shirt
   slot: 2
   prefab: {fileID: 3321229514593898655, guid: 8550d775144aa4ec9b1f17160157844a, type: 3}
-  icon: {fileID: 21300000, guid: b1f7b3e12b80c41ed8c38f11981a95ac, type: 3}
+  icon: {fileID: 21300000, guid: 746b2896a109e4c03b428f43e0d39470, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cheongsam Hair
   slot: 0
   prefab: {fileID: 8703838299811175003, guid: e5fb49b3174f14058b12fa58feb8d204, type: 3}
-  icon: {fileID: 21300000, guid: a1f19bc4951db43f3b0736cce947224b, type: 3}
+  icon: {fileID: 21300000, guid: 53735c55c4fbc405fad5f34263bf0afb, type: 3}
   styleScore: 1
   alsoClears: 

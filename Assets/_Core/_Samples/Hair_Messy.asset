@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Hair Messy
   slot: 0
   prefab: {fileID: 5265070772071594259, guid: 3aec5accfe38b4c819b49c25fce60bfa, type: 3}
-  icon: {fileID: 21300000, guid: b17e3a22074e247b0be0031fc01435c8, type: 3}
+  icon: {fileID: 21300000, guid: 9050ef294b2ba484089d827a4249d175, type: 3}
   styleScore: -1
   alsoClears: 

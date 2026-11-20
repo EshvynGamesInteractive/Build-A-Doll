@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Primitive Pants
   slot: 3
   prefab: {fileID: 2318927637540397812, guid: 4cb4fb85f672347e9bd1a67a93a61886, type: 3}
-  icon: {fileID: 21300000, guid: 5ce3d494dd55942d0ac9aaaafdcb4572, type: 3}
+  icon: {fileID: 21300000, guid: 35a004a9ccb4e436a836528e1e875f05, type: 3}
   styleScore: 1
   alsoClears: 

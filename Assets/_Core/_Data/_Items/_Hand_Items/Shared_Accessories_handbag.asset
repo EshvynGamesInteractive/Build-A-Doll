@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Shared Accessories Bag
   slot: 6
   prefab: {fileID: 574160099126557033, guid: a3e4a39eb494a4473b7e6400b8bb2bc5, type: 3}
-  icon: {fileID: 21300000, guid: a98f999d8c25440c8969df265eea7563, type: 3}
+  icon: {fileID: 21300000, guid: 775c368c78cc94cf3bac07c206cf8719, type: 3}
   styleScore: 1
   alsoClears: 

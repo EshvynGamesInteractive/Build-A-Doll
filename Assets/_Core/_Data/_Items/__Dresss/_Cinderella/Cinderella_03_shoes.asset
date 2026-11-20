@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Cinderella Shoes
   slot: 5
   prefab: {fileID: 2558388899170302862, guid: 45024722093d44e5d8c8395c8c32fdf9, type: 3}
-  icon: {fileID: 21300000, guid: 5016d270c3b4840b8918735f5f5cc14c, type: 3}
+  icon: {fileID: 21300000, guid: bfb682958e230477b9b51a06c02a6e17, type: 3}
   styleScore: 1
   alsoClears: 

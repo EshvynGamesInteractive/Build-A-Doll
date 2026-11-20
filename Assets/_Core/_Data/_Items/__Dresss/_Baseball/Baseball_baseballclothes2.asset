@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Baseball Shirt
   slot: 2
   prefab: {fileID: 6878982985756096702, guid: c6c8b61fd144c4a12952d38478e9a7ec, type: 3}
-  icon: {fileID: 21300000, guid: 1c3e88423ba4d4e1db690801f3b389a9, type: 3}
+  icon: {fileID: 21300000, guid: b9252b34f7dd14a329f82c48562a93dd, type: 3}
   styleScore: 1
   alsoClears: 

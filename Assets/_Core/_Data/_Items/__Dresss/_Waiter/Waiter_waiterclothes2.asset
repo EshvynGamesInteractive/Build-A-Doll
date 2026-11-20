@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Waiter Shirt
   slot: 2
   prefab: {fileID: 2074403835183477709, guid: 51294d7857c3e49b1871a57742024147, type: 3}
-  icon: {fileID: 21300000, guid: f54833cbd55784848b1fd0562c1f0d77, type: 3}
+  icon: {fileID: 21300000, guid: 38bea8a119c3e4963807b1e30a26a4d5, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Student Shirt
   slot: 2
   prefab: {fileID: 6784697903812058374, guid: 2ddee365487844036b51ea086b86b7aa, type: 3}
-  icon: {fileID: 21300000, guid: 786f5f01ae4b54f9ea0ffd43f0e7ed0d, type: 3}
+  icon: {fileID: 21300000, guid: 248636d1ac43945798e942d239b8898d, type: 3}
   styleScore: 1
   alsoClears: 

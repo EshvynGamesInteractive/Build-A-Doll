@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Wedding Hat
   slot: 8
   prefab: {fileID: 8939372485936779236, guid: 2373539e06c724688bf68c78c98513c4, type: 3}
-  icon: {fileID: 21300000, guid: 4b482e2caca494ec181ab77c4522c8e6, type: 3}
+  icon: {fileID: 21300000, guid: 6a4b98621ca674f88b51985a574d583a, type: 3}
   styleScore: 1
   alsoClears: 

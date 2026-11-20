@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Dress Sack
   slot: 4
   prefab: {fileID: 5093999005292870509, guid: c5f4bb8bb68f54f46921abbde5c95853, type: 3}
-  icon: {fileID: 21300000, guid: 968243d6a98f24bad9c9ef6c4e5b5e8b, type: 3}
+  icon: {fileID: 21300000, guid: e97b3ddb5aded4fb6b06cbe6d7039881, type: 3}
   styleScore: -2
   alsoClears: 0200000003000000

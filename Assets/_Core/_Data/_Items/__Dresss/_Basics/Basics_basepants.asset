@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Basics Pants
   slot: 3
   prefab: {fileID: 1519629730974317114, guid: 4e159b848d6a74450b974d522b74bac6, type: 3}
-  icon: {fileID: 21300000, guid: 2d413e51ab52643a28a657623c32d0f8, type: 3}
+  icon: {fileID: 21300000, guid: 65a751df7e7c2400c925409535010edc, type: 3}
   styleScore: 1
   alsoClears: 

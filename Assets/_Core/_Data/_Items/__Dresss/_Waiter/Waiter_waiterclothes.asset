@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Waiter Dress
   slot: 4
   prefab: {fileID: 4386145632801739211, guid: 103a03d1a2f63457d9cba064659d4044, type: 3}
-  icon: {fileID: 21300000, guid: 8b76ab79248ff4d4a828afb50fdea7cf, type: 3}
+  icon: {fileID: 21300000, guid: 061d3fd030d624cc7bda3260da228b3c, type: 3}
   styleScore: 1
   alsoClears: 0200000003000000

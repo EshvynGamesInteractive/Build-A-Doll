@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Snow White Hair
   slot: 0
   prefab: {fileID: 4492724409067118714, guid: df1309c46aa844f78bf0c8f6f986c9b3, type: 3}
-  icon: {fileID: 21300000, guid: b386a6f0da94f441c9bbb923a1659b15, type: 3}
+  icon: {fileID: 21300000, guid: 0d213ca15cf3c47b484dfc748a3f47b7, type: 3}
   styleScore: 1
   alsoClears: 

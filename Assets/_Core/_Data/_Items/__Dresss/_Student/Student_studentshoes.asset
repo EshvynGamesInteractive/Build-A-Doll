@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Student Shoes
   slot: 5
   prefab: {fileID: 6046584969091668821, guid: ded976e9782d844609f02ead201ca3af, type: 3}
-  icon: {fileID: 21300000, guid: 30a23a5a0dbf344cc81088418ac35eb5, type: 3}
+  icon: {fileID: 21300000, guid: cfa0aa83962ed48ddabde8e968ea587a, type: 3}
   styleScore: 1
   alsoClears: 

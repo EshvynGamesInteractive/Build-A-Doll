@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Maid Shoes
   slot: 5
   prefab: {fileID: 920610689423809797, guid: 96c04976ab5c74575b2871eef99988e0, type: 3}
-  icon: {fileID: 21300000, guid: 57edc876dd1114f7ca51a640df8cd166, type: 3}
+  icon: {fileID: 21300000, guid: 1f1175f7cf7304a4fbc27a256bada298, type: 3}
   styleScore: 1
   alsoClears: 

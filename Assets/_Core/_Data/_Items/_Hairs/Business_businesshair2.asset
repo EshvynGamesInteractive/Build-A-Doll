@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Business Hair
   slot: 0
   prefab: {fileID: 2528509713950039719, guid: fc53849e88a4440cbbd92aeda0dfab3f, type: 3}
-  icon: {fileID: 21300000, guid: 6b95e067798fc42b8bb1b8ed9c4ef63a, type: 3}
+  icon: {fileID: 21300000, guid: 81211bfe05c0f41b59c2905076c71470, type: 3}
   styleScore: 1
   alsoClears: 

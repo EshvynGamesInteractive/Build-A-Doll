@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Uniform Shoes
   slot: 5
   prefab: {fileID: 7615735627093943367, guid: 59e9b65d55a0842749242630943a4ce3, type: 3}
-  icon: {fileID: 21300000, guid: 4d4d6e1bd80514e508dd507f2d7e09df, type: 3}
+  icon: {fileID: 21300000, guid: 9ab23113490424f0f85ac4da7b2409c8, type: 3}
   styleScore: 1
   alsoClears: 

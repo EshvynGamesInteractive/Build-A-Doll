@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Kimono Shoes
   slot: 5
   prefab: {fileID: 720035806842062186, guid: 445f5926920104aeeba434197a8db389, type: 3}
-  icon: {fileID: 21300000, guid: d78fe623dec9b4bab944c36e313c4557, type: 3}
+  icon: {fileID: 21300000, guid: 88423b53fa0ba496f8093e99ca2d27e9, type: 3}
   styleScore: 1
   alsoClears: 

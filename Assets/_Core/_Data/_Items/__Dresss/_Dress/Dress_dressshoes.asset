@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Dress Shoes
   slot: 5
   prefab: {fileID: 8654754026826204974, guid: 7fdd6f9a88117474b9e78e96207a4429, type: 3}
-  icon: {fileID: 21300000, guid: 8fc8d0c30566044c7a5571d11cc06fc8, type: 3}
+  icon: {fileID: 21300000, guid: 89dda2feb85a64cbaae425e7f7c2a802, type: 3}
   styleScore: 1
   alsoClears: 

@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Heroine Shoes
   slot: 5
   prefab: {fileID: 2322753351247555673, guid: a74a6c4023d7f435c97c5321c00e1588, type: 3}
-  icon: {fileID: 21300000, guid: f08bbec033fd54e25b9888d37f53e1ac, type: 3}
+  icon: {fileID: 21300000, guid: 67795f535312c4d56a34908cf148f21f, type: 3}
   styleScore: 1
   alsoClears: 

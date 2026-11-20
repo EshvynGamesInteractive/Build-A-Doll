@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Citizen Shirt
   slot: 2
   prefab: {fileID: 8673149476895687087, guid: f9d31dbb977f94f1da704b304e137289, type: 3}
-  icon: {fileID: 21300000, guid: 49bb0b9c9ddaa409e91b2c7e6f628a78, type: 3}
+  icon: {fileID: 21300000, guid: f533d477a683f4632b4b71836692412b, type: 3}
   styleScore: 1
   alsoClears: 

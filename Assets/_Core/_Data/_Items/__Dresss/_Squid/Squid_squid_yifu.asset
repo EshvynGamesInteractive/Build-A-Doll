@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Squid Shirt
   slot: 2
   prefab: {fileID: 6479582162822987292, guid: 7ffa029f10c8c4248a1f11be60649c1f, type: 3}
-  icon: {fileID: 21300000, guid: dad0bb4c0619946c1b5bd72018be4cc6, type: 3}
+  icon: {fileID: 21300000, guid: 1d83444ed7e29479c88dda424fdb5f4f, type: 3}
   styleScore: 1
   alsoClears: 

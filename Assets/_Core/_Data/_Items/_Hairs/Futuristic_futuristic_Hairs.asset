@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Futuristic Hair
   slot: 0
   prefab: {fileID: 6981731366677491223, guid: a911ee5f339b44e6391d283cf11d2615, type: 3}
-  icon: {fileID: 21300000, guid: d4e2e2f9a53534c3f8117ef36b5093d2, type: 3}
+  icon: {fileID: 21300000, guid: d4caccc73528b4962bd8a4a6c1b9fcc6, type: 3}
   styleScore: 1
   alsoClears: 

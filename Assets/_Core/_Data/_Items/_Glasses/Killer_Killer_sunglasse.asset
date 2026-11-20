@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Killer Glasses
   slot: 10
   prefab: {fileID: 3078353900645058380, guid: f72a77d1870844196a526739f6443c9a, type: 3}
-  icon: {fileID: 21300000, guid: c9a0e4de3590a4f50a186eed013f7933, type: 3}
+  icon: {fileID: 21300000, guid: 6f5f7687a9db844a58615c1fe157a6d0, type: 3}
   styleScore: 1
   alsoClears: 

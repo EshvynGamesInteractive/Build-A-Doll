@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Winter Shoes
   slot: 5
   prefab: {fileID: 5117825440702362830, guid: a5b72be261eb94ecfa1853cfd5c6c1ce, type: 3}
-  icon: {fileID: 21300000, guid: ea3cd68ca7a354a3ebc292d8376a6080, type: 3}
+  icon: {fileID: 21300000, guid: ab5f138d3b59a4c13aecca14e74fd516, type: 3}
   styleScore: 1
   alsoClears: 

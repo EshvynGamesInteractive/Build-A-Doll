@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Tomboy Hair
   slot: 0
   prefab: {fileID: 8930849404690314965, guid: 2893e1f5022f64ee1a6d173a4effe390, type: 3}
-  icon: {fileID: 21300000, guid: 1d97542c060fb40c194c0f5db5aa209d, type: 3}
+  icon: {fileID: 21300000, guid: 0ec7783a5f4984dcf94543ab2f3c0412, type: 3}
   styleScore: 1
   alsoClears: 

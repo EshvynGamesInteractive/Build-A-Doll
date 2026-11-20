@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Killer Shoes
   slot: 5
   prefab: {fileID: 5958453359082959280, guid: e9d2c92f1f23f420fb7d9365dcbdf428, type: 3}
-  icon: {fileID: 21300000, guid: 1517ba37003e74616b5bcd4157fd7fcd, type: 3}
+  icon: {fileID: 21300000, guid: 38a75c3a994f44645b2d2c27df4c103c, type: 3}
   styleScore: 1
   alsoClears: 

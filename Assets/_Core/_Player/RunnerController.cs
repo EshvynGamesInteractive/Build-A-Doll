@@ -90,6 +90,8 @@ namespace _Core._Player
         private System.Action _walkArrived;
 
         public bool IsGrounded => _vertical.IsGrounded;
+        /// <summary>How high she is off the track right now (jump), in world units.</summary>
+        public float AirHeight => _vertical.Height;
         public bool IsSliding => _vertical.IsSliding;
         
         public RunScore Score => score;

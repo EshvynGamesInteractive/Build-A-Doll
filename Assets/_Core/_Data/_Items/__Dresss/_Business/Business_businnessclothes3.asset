@@ -15,6 +15,6 @@ MonoBehaviour:
   displayName: Business Shirt
   slot: 2
   prefab: {fileID: 6344262869707512362, guid: 7f7e3fd0ec7f9438289a881d7efe87cc, type: 3}
-  icon: {fileID: 21300000, guid: 3c43c2894cc6f4f3d896a1e16066aa9e, type: 3}
+  icon: {fileID: 21300000, guid: a84d66aa67d004c3798ebd83967a3fe0, type: 3}
   styleScore: 1
   alsoClears: 
