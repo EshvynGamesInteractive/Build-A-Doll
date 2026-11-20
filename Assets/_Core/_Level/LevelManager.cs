@@ -315,6 +315,7 @@ namespace _Core._Level
                 ConfigureGates(instance, entry.gateItems, level.TargetOutfit);
                 ConfigureCoinGates(instance, entry.coinGates);
                 ConfigurePaintGates(instance, entry.paintGates, level.TargetLook);
+                ConfigureSkinGates(instance, entry.skinGates, level);
                 hurdles.Add(instance);
             }
 
@@ -525,6 +526,16 @@ namespace _Core._Level
             }
         }
 
+        private static void ConfigureSkinGates(GameObject instance, SkinGate.Setting[] settings, LevelData level)
+        {
+            var gates = instance.GetComponentsInChildren<SkinGate>();
+            for (var i = 0; i < gates.Length; i++)
+            {
+                SkinGate.Setting? setting = settings != null && i < settings.Length ? settings[i] : null;
+                gates[i].Configure(setting, level.HasTargetSkin, level.TargetSkin);
+            }
+        }
+
         private static void ConfigureCoinGates(GameObject instance, CoinGate.Setting[] settings)
         {
             if (settings == null || settings.Length == 0)
@@ -571,6 +582,15 @@ namespace _Core._Level
                 demoOutfit.SetStartingItems(level.TargetOutfit); // worn in its Start
             else
                 Debug.LogWarning($"Demo prefab '{prefab.name}' has no {nameof(DollOutfit)}, so it can't show the look.", prefab);
+
+            // The demo also has the target skin colour.
+            if (level.HasTargetSkin)
+            {
+                var demoSkin = demo.GetComponentInChildren<DollSkin>();
+                if (demoSkin == null)
+                    demoSkin = demo.AddComponent<DollSkin>();
+                demoSkin.SetStartColor(level.TargetSkin);
+            }
 
             // The demo also wears the target makeup (painted in its Start).
             if (level.TargetLook != null && level.TargetLook.Makeup.Count > 0)
@@ -859,7 +879,15 @@ namespace _Core._Level
                 }
             }
 
-            targets.Sort((a, b) => SlotRank(a.Slot).CompareTo(SlotRank(b.Slot)));
+            // Same order as the gates: the level's Gate Order first (if set), then the default order.
+            var gateOrder = current.GateOrder;
+            int Rank(OutfitSlot slot)
+            {
+                for (var k = 0; k < gateOrder.Count; k++)
+                    if (gateOrder[k] == slot) return k;
+                return gateOrder.Count + SlotRank(slot);
+            }
+            targets.Sort((a, b) => Rank(a.Slot).CompareTo(Rank(b.Slot)));
             if (targets.Count == 0)
                 yield break;
 

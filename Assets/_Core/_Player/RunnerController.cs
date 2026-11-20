@@ -133,6 +133,13 @@ namespace _Core._Player
         /// <summary>Stops this runner only (the global StopRun stops everyone).</summary>
         public void Stop() => StopRun();
 
+        /// <summary>Jump now (same arc as a swipe-up jump), e.g. from an auto-jump pad. Ignored while in the air.</summary>
+        public void Jump()
+        {
+            if (config != null)
+                _vertical.Jump(config.JumpHeight, config.JumpAirTime);
+        }
+
         /// <summary>
         /// Walks her through the points (world space) at 'speed', playing the run animation, then turns her to face
         /// 'faceDirection' and calls 'onArrived'. Input is ignored meanwhile. ResetRun ends it.

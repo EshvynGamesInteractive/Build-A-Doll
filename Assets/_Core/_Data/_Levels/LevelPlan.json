@@ -1,6 +1,6 @@
 {
  "version": 5,
- "readme": "Build A Doll level plan. Build the kit first (Build A Doll > Hurdles > Build Hurdle Kit Prefabs), then run Build A Doll > Levels > Import Level Plan. Sections: a chunk id, 'part' (GatePair), 'part:moving' (GatePair_Moving), 'part:single' (GateSingle, no decoy) or 'coin:A,B' (CoinGatePair; right gate first; x2 +20 -10 /2). One 'part' per outfit part, filled in order: pants (or dress), shirt, hair, shoes, socks, hat, glasses, hand item, bag. Hair and accessories always become a RingPair. Lanes: track half width is 4, so laterals go from -4 to 4. v5 rules (19 Nov 2026): every left/right part gate gets a CashBundle trail leading to the RED gate and a hurdle ('guards', used in turn) right after the GREEN gate, on its lane. Levels 1-3 are tutorials (swipe hand). Levels 1-8 are eight different outfits. After level 8, 3-4 regular levels fill a bar that unlocks a special outfit level (12 Basketball, 17 Baseball, 21 Police, 26 Nurse, 30 Tennis). No princess / Cinderella style outfits. v5 rules (19 Nov 2026): every left/right part gate gets a CashBundle trail leading to the RED gate and a hurdle ('guards', used in turn) right after the GREEN gate, on its lane. Levels 1-3 are tutorials (swipe hand). Levels 1-8 are eight different outfits. After level 8, 3-4 regular levels fill a bar that unlocks a special outfit level (12 Basketball, 17 Baseball, 21 Police, 26 Nurse, 30 Tennis). No princess / Cinderella style outfits. v5 rules (19 Nov 2026): every left/right part gate gets a CashBundle trail leading to the RED gate and a hurdle ('guards', used in turn) on the GREEN gate's lane, guardOffset (12 m; tutorials 15) after it so there's time to steer/jump/slide, with guardClearance (10 m) of free track after it. Levels 1-3 are tutorials (swipe hand). Levels 1-8 are eight different outfits. After level 8, 3-4 regular levels fill a bar that unlocks a special outfit level (12 Basketball, 17 Baseball, 21 Police, 26 Nurse, 30 Tennis). No princess / Cinderella style outfits.",
+ "readme": "Build A Doll level plan. Build the kit first (Build A Doll > Hurdles > Build Hurdle Kit Prefabs), then run Build A Doll > Levels > Import Level Plan. Sections: a chunk id, 'part' (GatePair), 'part:moving' (GatePair_Moving), 'part:single' (GateSingle, no decoy) or 'coin:A,B' (CoinGatePair; right gate first; x2 +20 -10 /2). One 'part' per outfit part, filled in order: pants (or dress), shirt, hair, shoes, socks, hat, glasses, hand item, bag. Hair and accessories always become a RingPair. Lanes: track half width is 4, so laterals go from -4 to 4. v5 rules (19 Nov 2026): every left/right part gate gets a CashBundle trail leading to the RED gate and a hurdle ('guards', used in turn) right after the GREEN gate, on its lane. Levels 1-3 are tutorials (swipe hand). Levels 1-8 are eight different outfits. After level 8, 3-4 regular levels fill a bar that unlocks a special outfit level (12 Basketball, 17 Baseball, 21 Police, 26 Nurse, 30 Tennis). No princess / Cinderella style outfits. v5 rules (19 Nov 2026): every left/right part gate gets a CashBundle trail leading to the RED gate and a hurdle ('guards', used in turn) right after the GREEN gate, on its lane. Levels 1-3 are tutorials (swipe hand). Levels 1-8 are eight different outfits. After level 8, 3-4 regular levels fill a bar that unlocks a special outfit level (12 Basketball, 17 Baseball, 21 Police, 26 Nurse, 30 Tennis). No princess / Cinderella style outfits. v5 rules (19 Nov 2026): every left/right part gate gets a CashBundle trail leading to the RED gate and a hurdle ('guards', used in turn) on the GREEN gate's lane, guardOffset (12 m; tutorials 15) after it so there's time to steer/jump/slide, with guardClearance (10 m) of free track after it. Levels 1-3 are tutorials (swipe hand). Levels 1-8 are eight different outfits. After level 8, 3-4 regular levels fill a bar that unlocks a special outfit level (12 Basketball, 17 Baseball, 21 Police, 26 Nurse, 30 Tennis). No princess / Cinderella style outfits. 20 Nov 2026: per-level 'partOrder' (e.g. [\"Hair\",\"Dress\",\"Shoes\"]) sets the order parts are offered and compared; section 'coinmoving:+50' = one sliding cash gate (CoinGate_SingleMoving); an empty name in 'guards' = no hurdle after that gate. Rebuild one level: select it > Build A Doll > Levels > Import Selected Level From Plan. Skin: section 'skin:Light=#F9DCC7,Tan=#C78F66' = SkinGatePair (left, right), the chosen colour becomes the body colour; per-level 'targetSkin' (#hex, empty = free choice) makes that colour's gate green; per-level 'startingVariant' overrides the plan's starting outfit. 20 Nov 2026: Kit_Crusher removed (crusher_row replaced by closing_pillars / closing_doors on levels 21, 27, 28, 30); Kit_LowBlock auto-jumps the doll (AutoJumpPad); Kit_Puncher is a hammer.",
  "startDistance": 12,
  "finishRunway": 20,
  "partLength": 8,
@@ -610,28 +610,6 @@
    ]
   },
   {
-   "id": "crusher_row",
-   "length": 14,
-   "note": "Crushers going up and down, staggered: pass under while they're up.",
-   "items": [
-    {
-     "prefab": "Kit_Crusher",
-     "offset": 0,
-     "lateral": -2.5
-    },
-    {
-     "prefab": "Kit_Crusher",
-     "offset": 5,
-     "lateral": 0
-    },
-    {
-     "prefab": "Kit_Crusher",
-     "offset": 10,
-     "lateral": 2.5
-    }
-   ]
-  },
-  {
    "id": "slime_one",
    "length": 12,
    "note": "One slime tray in the middle, coins on the left (replaced the deleted Penalty_Scissors).",
@@ -669,6 +647,18 @@
      "lateral": 0
     }
    ]
+  },
+  {
+   "id": "scissors",
+   "length": 4,
+   "note": "One pair of scissors in the middle of the track: cuts her hair off.",
+   "items": [
+    {
+     "prefab": "Kit_Scissors",
+     "offset": 0,
+     "lateral": 0
+    }
+   ]
   }
  ],
  "lurePrefab": "CashBundle",
@@ -681,31 +671,35 @@
   {
    "id": "Level_01",
    "name": "First Steps",
-   "outfit": "Date_V01",
-   "brief": "Design a DATE NIGHT outfit!",
+   "outfit": "Dress_V02",
+   "startingVariant": "Default_V01",
+   "brief": "Design a PARTY DRESS outfit!",
    "ai": "AiProfile_Easy",
    "hasAiOpponent": true,
-   "gap": 12,
+   "gap": 32,
    "completionCoins": 55,
    "allowMisses": -1,
-   "tutorial": true,
+   "tutorial": false,
    "special": false,
    "specialTitle": "",
-   "lure": true,
-   "guards": [
-    "Kit_Puddle"
+   "lure": false,
+   "guards": [],
+   "guardOffset": -1,
+   "partOrder": [
+    "Hair",
+    "Dress",
+    "Shoes"
    ],
-   "guardOffset": 15,
    "sections": [
-    "coins_line",
-    "part:single",
-    "cones_slalom",
+    "skin:Light=#F9DCC7,Tan=#C78F66",
     "part",
-    "puddles",
+    "coinmoving:+50",
     "part",
-    "coin_bonanza"
+    "scissors",
+    "part"
    ],
-   "note": "3 parts (Dress, Hair, Shoes); ~210 m, ~35s"
+   "note": "20 Nov 2026, user's steps only (no level design rules). Starts in Default_V01. Skin colour gate pair (free choice) > Hair ring pair (3D) > moving +50 cash gate > dress gate pair (2D) > scissors (cut hair) > shoes gate pair (2D) > finish.",
+   "targetSkin": ""
   },
   {
    "id": "Level_02",
@@ -1354,7 +1348,7 @@
     "part",
     "part:moving",
     "coin:x3,-20",
-    "crusher_row",
+    "closing_pillars",
     "part",
     "part:moving",
     "spike_rail_wide",
@@ -1558,7 +1552,7 @@
    "sections": [
     "coins_line",
     "part",
-    "crusher_row",
+    "closing_pillars",
     "part",
     "coin:x3,-20",
     "closing_doors",
@@ -1595,7 +1589,7 @@
     "part:moving",
     "coin:+30,/2",
     "part",
-    "crusher_row",
+    "closing_doors",
     "part:moving",
     "coin_bonanza"
    ],
@@ -1663,7 +1657,7 @@
     "closing_pillars",
     "part:moving",
     "part",
-    "crusher_row",
+    "closing_doors",
     "part:moving",
     "part",
     "part",

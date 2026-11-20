@@ -86,8 +86,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.2507656, y: 3.8557756, z: 0.7499505}
-  m_Center: {x: 0.00000023841858, y: 1.9278878, z: 0.00000014901161}
+  m_Size: {x: 3.5829144, y: 3.5829144, z: 0.93743813}
+  m_Center: {x: 0.07448154, y: 2.3393216, z: 0.025080057}
 --- !u!114 &1658455988459256669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3642612710048957752}
-  - component: {fileID: 2878120629732950008}
+  - component: {fileID: 5482725361800012768}
   m_Layer: 0
   m_Name: Spin
   m_TagString: Untagged
@@ -164,14 +164,14 @@ Transform:
   m_GameObject: {fileID: 3902840950826113505}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0000002505895, y: 1.9278878, z: 0.00000016014087}
+  m_LocalPosition: {x: 0.07448154, y: 2.3393216, z: 0.025080057}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5100938346039824440}
   m_Father: {fileID: 584185532563289604}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2878120629732950008
+--- !u!114 &5482725361800012768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,20 +180,105 @@ MonoBehaviour:
   m_GameObject: {fileID: 3902840950826113505}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ad01c15ef6774bcab2d617172eecb27, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d0390bd8b8ffd640b34fe25065ff1df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slideDistance: 0
-  slideSpeed: 0.5
-  slideAxis: {x: 1, y: 0, z: 0}
-  bobHeight: 0
-  bobSpeed: 1
-  spinSpeed: 90
-  spinAxis: {x: 0, y: 0, z: 1}
-  swingAngle: 0
-  swingSpeed: 0.5
-  swingAxis: {x: 0, y: 0, z: 1}
-  phase: 0
+  updateType: 0
+  isSpeedBased: 0
+  hasOnStart: 0
+  hasOnPlay: 0
+  hasOnUpdate: 0
+  hasOnStepComplete: 0
+  hasOnComplete: 0
+  hasOnTweenCreated: 0
+  hasOnRewind: 0
+  onStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onPlay:
+    m_PersistentCalls:
+      m_Calls: []
+  onUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  onStepComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  onComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  onTweenCreated:
+    m_PersistentCalls:
+      m_Calls: []
+  onRewind:
+    m_PersistentCalls:
+      m_Calls: []
+  targetIsSelf: 1
+  targetGO: {fileID: 0}
+  tweenTargetIsTargetGO: 1
+  delay: 0
+  duration: 4
+  easeType: 1
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  loopType: 0
+  loops: -1
+  id: hurdle
+  isRelative: 0
+  isFrom: 0
+  isIndependentUpdate: 0
+  autoKill: 0
+  autoGenerate: 1
+  isActive: 1
+  isValid: 1
+  target: {fileID: 3642612710048957752}
+  animationType: 4
+  targetType: 11
+  forcedTargetType: 0
+  autoPlay: 1
+  useTargetAsV3: 0
+  endValueFloat: 0
+  endValueV3: {x: 0, y: 0, z: 360}
+  endValueV2: {x: 0, y: 0}
+  endValueColor: {r: 1, g: 1, b: 1, a: 1}
+  endValueString: 
+  endValueRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  endValueTransform: {fileID: 0}
+  optionalBool0: 0
+  optionalBool1: 0
+  optionalFloat0: 0
+  optionalInt0: 0
+  optionalRotationMode: 3
+  optionalScrambleMode: 0
+  optionalShakeRandomnessMode: 0
+  optionalString: 
 --- !u!1 &4434428382993668992
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,7 +390,7 @@ Transform:
   m_GameObject: {fileID: 6946207535339559042}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 22.054365, y: -2.1352766, z: 14.56276}
+  m_LocalPosition: {x: 21.979883, y: -1.8386943, z: 14.537681}
   m_LocalScale: {x: 89.689476, y: 89.689476, z: 89.689476}
   m_ConstrainProportionsScale: 0
   m_Children:

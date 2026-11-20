@@ -79,6 +79,11 @@ namespace Game.EditorTools
             public bool lure = true;          // cash trail toward the red gate
             public string[] guards = Array.Empty<string>(); // hurdles after the green gate, used in turn
             public float guardOffset = -1f;   // -1 = plan default (tutorials use more)
+            public string[] partOrder = Array.Empty<string>(); // optional slot order along the track, e.g. ["Hair","Dress","Shoes"]
+            public string startingVariant;    // optional: this level starts in this outfit instead of the plan's
+            public string targetSkin;         // optional "#RRGGBB": skin gates of this colour show green, demo doll gets it
+
+            [NonSerialized] public OutfitSlot[] order; // partOrder parsed (filled by Import)
         }
 
         private struct Placed
@@ -86,6 +91,7 @@ namespace Game.EditorTools
             public GameObject prefab;
             public float distance, lateral;
             public CoinGate.Setting[] coins;
+            public SkinGate.Setting[] skins;
             public LevelData.GateSide greenSide;
         }
 
@@ -102,7 +108,44 @@ namespace Game.EditorTools
                 Import(true);
         }
 
-        private static void Import(bool overwrite)
+        // ---- One level only (other levels are left as they are) ----
+        // Menu: Build A Doll > Levels > Import One Level From Plan... : a window lists the plan's levels, click one.
+        // Also: right-click a Level asset > Build A Doll > Import This Level From Plan, or the Level's Inspector ⋮ menu.
+        [MenuItem("Build A Doll/Levels/Import One Level From Plan...")]
+        private static void ImportOneWindow() => LevelPickerWindow.Open();
+
+        [MenuItem("Build A Doll/Levels/Import Level 1 From Plan")]
+        private static void ImportLevel1() => ImportOne("Level_01");
+
+        [MenuItem("Assets/Build A Doll/Import This Level From Plan")]
+        private static void ImportFromProjectWindow()
+        {
+            var level = Selection.activeObject as LevelData;
+            if (level != null) ImportOne(level.name);
+            else LevelPickerWindow.Open();
+        }
+
+        [MenuItem("CONTEXT/LevelData/Import This Level From Plan")]
+        private static void ImportFromInspector(MenuCommand command) => ImportOne(((LevelData)command.context).name);
+
+        internal static void ImportOne(string levelId)
+        {
+            if (EditorUtility.DisplayDialog(Title,
+                    $"Rebuild only {levelId} from LevelPlan.json (hurdles, outfit, AI, rewards)? Other levels are left as they are. Undo is not available.",
+                    "Rebuild", "Cancel"))
+                Import(true, levelId);
+        }
+
+        /// <summary>Level ids in LevelPlan.json, in plan order (for the picker window).</summary>
+        internal static List<(string id, string name)> PlanLevels()
+        {
+            var json = AssetDatabase.LoadAssetAtPath<TextAsset>(EditorPaths.Levels + "/" + PlanFile);
+            if (json == null) return new List<(string, string)>();
+            try { return JsonUtility.FromJson<Plan>(json.text).levels.Select(l => (l.id, l.name)).ToList(); }
+            catch { return new List<(string, string)>(); }
+        }
+
+        private static void Import(bool overwrite, string onlyId = null)
         {
             var planPath = EditorPaths.Levels + "/" + PlanFile;
             var json = AssetDatabase.LoadAssetAtPath<TextAsset>(planPath);
@@ -144,7 +187,7 @@ namespace Game.EditorTools
                     var path = $"{EditorPaths.Levels}/{def.id}.asset";
                     var level = AssetDatabase.LoadAssetAtPath<LevelData>(path);
 
-                    if (level != null && !overwrite)
+                    if (level != null && (!overwrite || (onlyId != null && def.id != onlyId)))
                     {
                         ordered.Add(level);
                         kept++;
@@ -159,6 +202,10 @@ namespace Game.EditorTools
                         continue;
                     }
 
+                    if (level == null && onlyId != null && def.id != onlyId)
+                        continue; // single-level import: don't create other missing levels
+
+                    def.order = ParseOrder(def, warnings);
                     var isNew = level == null;
                     if (isNew)
                     {
@@ -170,12 +217,23 @@ namespace Game.EditorTools
                     if (finish > plan.maxTrackLength)
                         warnings.Add($"{def.id}: finish at {finish:0} m is past {plan.maxTrackLength:0} m; hurdles beyond the scene's End Point are skipped. Remove a section or lower 'gap'.");
                     Validate(def, variant, warnings);
-                    Write(level, def, variant, starting, placed, finish, plan, ai, warnings);
+                    var levelStart = starting;
+                    if (!string.IsNullOrEmpty(def.startingVariant))
+                    {
+                        levelStart = FindVariant(def.startingVariant);
+                        if (levelStart == null)
+                        {
+                            warnings.Add($"{def.id}: startingVariant '{def.startingVariant}' not found; using {plan.startingVariant}.");
+                            levelStart = starting;
+                        }
+                    }
+
+                    Write(level, def, variant, levelStart, placed, finish, plan, ai, warnings);
                     OutfitLevelTools.FillGateItems(level, false);
 
                     if (isNew) created++; else rebuilt++;
                     ordered.Add(level);
-                    log.AppendLine($"{def.id} '{def.name}': {variant.name} ({OutfitLevelTools.OrderedParts(variant).Count} parts), " +
+                    log.AppendLine($"{def.id} '{def.name}': {variant.name} ({OutfitLevelTools.OrderedParts(variant).Count} parts{(def.order.Length > 0 ? ", order " + string.Join(">", def.order) : "")}), " +
                                    $"{placed.Count} entries, finish {finish:0} (~{finish / forwardSpeed:0}s), AI {(def.hasAiOpponent ? def.ai : "-")}" +
                                    $"{(def.tutorial ? ", tutorial" : "")}{(def.special ? ", SPECIAL" : "")}");
                 }
@@ -202,7 +260,7 @@ namespace Game.EditorTools
         {
             var result = new List<Placed>();
             var cursor = plan.startDistance;
-            var parts = OutfitLevelTools.OrderedParts(variant);
+            var parts = OutfitLevelTools.OrderedParts(variant, def.order);
             var random = new System.Random(StableHash(def.id)); // same plan = same sides every import
             var partIndex = 0;
             var guardIndex = 0;
@@ -247,18 +305,38 @@ namespace Game.EditorTools
                             }
                         }
 
-                        // Rule 1: a hurdle right after the GREEN gate, on its lane.
+                        // Rule 1: a hurdle right after the GREEN gate, on its lane. An empty name in 'guards' = no hurdle after that gate.
                         if (def.guards != null && def.guards.Length > 0)
                         {
                             var guard = def.guards[guardIndex++ % def.guards.Length];
-                            Add(result, Prefab(guard, prefabs, warnings, def.id), cursor + guardAt, green, null);
-                            guarded = true;
+                            if (!string.IsNullOrWhiteSpace(guard))
+                            {
+                                Add(result, Prefab(guard.Trim(), prefabs, warnings, def.id), cursor + guardAt, green, null);
+                                guarded = true;
+                            }
                         }
                     }
 
                     Add(result, prefab, cursor, 0f, null, side);
                     // Margin: room to steer/jump/slide before the hurdle, and free track after it before the next section.
                     cursor += guarded ? Mathf.Max(plan.partLength, guardAt + plan.guardClearance - def.gap) : plan.partLength;
+                }
+                else if (section.StartsWith("skin:"))
+                {
+                    // Skin colour gate pair: "skin:Light=#F9DCC7,Tan=#C78F66" (left, right).
+                    var skins = section.Substring(5).Split(',').Select(t => ParseSkin(t, def.id, warnings)).ToArray();
+                    if (skins.Length != 2)
+                        warnings.Add($"{def.id}: '{section}' should have 2 colours (left, right).");
+                    var placedSkin = new Placed { prefab = Prefab("SkinGatePair", prefabs, warnings, def.id), distance = cursor, skins = skins };
+                    if (placedSkin.prefab != null) result.Add(placedSkin);
+                    cursor += plan.partLength;
+                }
+                else if (section.StartsWith("coinmoving:"))
+                {
+                    // One cash gate in the middle that slides left/right across both lanes (CoinGate_SingleMoving).
+                    var settings = section.Substring(11).Split(',').Take(1).Select(s => ParseCoin(s, def.id, warnings)).ToArray();
+                    Add(result, Prefab("CoinGate_SingleMoving", prefabs, warnings, def.id), cursor, 0f, settings);
+                    cursor += plan.coinGateLength;
                 }
                 else if (section.StartsWith("coin:"))
                 {
@@ -303,6 +381,34 @@ namespace Game.EditorTools
                     hash = hash * 31 + c;
                 return hash;
             }
+        }
+
+        // "partOrder": ["Hair", "Dress", "Shoes"] -> slots. Unknown names and slots the outfit doesn't use are warned about later.
+        private static OutfitSlot[] ParseOrder(LevelDef def, List<string> warnings)
+        {
+            var result = new List<OutfitSlot>();
+            foreach (var name in def.partOrder ?? Array.Empty<string>())
+            {
+                if (Enum.TryParse(name?.Trim(), true, out OutfitSlot slot) && Enum.IsDefined(typeof(OutfitSlot), slot))
+                {
+                    if (!result.Contains(slot)) result.Add(slot);
+                }
+                else
+                    warnings.Add($"{def.id}: partOrder '{name}' isn't a slot (Hair, Top, Bottom, Dress, Shoes, Socks, Hat, Glasses, HandItem, Bag, Wings, Accessory, Makeup).");
+            }
+
+            return result.ToArray();
+        }
+
+        // "Tan=#C78F66" -> name + colour.
+        private static SkinGate.Setting ParseSkin(string text, string level, List<string> warnings)
+        {
+            var parts = (text ?? "").Split('=');
+            var name = parts[0].Trim();
+            var color = Color.white;
+            if (parts.Length < 2 || !ColorUtility.TryParseHtmlString(parts[1].Trim(), out color))
+                warnings.Add($"{level}: skin '{text}' isn't like Tan=#C78F66.");
+            return new SkinGate.Setting { colorName = name, color = color };
         }
 
         private static CoinGate.Setting ParseCoin(string text, string level, List<string> warnings)
@@ -352,12 +458,18 @@ namespace Game.EditorTools
         // ---- Checks that the plan can reach 100% ----
         private static void Validate(LevelDef def, OutfitVariant variant, List<string> warnings)
         {
-            var parts = OutfitLevelTools.OrderedParts(variant);
+            var parts = OutfitLevelTools.OrderedParts(variant, def.order);
             var gates = def.sections.Where(s => s.Trim().StartsWith("part")).Select(s => s.Trim()).ToList();
 
             if (gates.Count != parts.Count)
                 warnings.Add($"{def.id}: {gates.Count} part gates for {parts.Count} parts of {variant.name} " +
                              $"({string.Join(", ", parts.Select(p => p.Slot))}).");
+
+            foreach (var slot in def.order ?? Array.Empty<OutfitSlot>())
+            {
+                if (parts.All(p => p.Slot != slot))
+                    warnings.Add($"{def.id}: partOrder has {slot}, but {variant.name} has no {slot} part (ignored).");
+            }
 
             var duplicate = parts.GroupBy(p => p.Slot).FirstOrDefault(g => g.Count() > 1);
             if (duplicate != null)
@@ -382,6 +494,17 @@ namespace Game.EditorTools
             so.FindProperty("specialTitle").stringValue = def.specialTitle ?? "";
             so.FindProperty("finishDistance").floatValue = Mathf.Ceil(finish);
             so.FindProperty("outfit").objectReferenceValue = variant;
+            var skinColor = Color.white;
+            var hasSkin = !string.IsNullOrWhiteSpace(def.targetSkin) && ColorUtility.TryParseHtmlString(def.targetSkin.Trim(), out skinColor);
+            if (!string.IsNullOrWhiteSpace(def.targetSkin) && !hasSkin)
+                warnings.Add($"{def.id}: targetSkin '{def.targetSkin}' isn't a colour like #C78F66.");
+            so.FindProperty("hasTargetSkin").boolValue = hasSkin;
+            if (hasSkin) so.FindProperty("targetSkin").colorValue = skinColor;
+            var gateOrder = so.FindProperty("gateOrder");
+            var order = def.order ?? Array.Empty<OutfitSlot>();
+            gateOrder.arraySize = order.Length;
+            for (var i = 0; i < order.Length; i++)
+                gateOrder.GetArrayElementAtIndex(i).intValue = (int)order[i];
             so.FindProperty("targetLook").objectReferenceValue = null; // the outfit is the target
             so.FindProperty("hasAiOpponent").boolValue = def.hasAiOpponent;
             so.FindProperty("completionCoins").intValue = def.completionCoins;
@@ -419,6 +542,16 @@ namespace Game.EditorTools
                 e.FindPropertyRelative("lateral").floatValue = placed[i].lateral;
                 e.FindPropertyRelative("gateItems").arraySize = 0;
                 e.FindPropertyRelative("greenSide").enumValueIndex = (int)placed[i].greenSide;
+
+                var skinProp = e.FindPropertyRelative("skinGates");
+                var skinSettings = placed[i].skins ?? Array.Empty<SkinGate.Setting>();
+                skinProp.arraySize = skinSettings.Length;
+                for (var k = 0; k < skinSettings.Length; k++)
+                {
+                    var sk = skinProp.GetArrayElementAtIndex(k);
+                    sk.FindPropertyRelative("colorName").stringValue = skinSettings[k].colorName ?? "";
+                    sk.FindPropertyRelative("color").colorValue = skinSettings[k].color;
+                }
 
                 var coins = e.FindPropertyRelative("coinGates");
                 var settings = placed[i].coins ?? Array.Empty<CoinGate.Setting>();
@@ -529,6 +662,44 @@ namespace Game.EditorTools
             var config = EditorPaths.FindAsset<Game.Player.Config.RunnerMovementConfig>();
             var prop = config != null ? new SerializedObject(config).FindProperty("forwardSpeed") : null;
             return prop != null && prop.floatValue > 0f ? prop.floatValue : 6f;
+        }
+    }
+
+    /// <summary>Lists the plan's levels; clicking one rebuilds just that level.</summary>
+    public class LevelPickerWindow : EditorWindow
+    {
+        private Vector2 _scroll;
+        private List<(string id, string name)> _levels;
+
+        public static void Open()
+        {
+            var window = GetWindow<LevelPickerWindow>(true, "Import One Level");
+            window.minSize = new Vector2(320, 400);
+            window._levels = LevelPlanImporter.PlanLevels();
+            window.Show();
+        }
+
+        private void OnGUI()
+        {
+            _levels ??= LevelPlanImporter.PlanLevels();
+            EditorGUILayout.HelpBox("Click a level to rebuild it from LevelPlan.json. Other levels stay as they are.", MessageType.Info);
+            if (_levels.Count == 0)
+            {
+                EditorGUILayout.LabelField("No levels found in LevelPlan.json.");
+                return;
+            }
+
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
+            foreach (var (id, name) in _levels)
+            {
+                if (GUILayout.Button($"{id}   {name}", GUILayout.Height(24)))
+                {
+                    Close();
+                    LevelPlanImporter.ImportOne(id);
+                    GUIUtility.ExitGUI();
+                }
+            }
+            EditorGUILayout.EndScrollView();
         }
     }
 }

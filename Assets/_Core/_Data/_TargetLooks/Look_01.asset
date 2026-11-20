@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc6aba97c8bb9400088552510792d9d7, type: 3}
   m_Name: Look_01
   m_EditorClassIdentifier: 
-  displayName: Date Night
-  variant: {fileID: 11400000, guid: 6a71318e531ad476b9ef29635a5b1b72, type: 2}
+  displayName: PARTY DRESS
+  variant: {fileID: 11400000, guid: f0561c7ca440f43c993469774d97f171, type: 2}
   items: []
   demoPrefab: {fileID: 0}
   preview: {fileID: 0}
+  makeup: []
   passPercent: 60
   starPercents: 320000004b00000064000000

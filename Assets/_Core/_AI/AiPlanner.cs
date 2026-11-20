@@ -182,11 +182,17 @@ namespace Game.AI
                 return PenaltyItem.AiAvoidance.Slide;
 
             // Moving things are hard to steer around; jump them.
-            if (bounds.size.x >= trackWidth * TrackWideShare || penalty.GetComponentInParent<HurdleMover>() != null)
+            if (bounds.size.x >= trackWidth * TrackWideShare || IsMoving(penalty))
                 return PenaltyItem.AiAvoidance.Jump;
 
             return PenaltyItem.AiAvoidance.SteerAround;
         }
+
+        // Moving = a DOTweenAnimation on the hurdle, under it or above it (or an old HurdleMover).
+        private static bool IsMoving(PenaltyItem penalty) =>
+            penalty.GetComponentInParent<DG.Tweening.DOTweenAnimation>() != null ||
+            penalty.GetComponentInChildren<DG.Tweening.DOTweenAnimation>() != null ||
+            penalty.GetComponentInParent<HurdleMover>() != null;
 
         // Centre of the widest stretch of track (ramp space x) that none of the penalty's boxes cover.
         // Falls back to the old fixed dodge when nothing is wide enough for the doll.

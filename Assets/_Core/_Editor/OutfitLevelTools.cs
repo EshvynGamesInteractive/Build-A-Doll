@@ -53,8 +53,20 @@ namespace Game.EditorTools
         private static void FillGates(MenuCommand command) => FillGateItems((LevelData)command.context, true);
 
         /// <summary>The variant's parts in the order they're offered along the track.</summary>
-        internal static List<OutfitItem> OrderedParts(OutfitVariant variant) =>
-            variant.AllParts.Where(p => p != null).OrderBy(p => System.Array.IndexOf(SlotOrder, p.Slot)).ToList();
+        /// <param name="order">Optional level Gate Order: these slots come first, in this order; the rest follow in SlotOrder.</param>
+        internal static List<OutfitItem> OrderedParts(OutfitVariant variant, IReadOnlyList<OutfitSlot> order = null) =>
+            variant.AllParts.Where(p => p != null).OrderBy(p => Rank(p.Slot, order)).ToList();
+
+        private static int Rank(OutfitSlot slot, IReadOnlyList<OutfitSlot> order)
+        {
+            if (order != null)
+            {
+                for (var i = 0; i < order.Count; i++)
+                    if (order[i] == slot) return i;
+            }
+
+            return (order?.Count ?? 0) + System.Array.IndexOf(SlotOrder, slot);
+        }
 
         /// <summary>Fills the level's gate entries with its outfit's parts plus decoys. Returns the summary.</summary>
         internal static string FillGateItems(LevelData level, bool showDialog)
@@ -72,7 +84,7 @@ namespace Game.EditorTools
             if (catalog == null)
                 catalog = EditorPaths.FindAsset<OutfitCatalog>();
 
-            var parts = OrderedParts(variant);
+            var parts = OrderedParts(variant, level.GateOrder);
             var random = new System.Random();
             var ringPair = FindHurdlePrefab("RingPair");
             var gatePair = FindHurdlePrefab("GatePair");

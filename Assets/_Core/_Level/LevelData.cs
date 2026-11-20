@@ -40,6 +40,8 @@ namespace Game.Level
             public Game.Hurdles.PaintGate.Setting[] paintGates;
             [Tooltip("For coin gate prefabs: maths for its CoinGates in hierarchy order (CoinGatePair: right gate first, then left), e.g. x2 and -10. Empty = keep the prefab's.")]
             public Game.Hurdles.CoinGate.Setting[] coinGates;
+            [Tooltip("For skin gate prefabs: name and colour for its SkinGates in hierarchy order (left, right). Empty = keep the prefab's.")]
+            public Game.Hurdles.SkinGate.Setting[] skinGates;
         }
 
         [SerializeField] private string displayName;
@@ -77,6 +79,15 @@ namespace Game.Level
         [SerializeField] private int[] outfitStarPercents = { 50, 75, 100 };
         [Tooltip("Makeup to copy when the target comes from Outfit (paint gates), e.g. pink Eye Shadow. Each counts like one item.")]
         [SerializeField] private MakeupColor[] outfitMakeup;
+
+        [Tooltip("Order the outfit's parts are offered along the track (and compared at the finish), e.g. Hair, Dress, Shoes. " +
+                 "Slots not listed follow in the default order. Empty = default order (dress/pants, shirt, hair, shoes...).")]
+        [SerializeField] private OutfitSlot[] gateOrder;
+
+        [Header("Skin")]
+        [Tooltip("The level asks for a skin colour: skin gates of this colour show green, and the demo doll has this skin.")]
+        [SerializeField] private bool hasTargetSkin;
+        [SerializeField] private Color targetSkin = Color.white;
 
         [Header("Target look")]
         [Tooltip("The look to copy: shown on the demo doll at the start and compared at the finish. Empty = use Outfit; both empty = no comparison (run score decides).")]
@@ -147,6 +158,10 @@ namespace Game.Level
         public GameObject DemoPrefab => TargetLook != null ? TargetLook.DemoPrefab : null;
         public IReadOnlyList<OutfitItem> StartingOutfit => startingOutfit;
         public IReadOnlyList<Entry> Entries => entries;
+        public bool HasTargetSkin => hasTargetSkin;
+        public Color TargetSkin => targetSkin;
+        /// <summary>Custom order of the parts along the track; empty = default order.</summary>
+        public IReadOnlyList<OutfitSlot> GateOrder => gateOrder ?? Array.Empty<OutfitSlot>();
         public int ScoreToPass => scoreToPass;
         public int CompletionCoins => completionCoins;
 

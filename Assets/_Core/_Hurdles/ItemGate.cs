@@ -179,8 +179,14 @@ namespace Game.Hurdles
             _icon.transform.localScale = new Vector3(scale, scale, 1f);
         }
 
+        // Auto: 3D model for hair and accessories (the floor-ring items) or when there's no preview anchor; 2D icon otherwise.
         private bool UsesModel => previewStyle == PreviewStyle.Model3D ||
-                                  (previewStyle == PreviewStyle.Auto && previewAnchor == null && greenPreviewAnchor == null);
+                                  (previewStyle == PreviewStyle.Auto &&
+                                   ((previewAnchor == null && greenPreviewAnchor == null) || (item != null && IsRingSlot(item.Slot))));
+
+        private static bool IsRingSlot(OutfitSlot slot) =>
+            slot is OutfitSlot.Hair or OutfitSlot.Hat or OutfitSlot.Glasses or OutfitSlot.HandItem or OutfitSlot.Bag
+                or OutfitSlot.Accessory or OutfitSlot.Wings or OutfitSlot.Makeup;
 
         // 3D preview: a static copy of the item's meshes (bind pose), centred and scaled to Model Size.
         // Returns false (show the icon instead) when the item has no prefab or no meshes.

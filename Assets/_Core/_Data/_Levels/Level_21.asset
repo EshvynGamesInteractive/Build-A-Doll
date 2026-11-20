@@ -139,27 +139,6 @@ MonoBehaviour:
       amount: 3
     - operation: 1
       amount: 20
-  - prefab: {fileID: 913446271389426488, guid: 7596d7f5e81b247728e01171fccf6b78, type: 3}
-    distance: 94
-    lateral: -2.5
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-  - prefab: {fileID: 913446271389426488, guid: 7596d7f5e81b247728e01171fccf6b78, type: 3}
-    distance: 99
-    lateral: 0
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-  - prefab: {fileID: 913446271389426488, guid: 7596d7f5e81b247728e01171fccf6b78, type: 3}
-    distance: 104
-    lateral: 2.5
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
   - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
     distance: 109.5
     lateral: -0.3375

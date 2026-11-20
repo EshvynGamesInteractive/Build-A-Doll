@@ -306,13 +306,9 @@ namespace Game.EditorTools
 
         internal static void AddMover(Transform target, float slide = 0f, float slideSpeed = 0.5f, float spin = 0f, float phase = 0f)
         {
-            var mover = target.gameObject.AddComponent<HurdleMover>();
-            var so = new SerializedObject(mover);
-            so.FindProperty("slideDistance").floatValue = slide;
-            so.FindProperty("slideSpeed").floatValue = slideSpeed;
-            so.FindProperty("spinSpeed").floatValue = spin;
-            so.FindProperty("phase").floatValue = phase;
-            so.ApplyModifiedPropertiesWithoutUndo();
+            var m = DOTweenMotion.Motion.Default;
+            m.slide = slide; m.slideSpeed = slideSpeed; m.spin = spin; m.phase = phase;
+            if (m.Any) DOTweenMotion.Add(target.gameObject, m);
         }
 
         internal static Transform CreateChild(Transform parent, string name)
