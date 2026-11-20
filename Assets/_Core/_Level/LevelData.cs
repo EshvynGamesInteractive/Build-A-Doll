@@ -61,6 +61,8 @@ namespace Game.Level
 
         [Tooltip("Optional picture of the special outfit for the progress bar. Empty = the icon of its top or dress.")]
         [SerializeField] private Sprite specialIcon;
+        [Tooltip("Optional: use this item's icon as the special picture (e.g. the Umbrella being unlocked). Used when Special Icon is empty.")]
+        [SerializeField] private OutfitItem specialIconItem;
 
         [Tooltip("Length the level was designed for. The real finish is the ramp's End Point in the Gameplay scene; hurdles at or past it are skipped. Used only when the scene has no End Point.")]
         [SerializeField, Min(1f)] private float finishDistance = 120f;
@@ -129,8 +131,12 @@ namespace Game.Level
         {
             get
             {
-                if (specialIcon != null || Outfit == null)
+                if (specialIcon != null)
                     return specialIcon;
+                if (specialIconItem != null && specialIconItem.Icon != null)
+                    return specialIconItem.Icon;
+                if (Outfit == null)
+                    return null;
 
                 Sprite fallback = null;
                 foreach (var part in Outfit.AllParts)

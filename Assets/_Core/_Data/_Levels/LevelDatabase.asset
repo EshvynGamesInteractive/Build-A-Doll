@@ -18,6 +18,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c4bc1453e5f1b4983b7e7c727f5ff7cf, type: 2}
   - {fileID: 11400000, guid: b57187bc2b64248c59b1192d26069b71, type: 2}
   - {fileID: 11400000, guid: febe5b1cbd0a44cb2839ce1cb508181f, type: 2}
+  - {fileID: 11400000, guid: 027c6e126cef4358a23caab450253c1a, type: 2}
+  - {fileID: 11400000, guid: 4eddb6a1ae114039a6ddc239a8fecbf0, type: 2}
+  - {fileID: 11400000, guid: cc456298da304403827b5a533605ebf1, type: 2}
+  - {fileID: 11400000, guid: e6531f2f01404c7ea5de4e738015acc5, type: 2}
   defaultPlayerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   defaultDemoPrefab: {fileID: 7866513120635556711, guid: f5a4dad8c9f104806989a095d5f710b4, type: 3}
   demoShowTime: 3
@@ -41,4 +45,4 @@ MonoBehaviour:
   loopFromLevel: 4
   randomAfterLast: 1
   randomSeed: 7919
-  specialProgressFrom: 9
+  specialProgressFrom: 6
