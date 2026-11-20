@@ -18,6 +18,8 @@ namespace _Core._UI._Views
                  "Off: Next loads the next level straight away.")]
         [SerializeField] private bool nextOpensLevelMap = true;
         [SerializeField] private TMP_Text outfitMatchText;
+        [Tooltip("Optional: reward wheel (spin = rewarded ad, the segment under the pin multiplies the completion coins).")]
+        [SerializeField] private SpinWheelView spinWheel;
 
         [Header("Special outfit progress")]
         [Tooltip("Parent of the progress bar. Shown after levels that count toward the next special outfit level, hidden otherwise.")]
@@ -48,6 +50,8 @@ namespace _Core._UI._Views
         {
             SetOutfitMatch(result);
             SetSpecialProgress(result);
+            if (spinWheel != null)
+                spinWheel.Prepare(result.CompletionCoins);
         }
 
         private void SetOutfitMatch(LevelResult result)

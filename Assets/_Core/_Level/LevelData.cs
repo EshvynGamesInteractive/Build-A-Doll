@@ -42,6 +42,8 @@ namespace Game.Level
             public Game.Hurdles.CoinGate.Setting[] coinGates;
             [Tooltip("For skin gate prefabs: name and colour for its SkinGates in hierarchy order (left, right). Empty = keep the prefab's.")]
             public Game.Hurdles.SkinGate.Setting[] skinGates;
+            [Tooltip("For dress colour gate prefabs: name and colour for its DressColorGates in hierarchy order (left, right). Empty = keep the prefab's.")]
+            public Game.Hurdles.DressColorGate.Setting[] dressColorGates;
         }
 
         [SerializeField] private string displayName;
@@ -90,6 +92,11 @@ namespace Game.Level
         [Tooltip("The level asks for a skin colour: skin gates of this colour show green, and the demo doll has this skin.")]
         [SerializeField] private bool hasTargetSkin;
         [SerializeField] private Color targetSkin = Color.white;
+
+        [Header("Dress colour")]
+        [Tooltip("The level asks for a dress colour: dress colour gates of this colour show green, and the demo doll's dress has it.")]
+        [SerializeField] private bool hasTargetDressColor;
+        [SerializeField] private Color targetDressColor = Color.white;
 
         [Header("Target look")]
         [Tooltip("The look to copy: shown on the demo doll at the start and compared at the finish. Empty = use Outfit; both empty = no comparison (run score decides).")]
@@ -166,6 +173,8 @@ namespace Game.Level
         public IReadOnlyList<Entry> Entries => entries;
         public bool HasTargetSkin => hasTargetSkin;
         public Color TargetSkin => targetSkin;
+        public bool HasTargetDressColor => hasTargetDressColor;
+        public Color TargetDressColor => targetDressColor;
         /// <summary>Custom order of the parts along the track; empty = default order.</summary>
         public IReadOnlyList<OutfitSlot> GateOrder => gateOrder ?? Array.Empty<OutfitSlot>();
         public int ScoreToPass => scoreToPass;

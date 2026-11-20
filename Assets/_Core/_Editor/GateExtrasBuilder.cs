@@ -53,6 +53,9 @@ namespace Game.EditorTools
             var ad = BuildRewardedAdGate(warnings);
             if (ad != null) made.Add(Save(ad, GateFolder));
 
+            var dressColor = BuildDressColorGatePair(warnings);
+            if (dressColor != null) made.Add(Save(dressColor, GateFolder));
+
             AssetDatabase.SaveAssets();
             var summary = made.Count > 0 ? "Built: " + string.Join(", ", made) : "Nothing built.";
             if (warnings.Count > 0) summary += "\n\n" + string.Join("\n", warnings);
@@ -291,6 +294,133 @@ namespace Game.EditorTools
             EditorUtility.SetDirty(level);
             AssetDatabase.SaveAssets();
             return swapped > 0 ? $"{levelName}: {swapped} paint gate pair(s) replaced by makeup stations." : $"{levelName}: no paint gate pairs to replace (already done?).";
+        }
+
+        // ---------- Dress colour gate pair ----------
+        private static readonly (string name, Color color)[] DefaultDressColors =
+        {
+            ("Pink", new Color(1f, 0.45f, 0.75f)), // left
+            ("Blue", new Color(0.35f, 0.6f, 1f))   // right
+        };
+
+        // Builds _Gates/DressColorGatePair and puts one in Level_08 (62 m, right after its dress gate) if it isn't there yet.
+        [MenuItem("Build A Doll/Hurdles/Build Dress Colour Gate (+ add to Level 8)")]
+        public static void BuildDressColorGateOnly()
+        {
+            var warnings = new List<string>();
+            var gate = BuildDressColorGatePair(warnings);
+            var summary = "Nothing built.";
+            if (gate != null)
+            {
+                var name = Save(gate, GateFolder);
+                AssetDatabase.SaveAssets();
+                summary = $"Built {name}.";
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{GateFolder}/{name}.prefab");
+                summary += "\n" + AddColorGateToLevel("Level_08", prefab, 62f);
+            }
+
+            if (warnings.Count > 0) summary += "\n\n" + string.Join("\n", warnings);
+            Debug.Log("[GateExtras] " + summary);
+            EditorUtility.DisplayDialog(Title, summary, "OK");
+        }
+
+        // Two gates (left, right) from CoinGatePair's frames, each with a colour swatch and a colour-name sign.
+        private static GameObject BuildDressColorGatePair(List<string> warnings)
+        {
+            var source = AssetDatabase.LoadAssetAtPath<GameObject>(GateFolder + "/CoinGatePair.prefab");
+            if (source == null)
+            {
+                warnings.Add($"CoinGatePair.prefab not found in {GateFolder}; dress colour gate skipped.");
+                return null;
+            }
+
+            var root = (GameObject)PrefabUtility.InstantiatePrefab(source);
+            PrefabUtility.UnpackPrefabInstance(root, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
+            root.name = "DressColorGatePair";
+
+            var coins = root.GetComponentsInChildren<CoinGate>(true).OrderBy(g => g.transform.localPosition.x).ToList();
+            var swatchMaterial = ItemGateSetup.CreateMaterial("SkinSwatch", Color.white);
+            for (var i = 0; i < coins.Count; i++)
+            {
+                var go = coins[i].gameObject;
+                go.transform.SetSiblingIndex(i); // left first, so level settings read left, right
+                go.name = i == 0 ? "Gate_Left" : "Gate_Right";
+                var hitSound = new SerializedObject(coins[i]).FindProperty("hitSound").objectReferenceValue;
+                Object.DestroyImmediate(coins[i]);
+
+                // Swatch: a flat "fabric" panel in the gate.
+                var swatch = Primitive(PrimitiveType.Cube, "Swatch", go.transform, swatchMaterial);
+                swatch.localPosition = new Vector3(0f, 0.1f, 0f);
+                swatch.localScale = new Vector3(1.4f, 1.4f, 0.12f);
+                Mover(swatch.gameObject, bob: 0.15f, bobSpeed: 0.7f, phase: i * 0.5f);
+
+                var sign = new GameObject("Label").transform;
+                sign.SetParent(go.transform, false);
+                sign.localPosition = new Vector3(0f, 1.15f, -0.1f);
+                var text = sign.gameObject.AddComponent<TMPro.TextMeshPro>();
+                text.fontSize = 4f;
+                text.alignment = TMPro.TextAlignmentOptions.Center;
+                text.color = Color.white;
+                text.rectTransform.sizeDelta = new Vector2(3f, 1f);
+
+                var gate = go.AddComponent<DressColorGate>();
+                var so = new SerializedObject(gate);
+                var c = DefaultDressColors[Mathf.Min(i, DefaultDressColors.Length - 1)];
+                so.FindProperty("colorName").stringValue = c.name;
+                so.FindProperty("color").colorValue = c.color;
+                so.FindProperty("redVisual").objectReferenceValue = ChildNamed(go.transform, "Red");
+                so.FindProperty("greenVisual").objectReferenceValue = ChildNamed(go.transform, "Green");
+                so.FindProperty("hitSound").objectReferenceValue = hitSound;
+                so.FindProperty("label").objectReferenceValue = text;
+                var swatches = so.FindProperty("swatches");
+                swatches.arraySize = 1;
+                swatches.GetArrayElementAtIndex(0).objectReferenceValue = swatch.GetComponent<Renderer>();
+                so.ApplyModifiedPropertiesWithoutUndo();
+                text.text = c.name.ToUpperInvariant();
+            }
+
+            if (coins.Count != 2)
+                warnings.Add($"DressColorGatePair: CoinGatePair had {coins.Count} gates (expected 2).");
+            return root;
+        }
+
+        private static string AddColorGateToLevel(string levelName, GameObject prefab, float distance)
+        {
+            var level = AssetDatabase.LoadAssetAtPath<Game.Level.LevelData>($"{EditorPaths.Levels}/{levelName}.asset");
+            if (level == null || prefab == null)
+                return $"{levelName} not found: add the gate to a level by hand.";
+
+            var so = new SerializedObject(level);
+            var entries = so.FindProperty("entries");
+            for (var i = 0; i < entries.arraySize; i++)
+                if (entries.GetArrayElementAtIndex(i).FindPropertyRelative("prefab").objectReferenceValue == prefab)
+                    return $"{levelName} already has it.";
+
+            var index = 0;
+            while (index < entries.arraySize && entries.GetArrayElementAtIndex(index).FindPropertyRelative("distance").floatValue <= distance)
+                index++;
+            entries.InsertArrayElementAtIndex(index);
+            var e = entries.GetArrayElementAtIndex(index);
+            e.FindPropertyRelative("prefab").objectReferenceValue = prefab;
+            e.FindPropertyRelative("distance").floatValue = distance;
+            e.FindPropertyRelative("lateral").floatValue = 0f;
+            e.FindPropertyRelative("gateItems").arraySize = 0;
+            e.FindPropertyRelative("greenSide").enumValueIndex = 0;
+            e.FindPropertyRelative("paintGates").arraySize = 0;
+            e.FindPropertyRelative("coinGates").arraySize = 0;
+            e.FindPropertyRelative("skinGates").arraySize = 0;
+            var colors = e.FindPropertyRelative("dressColorGates");
+            colors.arraySize = DefaultDressColors.Length;
+            for (var k = 0; k < DefaultDressColors.Length; k++)
+            {
+                var c = colors.GetArrayElementAtIndex(k);
+                c.FindPropertyRelative("colorName").stringValue = DefaultDressColors[k].name;
+                c.FindPropertyRelative("color").colorValue = DefaultDressColors[k].color;
+            }
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(level);
+            AssetDatabase.SaveAssets();
+            return $"Added to {levelName} at {distance} m (Pink left / Blue right, free choice).";
         }
 
         [MenuItem("Build A Doll/Hurdles/Rebuild Kit_Scissors Only")]

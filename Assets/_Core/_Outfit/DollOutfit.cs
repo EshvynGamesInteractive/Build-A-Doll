@@ -45,6 +45,11 @@ namespace Game.Outfit
         private readonly Dictionary<OutfitSlot, OutfitItem> _worn = new();
         private readonly Dictionary<OutfitSlot, GameObject> _spawned = new();
         private readonly Dictionary<OutfitSlot, OutfitItem> _cut = new(); // taken off by hurdles (scissors), can be given back
+        private readonly Dictionary<OutfitSlot, Color> _tints = new();    // colour gates: tint on the worn item of a slot
+        private readonly Dictionary<OutfitSlot, Color> _startingTints = new(); // e.g. the demo doll's target dress colour
+        private MaterialPropertyBlock _tintBlock;
+        private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        private static readonly int ColorId = Shader.PropertyToID("_Color");
         private Dictionary<string, Transform> _bonesByName;
 
         public IReadOnlyDictionary<OutfitSlot, OutfitItem> Worn => _worn;
@@ -98,6 +103,7 @@ namespace Game.Outfit
             }
 
             Unequip(item.Slot);
+            _tints.Remove(item.Slot); // a new item comes in its own colour
             _worn[item.Slot] = item;
 
             if (item.Prefab != null)
@@ -159,6 +165,41 @@ namespace Game.Outfit
                 Unequip(slot);
         }
 
+        /// <summary>Tints the item worn in this slot (colour gate). White = its own colour. Kept until a new item is put in the slot.
+        /// Returns false if nothing is worn there.</summary>
+        public bool SetColor(OutfitSlot slot, Color color)
+        {
+            if (!_worn.ContainsKey(slot))
+                return false;
+            _tints[slot] = color;
+            ApplyTint(slot);
+            return true;
+        }
+
+        public bool TryGetColor(OutfitSlot slot, out Color color) => _tints.TryGetValue(slot, out color);
+
+        /// <summary>Colour applied after the starting items are put on (e.g. the target dress colour on the demo doll).</summary>
+        public void SetStartingColor(OutfitSlot slot, Color color)
+        {
+            _startingTints[slot] = color;
+            if (_worn.ContainsKey(slot)) SetColor(slot, color);
+        }
+
+        private void ApplyTint(OutfitSlot slot)
+        {
+            if (!_spawned.TryGetValue(slot, out var go) || go == null)
+                return;
+            var color = _tints.TryGetValue(slot, out var c) ? c : Color.white;
+            _tintBlock ??= new MaterialPropertyBlock();
+            foreach (var r in go.GetComponentsInChildren<Renderer>(true))
+            {
+                r.GetPropertyBlock(_tintBlock);
+                _tintBlock.SetColor(BaseColorId, color);
+                _tintBlock.SetColor(ColorId, color);
+                r.SetPropertyBlock(_tintBlock);
+            }
+        }
+
         /// <summary>True while something cut off by a hurdle can still be given back (e.g. by a rewarded-ad gate).</summary>
         public bool HasCutItems => _cut.Count > 0;
 
@@ -194,11 +235,14 @@ namespace Game.Outfit
             RaiseCutChanged();
             ClearAll();
 
-            if (startingItems == null)
-                return;
+            if (startingItems != null)
+            {
+                foreach (var item in startingItems)
+                    Equip(item);
+            }
 
-            foreach (var item in startingItems)
-                Equip(item);
+            foreach (var pair in _startingTints)
+                SetColor(pair.Key, pair.Value);
         }
 
         private GameObject Spawn(OutfitItem item)

@@ -26,6 +26,7 @@ namespace Game.Ads
     {
         public const string RestoreHair = "restore_hair";
         public const string BonusCoins = "bonus_coins";
+        public const string LevelCompleteSpin = "level_complete_spin";
 
         /// <summary>The ad plugin. Null until one is integrated.</summary>
         public static IRewardedAdService Service { get; set; }

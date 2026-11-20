@@ -28,6 +28,9 @@ namespace Core._GameEvent
             /// <summary>Notification (player only): whether something cut off by a hurdle (e.g. hair, by scissors) can be given back. Arg: true = yes.</summary>
             public static readonly GameEvent<bool> CutItemsChanged = new();
 
+            /// <summary>Notification: the Level Complete reward wheel stopped and its coins went into the wallet. Arg: coins given.</summary>
+            public static readonly GameEvent<int> SpinRewardGranted = new();
+
             /// <summary>Notification: coins collected this run changed. Arg: new total.</summary>
             public static readonly GameEvent<int> CoinsChanged = new();
 

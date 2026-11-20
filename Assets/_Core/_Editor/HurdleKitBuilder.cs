@@ -115,7 +115,7 @@ namespace Game.EditorTools
                 case 12: return Static("Kit_Bollard", asset, s * 1.6f, Avoid.SteerAround, 1, 0.4f);
                 case 13: return Static("Kit_Cone", asset, s * 2f, Avoid.SteerAround, 1, 0.4f);
                 case 14: return Static("Kit_Puddle", asset, s * 2f, Avoid.SteerAround, 2, 0.6f, 0.3f);
-                case 19: return Static("Kit_BrickWall", asset, s, Avoid.SteerAround, 3, 0.8f);
+                // 19 (Kit_BrickWall) removed 20 Nov 2026: not used.
                 case 20: return Static("Kit_ToyWall", asset, s, Avoid.SteerAround, 3, 0.8f);
 
                 case 9: return Slider("Kit_SlideBlock", asset, s, Avoid.SteerAround, 0.3f, false, false);

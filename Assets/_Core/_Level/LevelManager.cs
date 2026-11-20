@@ -316,6 +316,12 @@ namespace _Core._Level
                 ConfigureCoinGates(instance, entry.coinGates);
                 ConfigurePaintGates(instance, entry.paintGates, level.TargetLook);
                 ConfigureSkinGates(instance, entry.skinGates, level);
+                var colorGates = instance.GetComponentsInChildren<DressColorGate>();
+                for (var g = 0; g < colorGates.Length; g++)
+                {
+                    DressColorGate.Setting? colorSetting = entry.dressColorGates != null && g < entry.dressColorGates.Length ? entry.dressColorGates[g] : null;
+                    colorGates[g].Configure(colorSetting, level.HasTargetDressColor, level.TargetDressColor);
+                }
                 foreach (var station in instance.GetComponentsInChildren<MakeupStation>())
                     station.Configure(entry.paintGates, level.TargetLook);
                 hurdles.Add(instance);
@@ -584,6 +590,14 @@ namespace _Core._Level
                 demoOutfit.SetStartingItems(level.TargetOutfit); // worn in its Start
             else
                 Debug.LogWarning($"Demo prefab '{prefab.name}' has no {nameof(DollOutfit)}, so it can't show the look.", prefab);
+
+            // The demo's dress has the target dress colour.
+            if (level.HasTargetDressColor && demoOutfit != null)
+            {
+                demoOutfit.SetStartingColor(OutfitSlot.Dress, level.TargetDressColor);
+                demoOutfit.SetStartingColor(OutfitSlot.Top, level.TargetDressColor);
+                demoOutfit.SetStartingColor(OutfitSlot.Bottom, level.TargetDressColor);
+            }
 
             // The demo also has the target skin colour.
             if (level.HasTargetSkin)
