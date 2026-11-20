@@ -24,6 +24,8 @@ namespace _Core._Level
     {
         [SerializeField] private LevelDatabase database;
 
+        public LevelDatabase Database => database;
+
         [Tooltip("Seconds after the finish before the next level / retry loads on its own. 0 = wait for the UI to raise RequestNextLevel / RequestRestartLevel.")]
         [SerializeField, Min(0f)] private float autoContinueDelay;
 

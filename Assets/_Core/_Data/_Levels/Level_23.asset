@@ -12,113 +12,293 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
   m_Name: Level_23
   m_EditorClassIdentifier: 
-  displayName: Beach Day
-  environmentPrefab: {fileID: 0}
-  finishDistance: 234
-  finishLinePrefab: {fileID: 0}
-  rampPrefab: {fileID: 8826979627748029712, guid: c1f9fee3407a84ce2ae0f48870845ddb, type: 3}
+  displayName: Snow Day
+  brief: Design a WINTER outfit!
+  showSwipeGuide: 0
+  isSpecial: 0
+  specialTitle: 
+  specialIcon: {fileID: 0}
+  finishDistance: 244
   playerPrefab: {fileID: 0}
-  outfit: {fileID: 11400000, guid: b4345d609c9f5476f8e29521c077dd0a, type: 2}
+  outfit: {fileID: 11400000, guid: 7776e6157977b43f28ca308345516b94, type: 2}
   outfitPassPercent: 80
   outfitStarPercents: 500000005000000064000000
+  outfitMakeup: []
   targetLook: {fileID: 0}
-  hasAiOpponent: 1
-  aiProfile: {fileID: 11400000, guid: 660780bfe5970418998ef6ebbe1908a0, type: 2}
+  hasAiOpponent: 0
+  aiProfile: {fileID: 0}
   startingOutfit:
   - {fileID: 11400000, guid: b5f79bd04b4ed4de09bc8290e8a8fb31, type: 2}
   - {fileID: 11400000, guid: 5de59415d3d84417693b07aec5c60d82, type: 2}
   - {fileID: 11400000, guid: 2a6d757d5327141f2807acec29d91b9a, type: 2}
   - {fileID: 11400000, guid: a157d8f47896b47e684d6889d2801a38, type: 2}
   entries:
-  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
+  - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
     distance: 12
     lateral: 0
     gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 25.5
+    lateral: 0.3375
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 27.333334
+    lateral: 0.975
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 29.166666
+    lateral: 1.6125001
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 31
+    lateral: 2.25
+    gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
-    distance: 34
+    distance: 33
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: e979a7ae83ca6413c917f29e1aafabdc, type: 2}
-    - {fileID: 11400000, guid: 3b14a8ad51250493199e320a646de631, type: 2}
+    - {fileID: 11400000, guid: 93f36e55b61ef4b91acfb9afe466135d, type: 2}
+    - {fileID: 11400000, guid: 0c408257a60e846a39f8cf4824484aa5, type: 2}
+    greenSide: 1
+    paintGates: []
     coinGates: []
-  - prefab: {fileID: 8399710652622341666, guid: 7cdf62354723841cda5df600aff9cb39, type: 3}
-    distance: 50
-    lateral: -2.2
+  - prefab: {fileID: 6171740225932625796, guid: 4ca7d8adecb464e08b18944af4781175, type: 3}
+    distance: 45
+    lateral: -2.25
     gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates: []
-  - prefab: {fileID: 8399710652622341666, guid: 7cdf62354723841cda5df600aff9cb39, type: 3}
-    distance: 55
-    lateral: 1.5
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 47.5
+    lateral: -0.3375
     gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates: []
-  - prefab: {fileID: 8399710652622341666, guid: 7cdf62354723841cda5df600aff9cb39, type: 3}
-    distance: 60
-    lateral: -0.8
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 49.333332
+    lateral: -0.975
     gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 51.166668
+    lateral: -1.6125001
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 53
+    lateral: -2.25
+    gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates: []
   - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
-    distance: 72
+    distance: 55
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: f0cd8699fbcf644379129fd76ff9cac6, type: 2}
-    - {fileID: 11400000, guid: e43bf7cadbda349968d114c9c4416ad6, type: 2}
+    - {fileID: 11400000, guid: 624bcd3cfff0145b2963225d9659d16d, type: 2}
+    - {fileID: 11400000, guid: 967e416cf146247978de40b029088c0a, type: 2}
+    greenSide: 2
+    paintGates: []
     coinGates: []
-  - prefab: {fileID: 3809516779525941897, guid: 683064f950f784e5e80886896fdae782, type: 3}
-    distance: 88
-    lateral: 0
+  - prefab: {fileID: 9049020578082438402, guid: 18a906e5a048943f0a45130191334bc0, type: 3}
+    distance: 67
+    lateral: 2.25
     gateItems: []
-    coinGates: []
-  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
-    distance: 108
-    lateral: 0
-    gateItems:
-    - {fileID: 11400000, guid: 5ea5d4d6f2c04462180c3deb9b6e5399, type: 2}
-    - {fileID: 11400000, guid: 422f64af387114ed5862358639fd831a, type: 2}
-    coinGates: []
-  - prefab: {fileID: 913446271389426488, guid: 7596d7f5e81b247728e01171fccf6b78, type: 3}
-    distance: 124
-    lateral: -2.5
-    gateItems: []
-    coinGates: []
-  - prefab: {fileID: 913446271389426488, guid: 7596d7f5e81b247728e01171fccf6b78, type: 3}
-    distance: 129
-    lateral: 0
-    gateItems: []
-    coinGates: []
-  - prefab: {fileID: 913446271389426488, guid: 7596d7f5e81b247728e01171fccf6b78, type: 3}
-    distance: 134
-    lateral: 2.5
-    gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: 5d7a84aadf614dc587ae5f155045d5bc, type: 3}
-    distance: 146
+    distance: 77
     lateral: 0
     gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates:
     - operation: 2
-      amount: 3
+      amount: 2
     - operation: 1
-      amount: 30
-  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
-    distance: 162
+      amount: 20
+  - prefab: {fileID: 2347459780087329176, guid: 86e6add65be86427cb882b96fe9201d7, type: 3}
+    distance: 94
+    lateral: -1.95
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 109.5
+    lateral: -0.3375
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 111.333336
+    lateral: -0.975
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 113.166664
+    lateral: -1.6125001
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 115
+    lateral: -2.25
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
+    distance: 117
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: 19d1ace4c786940f69c9b976acfdd48b, type: 2}
+    - {fileID: 11400000, guid: 5ea5d4d6f2c04462180c3deb9b6e5399, type: 2}
+    greenSide: 2
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 4786436871171305112, guid: c6fc3ed4c21cb44649d07023671860fa, type: 3}
+    distance: 129
+    lateral: 2.25
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 131.5
+    lateral: 0.3375
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 133.33333
+    lateral: 0.975
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 135.16667
+    lateral: 1.6125001
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 137
+    lateral: 2.25
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
+    distance: 139
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 75ce5c24abf6944e3bf4ccf9efe92caa, type: 2}
-    - {fileID: 11400000, guid: 0b1e4d7f94e23453497ecb541f868c4b, type: 2}
+    - {fileID: 11400000, guid: 33a89507a71144aecb0be815b175e547, type: 2}
+    greenSide: 1
+    paintGates: []
     coinGates: []
-  - prefab: {fileID: 238799782462157432, guid: 856dfa04533704446a89438e79ab2c45, type: 3}
-    distance: 188
-    lateral: 0
+  - prefab: {fileID: 8719522169644792680, guid: b2ebffcd2fba64c579a51f58edd3ff07, type: 3}
+    distance: 151
+    lateral: -2.25
     gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 8621683053567312184, guid: 39e011d39ddd74200858499f25cea8a5, type: 3}
+    distance: 161
+    lateral: -1.5
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 8621683053567312184, guid: 39e011d39ddd74200858499f25cea8a5, type: 3}
+    distance: 170
+    lateral: 1.5
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 180.5
+    lateral: 0.3375
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 182.33333
+    lateral: 0.975
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 184.16667
+    lateral: 1.6125001
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 864228326465989277, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
+    distance: 186
+    lateral: 2.25
+    gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates: []
   - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
-    distance: 206
+    distance: 188
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: c450164e48fa34899b2f24249f104dc6, type: 2}
-    - {fileID: 11400000, guid: 4722114b073a64d7bafc97a26861c4dc, type: 2}
+    - {fileID: 11400000, guid: 7db112b6fc3ed4aafa4b80550867ebdb, type: 2}
+    - {fileID: 11400000, guid: 100aea69a398449b1a39da0bbf8c9ffa, type: 2}
+    greenSide: 1
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 6171740225932625796, guid: 4ca7d8adecb464e08b18944af4781175, type: 3}
+    distance: 200
+    lateral: -2.25
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
+    distance: 210
+    lateral: 0
+    gateItems: []
+    greenSide: 0
+    paintGates: []
     coinGates: []
   scoreToPass: 1
   starScores: 01000000080000000f000000
-  completionCoins: 110
+  completionCoins: 165

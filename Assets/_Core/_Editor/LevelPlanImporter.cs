@@ -30,6 +30,15 @@ namespace Game.EditorTools
             public float startDistance = 12f, finishRunway = 20f, partLength = 8f, coinGateLength = 8f;
             public int defaultAllowMisses = 1, loopFromLevel = 4;
             public string startingVariant = "Casual_V01";
+
+            // Level design rules applied to every left/right part gate:
+            // cash leads toward the RED gate (lure), a hurdle stands right after the GREEN gate.
+            public string lurePrefab = "CashBundle";
+            public int lureCount = 4;
+            public float lureSpan = 8f;   // metres before the gate the cash trail starts
+            public float guardOffset = 12f;   // metres after the green gate the hurdle stands: time to react (12 m = 2 s at speed 6)
+            public float guardClearance = 10f; // free metres after that hurdle before the next section starts
+            public float maxTrackLength = 250f; // warn past this (scene ramp length minus a margin)
             public AiDef[] aiProfiles = Array.Empty<AiDef>();
             public Chunk[] chunks = Array.Empty<Chunk>();
             public LevelDef[] levels = Array.Empty<LevelDef>();
@@ -62,6 +71,14 @@ namespace Game.EditorTools
             public int allowMisses = -1; // -1 = plan default
             public bool hasAiOpponent = true;
             public string[] sections = Array.Empty<string>();
+
+            public string brief;              // theme line on the target card
+            public bool tutorial;             // swipe guide hand
+            public bool special;              // special outfit level
+            public string specialTitle;
+            public bool lure = true;          // cash trail toward the red gate
+            public string[] guards = Array.Empty<string>(); // hurdles after the green gate, used in turn
+            public float guardOffset = -1f;   // -1 = plan default (tutorials use more)
         }
 
         private struct Placed
@@ -69,6 +86,7 @@ namespace Game.EditorTools
             public GameObject prefab;
             public float distance, lateral;
             public CoinGate.Setting[] coins;
+            public LevelData.GateSide greenSide;
         }
 
         [MenuItem("Build A Doll/Levels/Import Level Plan (new levels only)")]
@@ -148,7 +166,9 @@ namespace Game.EditorTools
                         AssetDatabase.CreateAsset(level, path);
                     }
 
-                    var placed = Layout(plan, def, chunks, prefabs, warnings, out var finish);
+                    var placed = Layout(plan, def, variant, chunks, prefabs, warnings, out var finish);
+                    if (finish > plan.maxTrackLength)
+                        warnings.Add($"{def.id}: finish at {finish:0} m is past {plan.maxTrackLength:0} m; hurdles beyond the scene's End Point are skipped. Remove a section or lower 'gap'.");
                     Validate(def, variant, warnings);
                     Write(level, def, variant, starting, placed, finish, plan, ai, warnings);
                     OutfitLevelTools.FillGateItems(level, false);
@@ -156,7 +176,8 @@ namespace Game.EditorTools
                     if (isNew) created++; else rebuilt++;
                     ordered.Add(level);
                     log.AppendLine($"{def.id} '{def.name}': {variant.name} ({OutfitLevelTools.OrderedParts(variant).Count} parts), " +
-                                   $"{placed.Count} entries, finish {finish:0} (~{finish / forwardSpeed:0}s), AI {def.ai}");
+                                   $"{placed.Count} entries, finish {finish:0} (~{finish / forwardSpeed:0}s), AI {(def.hasAiOpponent ? def.ai : "-")}" +
+                                   $"{(def.tutorial ? ", tutorial" : "")}{(def.special ? ", SPECIAL" : "")}");
                 }
 
                 UpdateDatabase(ordered, plan.loopFromLevel, warnings);
@@ -176,11 +197,17 @@ namespace Game.EditorTools
         }
 
         // ---- Layout: sections one after another, 'gap' units apart ----
-        private static List<Placed> Layout(Plan plan, LevelDef def, Dictionary<string, Chunk> chunks,
+        private static List<Placed> Layout(Plan plan, LevelDef def, OutfitVariant variant, Dictionary<string, Chunk> chunks,
             Dictionary<string, GameObject> prefabs, List<string> warnings, out float finish)
         {
             var result = new List<Placed>();
             var cursor = plan.startDistance;
+            var parts = OutfitLevelTools.OrderedParts(variant);
+            var random = new System.Random(StableHash(def.id)); // same plan = same sides every import
+            var partIndex = 0;
+            var guardIndex = 0;
+            var lastSide = LevelData.GateSide.Random;
+            var sameSideRun = 0;
 
             foreach (var raw in def.sections)
             {
@@ -188,9 +215,50 @@ namespace Game.EditorTools
                 if (section.StartsWith("part"))
                 {
                     var kind = section.Contains(":") ? section.Substring(section.IndexOf(':') + 1) : "";
-                    var name = kind == "moving" ? "GatePair_Moving" : kind == "single" ? "GateSingle" : "GatePair";
-                    Add(result, Prefab(name, prefabs, warnings, def.id), cursor, 0f, null);
-                    cursor += plan.partLength;
+                    var ring = partIndex < parts.Count && OutfitLevelTools.UsesRing(parts[partIndex].Slot);
+                    partIndex++;
+                    var name = kind == "single" ? "GateSingle" : ring ? "RingPair" : kind == "moving" ? "GatePair_Moving" : "GatePair";
+                    var prefab = Prefab(name, prefabs, warnings, def.id);
+                    var side = LevelData.GateSide.Random;
+                    var guarded = false;
+                    var guardAt = def.guardOffset >= 0f ? def.guardOffset : plan.guardOffset;
+
+                    if (kind != "single" && OutfitLevelTools.TryGetGateLanes(prefab, out var left, out var right))
+                    {
+                        // Green side: random, but never three times in a row on the same side.
+                        side = random.Next(2) == 0 ? LevelData.GateSide.Left : LevelData.GateSide.Right;
+                        if (side == lastSide && sameSideRun >= 2)
+                            side = side == LevelData.GateSide.Left ? LevelData.GateSide.Right : LevelData.GateSide.Left;
+                        sameSideRun = side == lastSide ? sameSideRun + 1 : 1;
+                        lastSide = side;
+
+                        var green = side == LevelData.GateSide.Left ? left : right;
+                        var red = side == LevelData.GateSide.Left ? right : left;
+
+                        // Rules 2 + 3: a cash trail from the middle toward the RED gate, so grabbing cash means a swipe to the wrong side.
+                        if (def.lure && plan.lureCount > 0)
+                        {
+                            var cash = Prefab(plan.lurePrefab, prefabs, warnings, def.id);
+                            var span = Mathf.Clamp(Mathf.Min(plan.lureSpan, def.gap - 1.5f), 3f, plan.lureSpan);
+                            for (var k = 0; k < plan.lureCount; k++)
+                            {
+                                var t = plan.lureCount == 1 ? 1f : (float)k / (plan.lureCount - 1);
+                                Add(result, cash, Mathf.Max(0f, cursor - span + t * (span - 2f)), Mathf.Lerp(red * 0.15f, red, t), null);
+                            }
+                        }
+
+                        // Rule 1: a hurdle right after the GREEN gate, on its lane.
+                        if (def.guards != null && def.guards.Length > 0)
+                        {
+                            var guard = def.guards[guardIndex++ % def.guards.Length];
+                            Add(result, Prefab(guard, prefabs, warnings, def.id), cursor + guardAt, green, null);
+                            guarded = true;
+                        }
+                    }
+
+                    Add(result, prefab, cursor, 0f, null, side);
+                    // Margin: room to steer/jump/slide before the hurdle, and free track after it before the next section.
+                    cursor += guarded ? Mathf.Max(plan.partLength, guardAt + plan.guardClearance - def.gap) : plan.partLength;
                 }
                 else if (section.StartsWith("coin:"))
                 {
@@ -218,10 +286,23 @@ namespace Game.EditorTools
             return result;
         }
 
-        private static void Add(List<Placed> list, GameObject prefab, float distance, float lateral, CoinGate.Setting[] coins)
+        private static void Add(List<Placed> list, GameObject prefab, float distance, float lateral, CoinGate.Setting[] coins,
+            LevelData.GateSide greenSide = LevelData.GateSide.Random)
         {
             if (prefab != null)
-                list.Add(new Placed { prefab = prefab, distance = distance, lateral = lateral, coins = coins });
+                list.Add(new Placed { prefab = prefab, distance = distance, lateral = lateral, coins = coins, greenSide = greenSide });
+        }
+
+        // String hash that is the same on every machine and run (string.GetHashCode isn't).
+        private static int StableHash(string text)
+        {
+            unchecked
+            {
+                var hash = 23;
+                foreach (var c in text ?? "")
+                    hash = hash * 31 + c;
+                return hash;
+            }
         }
 
         private static CoinGate.Setting ParseCoin(string text, string level, List<string> warnings)
@@ -284,7 +365,7 @@ namespace Game.EditorTools
 
             for (var i = 0; i < Mathf.Min(gates.Count, parts.Count); i++)
             {
-                if (gates[i] != "part" && OutfitLevelTools.UsesRing(parts[i].Slot))
+                if (gates[i] == "part:moving" && OutfitLevelTools.UsesRing(parts[i].Slot))
                     warnings.Add($"{def.id}: gate {i + 1} is '{gates[i]}' but gets {parts[i].Slot}, which uses a ring pair (it becomes a plain RingPair).");
             }
         }
@@ -295,6 +376,10 @@ namespace Game.EditorTools
         {
             var so = new SerializedObject(level);
             so.FindProperty("displayName").stringValue = def.name;
+            so.FindProperty("brief").stringValue = def.brief ?? "";
+            so.FindProperty("showSwipeGuide").boolValue = def.tutorial;
+            so.FindProperty("isSpecial").boolValue = def.special;
+            so.FindProperty("specialTitle").stringValue = def.specialTitle ?? "";
             so.FindProperty("finishDistance").floatValue = Mathf.Ceil(finish);
             so.FindProperty("outfit").objectReferenceValue = variant;
             so.FindProperty("targetLook").objectReferenceValue = null; // the outfit is the target
@@ -333,6 +418,7 @@ namespace Game.EditorTools
                 e.FindPropertyRelative("distance").floatValue = placed[i].distance;
                 e.FindPropertyRelative("lateral").floatValue = placed[i].lateral;
                 e.FindPropertyRelative("gateItems").arraySize = 0;
+                e.FindPropertyRelative("greenSide").enumValueIndex = (int)placed[i].greenSide;
 
                 var coins = e.FindPropertyRelative("coinGates");
                 var settings = placed[i].coins ?? Array.Empty<CoinGate.Setting>();

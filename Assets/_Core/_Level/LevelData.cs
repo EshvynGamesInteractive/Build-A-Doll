@@ -14,6 +14,9 @@ namespace Game.Level
     [CreateAssetMenu(fileName = "Level_", menuName = "Build A Doll/Level/Level Data")]
     public class LevelData : ScriptableObject
     {
+        /// <summary>Which gate of a left/right pair is the right pick (green). Random = picked when the gates are filled.</summary>
+        public enum GateSide { Random = 0, Left = 1, Right = 2 }
+
         [Serializable]
         public class Entry
         {
@@ -29,6 +32,10 @@ namespace Game.Level
             [Tooltip("For gate prefabs: items for its ItemGates, in hierarchy order (left, right). Empty = keep the prefab's items.")]
             public OutfitItem[] gateItems;
 
+            [Tooltip("For gate pairs: which side gets the target item (green). The level plan puts cash in front of the other (red) side " +
+                     "and a hurdle right after this one, so keep it when re-filling gates. Random = any side.")]
+            public GateSide greenSide;
+
             [Tooltip("For paint gate prefabs: face zone and colour for its PaintGates in hierarchy order. Empty = keep the prefab's.")]
             public Game.Hurdles.PaintGate.Setting[] paintGates;
             [Tooltip("For coin gate prefabs: maths for its CoinGates in hierarchy order (CoinGatePair: right gate first, then left), e.g. x2 and -10. Empty = keep the prefab's.")]
@@ -36,6 +43,22 @@ namespace Game.Level
         }
 
         [SerializeField] private string displayName;
+
+        [Tooltip("Theme line on the target-look card at the start, e.g. \"Design a NURSE outfit!\". Empty = the card's own title.")]
+        [SerializeField] private string brief;
+
+        [Header("Tutorial / special")]
+        [Tooltip("Starting levels: a hand on screen shows how to drag left/right, and points to the green gate before each choice.")]
+        [SerializeField] private bool showSwipeGuide;
+
+        [Tooltip("Special outfit level (Basketball, Police, Nurse…). The regular levels before it fill a progress bar on Level Complete; when it's full this level is unlocked.")]
+        [SerializeField] private bool isSpecial;
+
+        [Tooltip("Name shown for the special outfit, e.g. \"Basketball Star\". Empty = the outfit's name.")]
+        [SerializeField] private string specialTitle;
+
+        [Tooltip("Optional picture of the special outfit for the progress bar. Empty = the icon of its top or dress.")]
+        [SerializeField] private Sprite specialIcon;
 
         [Tooltip("Length the level was designed for. The real finish is the ramp's End Point in the Gameplay scene; hurdles at or past it are skipped. Used only when the scene has no End Point.")]
         [SerializeField, Min(1f)] private float finishDistance = 120f;
@@ -85,6 +108,32 @@ namespace Game.Level
         [SerializeField, Min(0)] private int completionCoins = 50;
 
         public string DisplayName => string.IsNullOrEmpty(displayName) ? name : displayName;
+        public string Brief => brief;
+        public bool ShowSwipeGuide => showSwipeGuide;
+        public bool IsSpecial => isSpecial;
+        public string SpecialTitle => !string.IsNullOrEmpty(specialTitle) ? specialTitle : Outfit != null ? Outfit.DisplayName : DisplayName;
+
+        /// <summary>Special icon, else the icon of the outfit's dress, top, or first part that has one.</summary>
+        public Sprite SpecialIcon
+        {
+            get
+            {
+                if (specialIcon != null || Outfit == null)
+                    return specialIcon;
+
+                Sprite fallback = null;
+                foreach (var part in Outfit.AllParts)
+                {
+                    if (part == null || part.Icon == null)
+                        continue;
+                    if (part.Slot == OutfitSlot.Dress || part.Slot == OutfitSlot.Top)
+                        return part.Icon;
+                    if (fallback == null)
+                        fallback = part.Icon;
+                }
+                return fallback;
+            }
+        }
         public float FinishDistance => finishDistance;
         public GameObject PlayerPrefab => playerPrefab;
         public TargetLook TargetLook => targetLook != null ? targetLook : GetOutfitLook();

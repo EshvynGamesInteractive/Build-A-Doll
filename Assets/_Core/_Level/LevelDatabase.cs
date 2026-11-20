@@ -72,7 +72,73 @@ namespace Game.Level
         [Tooltip("Changes the random order after the last level.")]
         [SerializeField] private int randomSeed = 7919;
 
+        [Header("Special outfit levels")]
+        [Tooltip("Level number (1-based) from which regular levels fill the special-outfit progress bar. Levels before it (the first outfits) don't count.")]
+        [SerializeField, Min(1)] private int specialProgressFrom = 9;
+
         public int Count => levels.Count;
+
+        /// <summary>Progress toward the next special outfit level, as seen after finishing a level.</summary>
+        public readonly struct SpecialProgress
+        {
+            public readonly LevelData Special;   // the special level being unlocked
+            public readonly int SpecialNumber;   // its 1-based level number
+            public readonly int Done;            // regular levels finished toward it (after this one)
+            public readonly int Needed;          // regular levels between the previous special and it
+            public bool Unlocked => Done >= Needed;
+
+            public SpecialProgress(LevelData special, int specialNumber, int done, int needed)
+            {
+                Special = special;
+                SpecialNumber = specialNumber;
+                Done = done;
+                Needed = needed;
+            }
+        }
+
+        /// <summary>
+        /// After finishing the level at 'index' (0-based): which special level is next and how many of the regular
+        /// levels before it are done. False for levels before Special Progress From, special levels themselves,
+        /// levels past the last one (random order), or when no special level is ahead.
+        /// </summary>
+        public bool TryGetSpecialProgress(int index, out SpecialProgress progress)
+        {
+            progress = default;
+            if (index < 0 || index >= levels.Count || levels[index] == null || levels[index].IsSpecial)
+                return false;
+
+            var from = Mathf.Max(0, specialProgressFrom - 1);
+            if (index < from)
+                return false;
+
+            var next = -1;
+            for (var i = index + 1; i < levels.Count; i++)
+            {
+                if (levels[i] != null && levels[i].IsSpecial) { next = i; break; }
+            }
+            if (next < 0)
+                return false;
+
+            var start = from;
+            for (var i = next - 1; i >= from; i--)
+            {
+                if (levels[i] != null && levels[i].IsSpecial) { start = i + 1; break; }
+            }
+
+            var needed = next - start;
+            if (needed <= 0)
+                return false;
+
+            progress = new SpecialProgress(levels[next], next + 1, Mathf.Clamp(index - start + 1, 0, needed), needed);
+            return true;
+        }
+
+        /// <summary>True when the level at this play-through index is a special outfit level.</summary>
+        public bool IsSpecialAt(int index)
+        {
+            var level = GetLevel(index);
+            return level != null && level.IsSpecial;
+        }
         public GameObject DefaultPlayerPrefab => defaultPlayerPrefab;
         public GameObject DefaultDemoPrefab => defaultDemoPrefab;
         public Texture2D[] RampTextures => rampTextures;

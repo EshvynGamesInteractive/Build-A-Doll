@@ -27,7 +27,7 @@ namespace _Core._UI._LevelMap
         [Tooltip("Optional: the map's scroll view. It scrolls so the current level is in the middle.")]
         [SerializeField] private UnityEngine.UI.ScrollRect scrollRect;
 
-        [Tooltip("Every Nth level gets the special badge (e.g. 5 = levels 5, 10, 15 …). 0 = none.")]
+        [Tooltip("Used only when no LevelManager/database is found: every Nth level gets the special badge. Otherwise special outfit levels (LevelData Is Special) get it.")]
         [SerializeField, Min(0)] private int specialEvery = 5;
 
         private void OnEnable() => Refresh();
@@ -39,6 +39,10 @@ namespace _Core._UI._LevelMap
                 return;
 
             var current = LevelProgress.CurrentLevelIndex;
+            var manager = ReferenceManager.Instance != null ? ReferenceManager.Instance.levelManager : null;
+            if (manager == null)
+                manager = FindFirstObjectByType<_Core._Level.LevelManager>();
+            var database = manager != null ? manager.Database : null;
             var first = Mathf.Max(0, current + Mathf.Min(lockedAhead, nodes.Length - 1) + 1 - nodes.Length);
             LevelNode currentNode = null;
 
@@ -68,7 +72,8 @@ namespace _Core._UI._LevelMap
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var special = specialEvery > 0 && (index + 1) % specialEvery == 0;
+                // Special outfit levels come from the level data; Special Every is the fallback without a database.
+                var special = database != null ? database.IsSpecialAt(index) : specialEvery > 0 && (index + 1) % specialEvery == 0;
                 node.Setup(index, state, special, PlayLevel);
                 if (state == LevelNode.State.Current)
                     currentNode = node;

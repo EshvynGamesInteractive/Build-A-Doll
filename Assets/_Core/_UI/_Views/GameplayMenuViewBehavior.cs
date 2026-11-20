@@ -42,6 +42,8 @@ namespace _Core._UI._Views
         [SerializeField] private GameObject[] introOnlyObjects;
         [Tooltip("Hidden while the card waits for PLAY!, shown for the run (e.g. Pause, coins).")]
         [SerializeField] private GameObject[] runOnlyObjects;
+        [Tooltip("Title on the target-look card (e.g. \"DRESS HER LIKE THIS!\"). Shows the level's Brief (\"Design a NURSE outfit!\") when it has one, its own text otherwise.")]
+        [SerializeField] private TMP_Text briefText;
         [Tooltip("Seconds to move to the target. The run starts when it arrives.")]
         [SerializeField, Min(0f)] private float demoMoveTime = 0.6f;
 
@@ -63,6 +65,7 @@ namespace _Core._UI._Views
         // What moves to the corner: the frame if set, else the whole card.
         private RectTransform Mover => demoFrame != null ? demoFrame : demoImage;
         private bool _waitingForStart;
+        private string _defaultBrief;
 
         private void OnEnable()
         {
@@ -98,6 +101,8 @@ namespace _Core._UI._Views
             UIPanelButtonUtility.Bind(startButton, () => _startPressed = true);
             UIPanelButtonUtility.Bind(introSettingsButton, () => GameEvents.UIEvents.ShowByType.Raise(ScreenType.Settings));
             RefreshCoins();
+            if (briefText != null && _defaultBrief == null)
+                _defaultBrief = briefText.text;
             SaveDemoStart();
             if (demoImage != null)
                 demoImage.gameObject.SetActive(false);
@@ -132,9 +137,20 @@ namespace _Core._UI._Views
 
         // ---------- Target look intro ----------
 
+        // Theme line for this level ("Design a NURSE outfit!"), or the card's own title.
+        private void ShowBrief(LevelData level)
+        {
+            if (briefText == null)
+                return;
+            if (_defaultBrief == null)
+                _defaultBrief = briefText.text;
+            briefText.text = level != null && !string.IsNullOrEmpty(level.Brief) ? level.Brief : _defaultBrief;
+        }
+
         // Level start: pop the demo image in where it sits in the prefab, hold, slide it to the target, then start the run.
         private void OnTargetLookShown(LevelData level)
         {
+            ShowBrief(level);
             StopDemoIntro(false);
             if (demoImage == null || !isActiveAndEnabled)
             {

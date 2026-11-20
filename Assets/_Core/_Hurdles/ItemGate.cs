@@ -14,7 +14,12 @@ namespace Game.Hurdles
     /// </summary>
     public class ItemGate : TrackHurdle
     {
+        public enum PreviewStyle { Auto = 0, Icon2D = 1, Model3D = 2 }
+
         [SerializeField] private OutfitItem item;
+
+        [Tooltip("Auto = a 3D model of the item on floor rings (no preview anchor), the 2D icon on gates.")]
+        [SerializeField] private PreviewStyle previewStyle = PreviewStyle.Auto;
 
         [Tooltip("Optional: a SpriteRenderer of your own that shows the item's icon. Empty = one is made at the preview anchor.")]
         [SerializeField] private SpriteRenderer iconRenderer;
@@ -42,13 +47,26 @@ namespace Game.Hurdles
 
         [SerializeField, Min(0f)] private float iconBobSpeed = 2.5f;
 
+        [Header("3D model preview (rings)")]
+        [Tooltip("Largest side of the 3D model, in world units.")]
+        [SerializeField, Min(0.1f)] private float modelSize = 1.3f;
+
+        [Tooltip("Degrees per second the model turns. 0 = still, facing the runner.")]
+        [SerializeField] private float modelSpinSpeed = 60f;
+
         private bool _iconOnSelf;
 
         private SpriteRenderer _icon;
+        private Transform _model;       // spins + bobs, sits at the icon spot
+        private OutfitItem _modelItem;  // item the model was built for
+        private bool _modelHasMesh;
         private IReadOnlyList<OutfitItem> _targetItems;
         private bool _started;
 
         public OutfitItem Item => item;
+
+        /// <summary>True when this gate's item is part of the target look (the green choice).</summary>
+        public bool IsTargetChoice => MatchesTarget();
 
         private void Start()
         {
@@ -121,6 +139,15 @@ namespace Game.Hurdles
             if (_iconOnSelf)
                 anchor = transform;
 
+            if (UsesModel && RefreshModel(anchor))
+            {
+                if (_icon != null)
+                    _icon.gameObject.SetActive(false);
+                return;
+            }
+            if (_model != null)
+                _model.gameObject.SetActive(false);
+
             if (sprite == null)
             {
                 if (_icon != null)
@@ -152,20 +179,123 @@ namespace Game.Hurdles
             _icon.transform.localScale = new Vector3(scale, scale, 1f);
         }
 
-        // An icon under the red/green visual hides with it; one on this object is hidden here.
+        private bool UsesModel => previewStyle == PreviewStyle.Model3D ||
+                                  (previewStyle == PreviewStyle.Auto && previewAnchor == null && greenPreviewAnchor == null);
+
+        // 3D preview: a static copy of the item's meshes (bind pose), centred and scaled to Model Size.
+        // Returns false (show the icon instead) when the item has no prefab or no meshes.
+        private bool RefreshModel(Transform anchor)
+        {
+            if (item == null || item.Prefab == null)
+                return false;
+
+            if (_model == null)
+                _model = new GameObject("Preview3D").transform;
+
+            if (_modelItem != item)
+            {
+                _modelItem = item;
+                _modelHasMesh = BuildModel(item.Prefab, _model, modelSize);
+            }
+
+            if (!_modelHasMesh)
+                return false;
+
+            _model.SetParent(anchor, false);
+            _model.localPosition = _iconOnSelf ? iconOffset : Vector3.zero;
+            _model.localRotation = Quaternion.Euler(0f, 180f, 0f); // front towards the runner
+            _model.localScale = Vector3.one;
+            _model.gameObject.SetActive(!(_iconOnSelf && IsUsed));
+            return true;
+        }
+
+        private static bool BuildModel(GameObject source, Transform pivot, float size)
+        {
+            for (var i = pivot.childCount - 1; i >= 0; i--)
+                Destroy(pivot.GetChild(i).gameObject);
+
+            var holder = new GameObject("Model").transform;
+            holder.SetParent(pivot, false);
+            var toRoot = source.transform.worldToLocalMatrix;
+            var bounds = new Bounds();
+            var any = false;
+
+            void AddMesh(Mesh mesh, Material[] materials, Transform from)
+            {
+                if (mesh == null)
+                    return;
+
+                var matrix = toRoot * from.localToWorldMatrix;
+                var go = new GameObject(mesh.name);
+                go.transform.SetParent(holder, false);
+                go.transform.localPosition = matrix.GetPosition();
+                go.transform.localRotation = matrix.rotation;
+                go.transform.localScale = matrix.lossyScale;
+                go.AddComponent<MeshFilter>().sharedMesh = mesh;
+                var renderer = go.AddComponent<MeshRenderer>();
+                renderer.sharedMaterials = materials;
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+                // Mesh bounds in the holder's space.
+                var b = mesh.bounds;
+                for (var c = 0; c < 8; c++)
+                {
+                    var corner = b.center + Vector3.Scale(b.extents, new Vector3((c & 1) == 0 ? -1 : 1, (c & 2) == 0 ? -1 : 1, (c & 4) == 0 ? -1 : 1));
+                    var p = matrix.MultiplyPoint3x4(corner);
+                    if (!any) { bounds = new Bounds(p, Vector3.zero); any = true; }
+                    else bounds.Encapsulate(p);
+                }
+            }
+
+            foreach (var skinned in source.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                AddMesh(skinned.sharedMesh, skinned.sharedMaterials, skinned.transform);
+            foreach (var meshRenderer in source.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                var filter = meshRenderer.GetComponent<MeshFilter>();
+                if (filter != null)
+                    AddMesh(filter.sharedMesh, meshRenderer.sharedMaterials, meshRenderer.transform);
+            }
+
+            if (!any)
+                return false;
+
+            var largest = Mathf.Max(bounds.size.x, Mathf.Max(bounds.size.y, bounds.size.z));
+            var scale = largest > 0.0001f ? size / largest : 1f;
+            holder.localScale = Vector3.one * scale;
+            holder.localPosition = -bounds.center * scale; // centred on the pivot
+            return true;
+        }
+
+        // An icon / model under the red/green visual hides with it; one on this object is hidden here.
         protected override void OnVisualRefreshed()
         {
-            if (_icon != null && _iconOnSelf)
+            if (!_iconOnSelf)
+                return;
+
+            var showsModel = _model != null && _modelHasMesh && UsesModel && _modelItem == item && item != null;
+            if (showsModel)
+                _model.gameObject.SetActive(!IsUsed);
+            else if (_icon != null)
                 _icon.gameObject.SetActive(!IsUsed && _icon.sprite != null);
         }
 
         private void Update()
         {
+            var basePosition = _iconOnSelf ? iconOffset : Vector3.zero;
+            var bob = iconBob > 0f ? Vector3.up * (Mathf.Sin(Time.time * iconBobSpeed) * iconBob) : Vector3.zero;
+
+            if (_model != null && _model.gameObject.activeInHierarchy)
+            {
+                _model.localPosition = basePosition + bob;
+                if (modelSpinSpeed != 0f)
+                    _model.Rotate(0f, modelSpinSpeed * Time.deltaTime, 0f, Space.Self);
+                return;
+            }
+
             if (iconBob <= 0f || _icon == null || !_icon.gameObject.activeInHierarchy)
                 return;
 
-            var basePosition = _iconOnSelf ? iconOffset : Vector3.zero;
-            _icon.transform.localPosition = basePosition + Vector3.up * (Mathf.Sin(Time.time * iconBobSpeed) * iconBob);
+            _icon.transform.localPosition = basePosition + bob;
         }
 
         private void OnValidate()

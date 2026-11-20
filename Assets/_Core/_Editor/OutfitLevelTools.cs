@@ -111,7 +111,8 @@ namespace Game.EditorTools
                     swapped++;
                 }
                 var decoys = PickDecoys(catalog, variant, correct, gates.Length - 1, random);
-                var correctIndex = random.Next(gates.Length);
+                var side = (LevelData.GateSide)entry.FindPropertyRelative("greenSide").enumValueIndex;
+                var correctIndex = SideIndex(gates, side, random);
 
                 var items = entry.FindPropertyRelative("gateItems");
                 items.arraySize = gates.Length;
@@ -138,6 +139,41 @@ namespace Game.EditorTools
             if (showDialog)
                 EditorUtility.DisplayDialog("Fill Gates", message, "OK");
             return message;
+        }
+
+        /// <summary>Index (hierarchy order) of the leftmost / rightmost gate in a pair prefab; random for Random or a single gate.</summary>
+        internal static int SideIndex(ItemGate[] gates, LevelData.GateSide side, System.Random random)
+        {
+            if (gates.Length < 2 || side == LevelData.GateSide.Random)
+                return random.Next(gates.Length);
+
+            var best = 0;
+            for (var g = 1; g < gates.Length; g++)
+            {
+                var x = gates[g].transform.position.x;
+                var bestX = gates[best].transform.position.x;
+                if (side == LevelData.GateSide.Left ? x < bestX : x > bestX)
+                    best = g;
+            }
+            return best;
+        }
+
+        /// <summary>Sideways positions of the leftmost and rightmost gate of a pair prefab (prefab root at 0).</summary>
+        internal static bool TryGetGateLanes(GameObject prefab, out float left, out float right)
+        {
+            left = right = 0f;
+            var gates = prefab != null ? prefab.GetComponentsInChildren<ItemGate>(true) : null;
+            if (gates == null || gates.Length < 2)
+                return false;
+
+            left = right = gates[0].transform.position.x - prefab.transform.position.x;
+            foreach (var gate in gates)
+            {
+                var x = gate.transform.position.x - prefab.transform.position.x;
+                left = Mathf.Min(left, x);
+                right = Mathf.Max(right, x);
+            }
+            return right - left > 0.5f;
         }
 
         // Wrong choices for the same slot from other outfits; Top and Dress stand in for each other.

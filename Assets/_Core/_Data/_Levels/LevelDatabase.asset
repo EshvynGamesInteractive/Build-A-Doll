@@ -48,7 +48,6 @@ MonoBehaviour:
   demoShowTime: 3
   demoRenderTexture: {fileID: 8400000, guid: 4a0be64b3d4ff49eca4ce61c70ccfb0a, type: 2}
   comparisonTime: 3
-  spawnStageAtLevelStart: 0
   stageAvoidRepeat: 1
   stageSpotSpacing: 5
   stageWalkSpeed: 4
@@ -67,3 +66,4 @@ MonoBehaviour:
   loopFromLevel: 4
   randomAfterLast: 1
   randomSeed: 7919
+  specialProgressFrom: 9
