@@ -31,6 +31,9 @@ namespace Game.Player.Config
         [SerializeField, Min(0f)] private float jumpHeight = 1.6f;
         [Tooltip("Seconds from take-off to landing.")]
         [SerializeField, Min(0.05f)] private float jumpAirTime = 0.7f;
+        [Tooltip("Forward speed through a swipe jump, × Forward Speed. She keeps moving forward even if the finger is lifted " +
+                 "(same as the jump-ramp launch, which uses its own value on AutoJumpPad).")]
+        [SerializeField, Min(0.1f)] private float jumpForwardBoost = 1.3f;
 
         [Header("Slide (swipe down)")]
         [SerializeField, Min(0.05f)] private float slideDuration = 0.8f;
@@ -38,6 +41,8 @@ namespace Game.Player.Config
         [SerializeField, Min(0.1f)] private float slideHitboxHeight = 0.9f;
         [Tooltip("Downward speed when sliding in mid-air.")]
         [SerializeField, Min(0f)] private float fastFallSpeed = 12f;
+        [Tooltip("Forward speed through a slide, × Forward Speed. She keeps moving forward even if the finger is lifted.")]
+        [SerializeField, Min(0.1f)] private float slideForwardBoost = 1.3f;
         [Tooltip("Squash the model while sliding. For the placeholder; turn off once there's a slide animation.")]
         [SerializeField] private bool squashVisualOnSlide = true;
         [SerializeField, Range(0.1f, 1f)] private float slideVisualScale = 0.45f;
@@ -60,6 +65,8 @@ namespace Game.Player.Config
         public float SlideDuration => slideDuration;
         public float SlideHitboxHeight => slideHitboxHeight;
         public float FastFallSpeed => fastFallSpeed;
+        public float JumpForwardBoost => jumpForwardBoost;
+        public float SlideForwardBoost => slideForwardBoost;
         public bool SquashVisualOnSlide => squashVisualOnSlide;
         public float SlideVisualScale => slideVisualScale;
         public float TurnAnglePerSpeed => turnAnglePerSpeed;

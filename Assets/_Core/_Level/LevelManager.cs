@@ -316,6 +316,8 @@ namespace _Core._Level
                 ConfigureCoinGates(instance, entry.coinGates);
                 ConfigurePaintGates(instance, entry.paintGates, level.TargetLook);
                 ConfigureSkinGates(instance, entry.skinGates, level);
+                foreach (var station in instance.GetComponentsInChildren<MakeupStation>())
+                    station.Configure(entry.paintGates, level.TargetLook);
                 hurdles.Add(instance);
             }
 

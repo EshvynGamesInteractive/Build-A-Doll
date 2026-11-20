@@ -267,6 +267,8 @@ MonoBehaviour:
   slideParameter: Slide
   runAnimSpeedParameter: RunAnimSpeed
   runClipSpeed: 4
+  slideAnimSpeedParameter: SlideAnimSpeed
+  slideClipName: Sliding
   minRunAnimSpeed: 0.5
   maxRunAnimSpeed: 1.6
   winParameter: Win
@@ -431,6 +433,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7485080203295249181, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969583587442436990, guid: 8119d04ab7e2b4c18a60da13a3c2cfe1, type: 3}
+      propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

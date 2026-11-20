@@ -167,6 +167,132 @@ namespace Game.EditorTools
             return $"Added to {levelName} at {distance} m, lateral {lateral}.";
         }
 
+        // ---------- Makeup station (mirror) ----------
+        // Builds _Gates/MakeupStation and, in Level_03, swaps the lips / eye shadow paint gate pairs for stations
+        // with a 3-colour palette (target colour free, one for 500 coins, one for a rewarded ad).
+        [MenuItem("Build A Doll/Hurdles/Build Makeup Station (+ use in Level 3)")]
+        public static void BuildMakeupStationOnly()
+        {
+            var warnings = new List<string>();
+            var station = BuildMakeupStation(warnings);
+            var summary = "Nothing built.";
+            if (station != null)
+            {
+                var name = Save(station, GateFolder);
+                AssetDatabase.SaveAssets();
+                summary = $"Built {name}.";
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{GateFolder}/{name}.prefab");
+                summary += "\n" + UseStationsInLevel("Level_03", prefab);
+            }
+
+            if (warnings.Count > 0) summary += "\n\n" + string.Join("\n", warnings);
+            Debug.Log("[GateExtras] " + summary);
+            EditorUtility.DisplayDialog(Title, summary, "OK");
+        }
+
+        // A mirror in a gate frame with a "MAKEUP" sign. Art can replace the Mirror quad / frame later.
+        private static GameObject BuildMakeupStation(List<string> warnings)
+        {
+            var source = AssetDatabase.LoadAssetAtPath<GameObject>(GateFolder + "/CoinGatePair.prefab");
+            if (source == null)
+            {
+                warnings.Add($"CoinGatePair.prefab not found in {GateFolder}; makeup station skipped.");
+                return null;
+            }
+
+            var root = (GameObject)PrefabUtility.InstantiatePrefab(source);
+            PrefabUtility.UnpackPrefabInstance(root, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
+            root.name = "MakeupStation";
+
+            var coins = root.GetComponentsInChildren<CoinGate>(true);
+            if (coins.Length == 0)
+            {
+                Object.DestroyImmediate(root);
+                warnings.Add("CoinGatePair has no CoinGate; makeup station skipped.");
+                return null;
+            }
+
+            var keep = coins.OrderByDescending(g => g.transform.localPosition.x).First();
+            foreach (var c in coins)
+                if (c != keep) Object.DestroyImmediate(c.gameObject);
+
+            var go = keep.gameObject;
+            go.name = "Mirror";
+            var p = go.transform.localPosition;
+            go.transform.localPosition = new Vector3(0f, p.y, p.z);
+            var hitSound = new SerializedObject(keep).FindProperty("hitSound").objectReferenceValue;
+            Object.DestroyImmediate(keep);
+
+            var glass = Primitive(PrimitiveType.Quad, "Glass", go.transform, ItemGateSetup.CreateMaterial("MakeupMirror", new Color(0.75f, 0.9f, 1f)));
+            glass.localPosition = new Vector3(0f, 0f, 0.05f); // a Quad faces -Z: towards the runner
+            glass.localScale = new Vector3(3f, 2.2f, 1f);
+
+            // Can't be missed: the trigger spans the whole track (half width 4).
+            if (go.TryGetComponent<BoxCollider>(out var box))
+                box.size = new Vector3(8.5f, box.size.y, box.size.z);
+
+            var sign = new GameObject("Sign").transform;
+            sign.SetParent(go.transform, false);
+            sign.localPosition = new Vector3(0f, 1.5f, -0.05f);
+            var text = sign.gameObject.AddComponent<TMPro.TextMeshPro>();
+            text.text = "MAKEUP";
+            text.fontSize = 5f;
+            text.alignment = TMPro.TextAlignmentOptions.Center;
+            text.color = Color.white;
+            text.rectTransform.sizeDelta = new Vector2(4f, 1.2f);
+
+            var station = go.AddComponent<MakeupStation>();
+            var so = new SerializedObject(station);
+            so.FindProperty("redVisual").objectReferenceValue = ChildNamed(go.transform, "Red");
+            so.FindProperty("greenVisual").objectReferenceValue = ChildNamed(go.transform, "Green");
+            so.FindProperty("hitSound").objectReferenceValue = hitSound;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            return root;
+        }
+
+        // Level_03: lips / eye shadow paint gate pairs → makeup stations (same place, centre), palette in the entry.
+        private static string UseStationsInLevel(string levelName, GameObject station)
+        {
+            var level = AssetDatabase.LoadAssetAtPath<Game.Level.LevelData>($"{EditorPaths.Levels}/{levelName}.asset");
+            if (level == null || station == null)
+                return $"{levelName} not found: put the station in a level by hand.";
+
+            var so = new SerializedObject(level);
+            var entries = so.FindProperty("entries");
+            var swapped = 0;
+            for (var i = 0; i < entries.arraySize; i++)
+            {
+                var e = entries.GetArrayElementAtIndex(i);
+                var prefab = e.FindPropertyRelative("prefab").objectReferenceValue as GameObject;
+                if (prefab == null || !prefab.name.StartsWith("PaintGatePair")) continue;
+
+                var lips = prefab.name.Contains("Lips");
+                (string name, Color color)[] palette = lips
+                    ? new[] { ("Pink", new Color(1f, 0.4f, 0.85f)), ("Red", new Color(0.85f, 0.1f, 0.15f)), ("Coral", new Color(1f, 0.5f, 0.4f)) }
+                    : new[] { ("Brown", new Color(0.68f, 0.32f, 0.08f)), ("Pink", new Color(1f, 0.4f, 0.85f)), ("Purple", new Color(0.6f, 0.3f, 0.9f)) };
+                var zone = lips ? Game.Outfit.MakeupZone.Lips : Game.Outfit.MakeupZone.EyeShadow;
+
+                e.FindPropertyRelative("prefab").objectReferenceValue = station;
+                e.FindPropertyRelative("lateral").floatValue = 0f;
+                e.FindPropertyRelative("greenSide").enumValueIndex = 0;
+                var paint = e.FindPropertyRelative("paintGates");
+                paint.arraySize = palette.Length;
+                for (var k = 0; k < palette.Length; k++)
+                {
+                    var item = paint.GetArrayElementAtIndex(k);
+                    item.FindPropertyRelative("zone").enumValueIndex = (int)zone;
+                    item.FindPropertyRelative("colorName").stringValue = palette[k].name;
+                    item.FindPropertyRelative("color").colorValue = palette[k].color;
+                }
+                swapped++;
+            }
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(level);
+            AssetDatabase.SaveAssets();
+            return swapped > 0 ? $"{levelName}: {swapped} paint gate pair(s) replaced by makeup stations." : $"{levelName}: no paint gate pairs to replace (already done?).";
+        }
+
         [MenuItem("Build A Doll/Hurdles/Rebuild Kit_Scissors Only")]
         public static void BuildScissorsOnly()
         {

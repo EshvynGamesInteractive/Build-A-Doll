@@ -36,6 +36,17 @@ namespace Game.Level
             GameEvents.GameplayEvents.WalletChanged.Raise(TotalCoins);
         }
 
+        /// <summary>Takes coins from the wallet if there are enough. Returns false (and takes nothing) otherwise.</summary>
+        public static bool TrySpendCoins(int amount)
+        {
+            if (amount <= 0)
+                return true;
+            if (TotalCoins < amount)
+                return false;
+            AddCoins(-amount);
+            return true;
+        }
+
         /// <summary>Wipes all saved progress: level and coins.</summary>
         public static void ResetAll()
         {

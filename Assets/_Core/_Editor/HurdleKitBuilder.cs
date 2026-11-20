@@ -70,6 +70,9 @@ namespace Game.EditorTools
         }
 
         // Rebuilds one kit prefab only (the others, and any hand edits on them, stay as they are).
+        [MenuItem("Build A Doll/Hurdles/Rebuild Kit_SlideGate Only")]
+        public static void BuildSlideGateOnly() => BuildOne(26);
+
         [MenuItem("Build A Doll/Hurdles/Rebuild Kit_LowBlock Only")]
         public static void BuildLowBlockOnly() => BuildOne(8);
 
@@ -374,29 +377,54 @@ namespace Game.EditorTools
             return root;
         }
 
-        // A frame with a spiked roller across it at head height: slide under, or go round the outside.
+        // A frame with a spiked roller across it that moves up and down (DOTween): when it's up, slide under it;
+        // when it's down near the ground, jump over it. Or go round the outside. The posts stay put and hurt too.
+        // Hierarchy: Kit_SlideGate (posts' boxes + PenaltyItem) > Lift (moves up/down; roller hit box + PenaltyItem) > Roller (spins).
+        private const float SlideGateLowBottom = 0.15f;  // roller's lowest point when down (top then ≈ 0.9: an easy jump)
+        private const float SlideGateSpeed = 0.35f;      // up-down cycles per second (~1.4 s each way)
+
         private static GameObject SlideGate(string name, GameObject asset, float s)
         {
             var (root, _, parts) = Spawn(name, asset, s);
             var frame = parts.OrderByDescending(r => r.bounds.size.y).First();
             var bars = parts.Where(r => r != frame).ToList();
             var fb = frame.bounds;
-            var top = bars.Count > 0 ? BoundsOf(bars).max.y : fb.max.y;
-
-            var zone = new Bounds();
-            zone.SetMinMax(new Vector3(fb.min.x + 0.3f, SlideBottom, fb.min.z), new Vector3(fb.max.x - 0.3f, top, fb.max.z));
-            Box(root, zone, 1f);
-            Posts(root, fb);
-            Penalty(root, Avoid.Slide, 3, 0.7f);
-
             var roller = bars.OrderByDescending(r => r.bounds.size.y * r.bounds.size.z).FirstOrDefault();
-            if (roller != null)
-            {
-                var spin = Child(root.transform, "Roller", roller.bounds.center);
-                roller.transform.SetParent(spin, true);
-                Mover(spin.gameObject, spin: 200f, spinAxis: Vector3.right);
-            }
 
+            Posts(root, fb);
+            Penalty(root, Avoid.SteerAround, 3, 0.7f);
+            if (roller == null)
+                return root;
+
+            var rb = roller.bounds;
+            var barBounds = BoundsOf(bars);
+
+            // Lift at the roller, carrying the roller and its end caps.
+            var lift = Child(root.transform, "Lift", rb.center);
+            foreach (var bar in bars)
+                bar.transform.SetParent(lift, true);
+
+            // Hit box (moves with the lift): from slide height up to the roller's top while it's up,
+            // so sliding gets under it; when it's down the box top is the roller's top, so jumping clears it.
+            var zone = new Bounds();
+            zone.SetMinMax(new Vector3(fb.min.x + 0.3f, Mathf.Min(SlideBottom, rb.min.y), barBounds.min.z),
+                           new Vector3(fb.max.x - 0.3f, barBounds.max.y, barBounds.max.z));
+            Box(lift.gameObject, zone, 1f);
+            Penalty(lift.gameObject, Avoid.Jump, 3, 0.7f);
+
+            var spin = Child(lift, "Roller", rb.center);
+            roller.transform.SetParent(spin, true);
+            Mover(spin.gameObject, spin: 200f, spinAxis: Vector3.right);
+
+            // Up-down: centred halfway between up (as modelled) and down, starting up.
+            var travel = Mathf.Max(0f, rb.min.y - SlideGateLowBottom);
+            lift.position -= Vector3.up * (travel * 0.5f);
+            var m = DOTweenMotion.Motion.Default;
+            m.slide = travel * 0.5f;
+            m.slideSpeed = SlideGateSpeed;
+            m.slideAxis = Vector3.up;
+            m.phase = 0.5f; // start at the top, going down
+            DOTweenMotion.Enqueue(lift.gameObject, m);
             return root;
         }
 

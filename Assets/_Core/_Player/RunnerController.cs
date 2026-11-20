@@ -60,7 +60,8 @@ namespace _Core._Player
         private float _distance;
         private bool _isStumbling;
         private float _stumbleSpeedFactor = 1f;
-        private float _airSpeedFactor; // > 0 while in the air: keeps (or boosts) forward speed even without holding
+        private float _airSpeedFactor;   // > 0 while in the air: keeps (or boosts) forward speed even without holding
+        private float _slideSpeedFactor; // > 0 while sliding: same for the slide
 
         private Vector3 _startPosition;
         private Vector3 _trackForward;
@@ -138,7 +139,7 @@ namespace _Core._Player
         public void Jump()
         {
             if (config != null)
-                Jump(config.JumpHeight, config.JumpAirTime, 1f);
+                Jump(config.JumpHeight, config.JumpAirTime, config.JumpForwardBoost);
         }
 
         /// <summary>
@@ -330,9 +331,12 @@ namespace _Core._Player
                 return;
 
             if (_actions.JumpRequested)
-                Jump(config.JumpHeight, config.JumpAirTime, 1f);
+                Jump(config.JumpHeight, config.JumpAirTime, config.JumpForwardBoost);
             else if (_actions.SlideRequested)
+            {
                 _vertical.Slide(config.SlideDuration, config.FastFallSpeed);
+                _slideSpeedFactor = config.SlideForwardBoost; // also covers a slide queued in mid-air (starts on landing)
+            }
         }
 
         // Shrinks the hitbox (so bars pass over her) and, for the placeholder, squashes the model.
@@ -374,6 +378,12 @@ namespace _Core._Player
                 _airSpeedFactor = 0f;
             else if (_airSpeedFactor > 0f)
                 return config.ForwardSpeed * _airSpeedFactor * (_isStumbling ? _stumbleSpeedFactor : 1f);
+
+            // Sliding: keeps moving forward too (no standing-still slide), boosted by Slide Forward Boost.
+            if (_vertical.IsSliding && _slideSpeedFactor > 0f)
+                return config.ForwardSpeed * _slideSpeedFactor * (_isStumbling ? _stumbleSpeedFactor : 1f);
+            if (_vertical.IsGrounded && !_vertical.IsSliding)
+                _slideSpeedFactor = 0f;
 
             var wantsToRun = !config.RunOnlyWhileHolding || _input.IsHolding;
             if (!wantsToRun)
