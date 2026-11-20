@@ -655,8 +655,6 @@ namespace _Core._Level
                 return;
             if (scene.DemoCamera != null)
                 scene.DemoCamera.enabled = active;
-            if (scene.DemoLight != null)
-                scene.DemoLight.enabled = active;
         }
 
         // Bounds of what's actually drawn on the doll. Switched-off or hidden renderers are skipped: Unity reports

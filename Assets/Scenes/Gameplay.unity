@@ -275,6 +275,8 @@ MonoBehaviour:
   runCamera: {fileID: 1527054362}
   stageWalkCamera: {fileID: 1527054362}
   stageCamera: {fileID: 1527054362}
+  endingCamera: {fileID: 0}
+  endingCameraName: EndingCam
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,21 +357,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2391572427899391100, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2934581419551310362, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3762651307770363510, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
       propertyPath: cameraFollow
       value: 
       objectReference: {fileID: 330585548}
     - target: {fileID: 3762651307770363510, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
       propertyPath: sceneStages.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3762651307770363510, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
       propertyPath: 'sceneStages.Array.data[0]'
@@ -383,29 +377,16 @@ PrefabInstance:
       propertyPath: 'sceneStages.Array.data[2]'
       value: 
       objectReference: {fileID: 565029363}
-    - target: {fileID: 3940514109602778163, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4099237798260537546, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 3762651307770363510, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
+      propertyPath: 'sceneStages.Array.data[3]'
+      value: 
+      objectReference: {fileID: 565029368}
     - target: {fileID: 5931882917187690795, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
       propertyPath: m_Name
       value: GameplayScene
       objectReference: {fileID: 0}
-    - target: {fileID: 8531570308446800625, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8911120978409963066, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 1161903904169797860, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
@@ -422,6 +403,11 @@ GameObject:
 --- !u!1 &565029366 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2934581419551310362, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
+  m_PrefabInstance: {fileID: 565029361}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &565029368 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9102848179863866405, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
   m_PrefabInstance: {fileID: 565029361}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &841167699

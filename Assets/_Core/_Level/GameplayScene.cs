@@ -50,8 +50,6 @@ namespace Game.Level
         [Tooltip("Camera that films the demo doll into the demo render texture. Placed and framed by hand.")]
         [SerializeField] private Camera demoCamera;
 
-        [Tooltip("Optional: light for the demo doll. Switched on and off together with the demo camera.")]
-        [SerializeField] private Light demoLight;
 
         public GameObject PlayerRamp => playerRamp;
         public Transform PlayerStartPoint => playerStartPoint;
@@ -66,7 +64,7 @@ namespace Game.Level
 
         public Transform DemoSpawnPoint => demoSpawnPoint;
         public Camera DemoCamera => demoCamera;
-        public Light DemoLight => demoLight;
+
 
         private void Start()
         {
