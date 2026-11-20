@@ -30,6 +30,15 @@ namespace Game.CameraRig
         [SerializeField] private CinemachineCamera stageWalkCamera;
         [SerializeField] private CinemachineCamera stageCamera;
 
+        [Header("Ending camera")]
+        [Tooltip("Fixed camera placed in the scene over the finish (e.g. 'EndingCam'): live from the finish line until both dolls " +
+                 "stand on their stage spots, then the stage view cuts in instantly. Empty = the scene's CinemachineCamera named below.")]
+        [SerializeField] private CinemachineCamera endingCamera;
+        [SerializeField] private string endingCameraName = "EndingCam";
+
+        private const int EndingPriority = 100; // above the run / stage cameras (20)
+        private bool _endingLive;
+
         private enum Shot { None, Run, StageWalk, Stage }
 
         private CinemachineBrain _brain;
@@ -97,6 +106,7 @@ namespace Game.CameraRig
             }
 
             EnsureRig();
+            StopEnding(); // new level / retry: the ending camera is off
             _stageMode = false;
             _group = null;
             _settled = true;
@@ -192,6 +202,64 @@ namespace Game.CameraRig
 
             _group = null;
             _settled = true;
+        }
+
+        /// <summary>Finish line crossed: the ending camera goes live at once (cut). Returns false if the scene has none.</summary>
+        public bool BeginEnding()
+        {
+            var cam = FindEndingCamera();
+            if (cam == null)
+                return false;
+
+            EnsureRig();
+            _brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.Cut, 0f);
+            SetPriority(cam, EndingPriority);
+            cam.PreviousStateIsValid = false;
+            cam.enabled = true;
+            _endingLive = true;
+            return true;
+        }
+
+        /// <summary>Both dolls are on their stage spots: the ending camera goes off and the main camera shows the
+        /// stage view (the final framing of both dolls) instantly, no blend.</summary>
+        public void EndEnding()
+        {
+            if (!_endingLive)
+                return;
+
+            if (_stageMode && stageCamera != null)
+            {
+                UpdateStageCameras(); // stage camera already at its final pose
+                stageCamera.PreviousStateIsValid = false;
+            }
+
+            _cutNext = true;
+            if (_stageMode)
+                GoLive(_settled ? Shot.Stage : Shot.StageWalk); // stage camera live now (cut), before the ending camera goes off
+            _brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.Cut, 0f);
+            StopEnding();
+        }
+
+        private void StopEnding()
+        {
+            _endingLive = false;
+            var cam = endingCamera != null ? endingCamera : FindEndingCamera();
+            if (cam != null)
+                cam.enabled = false;
+        }
+
+        private CinemachineCamera FindEndingCamera()
+        {
+            if (endingCamera != null)
+                return endingCamera;
+            if (string.IsNullOrEmpty(endingCameraName))
+                return null;
+            foreach (var cam in FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (cam.name == endingCameraName)
+                    return endingCamera = cam;
+            }
+            return null;
         }
 
         private void BeginStageMove()

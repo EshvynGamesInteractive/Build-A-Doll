@@ -507,11 +507,26 @@ namespace Game.CameraRig
             return found;
         }
 
+        // Share of a jump's height the run camera follows (0 = stays at track height, 1 = goes all the way up).
+        // Low, so jumps read as jumps and the camera doesn't bob into the hurdles she's jumping over.
+        private const float JumpFollow = 0.2f;
+        private _Core._Player.RunnerController _targetRunner;
+        private Transform _targetRunnerOf;
+
         private Vector3 GetFollowPoint(Vector3 trackSpaceOffset, float lateralFollow)
         {
             // Work in track space so the sideways part can be scaled down.
             var local = Quaternion.Inverse(_trackRotation) * (target.position - _trackOrigin);
             local.x *= lateralFollow;
+
+            if (_targetRunnerOf != target)
+            {
+                _targetRunnerOf = target;
+                _targetRunner = target != null ? target.GetComponentInParent<_Core._Player.RunnerController>() : null;
+            }
+            if (_targetRunner != null)
+                local.y -= _targetRunner.AirHeight * (1f - JumpFollow);
+
             return _trackOrigin + _trackRotation * (local + trackSpaceOffset);
         }
     }

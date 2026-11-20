@@ -787,6 +787,10 @@ namespace _Core._Level
                 if (scene != null && scene.CameraFollow != null)
                     scene.CameraFollow.FocusStageSpots(hasAi ? new[] { playerSpot, aiSpot } : new[] { playerSpot }, player.transform);
                 WatchDolls(hasAi); // both from the start, so the AI on its own ramp stays in shot too
+
+                // The scene's ending camera (EndingCam) shows the finish while the dolls walk to their spots.
+                if (scene != null && scene.CameraFollow != null)
+                    scene.CameraFollow.BeginEnding();
             }
             else
             {
@@ -832,7 +836,10 @@ namespace _Core._Level
 
             // Both on their spots: the camera eases into the exact stage view.
             if (hasStage && scene.CameraFollow != null)
+            {
                 scene.CameraFollow.SettleOnStage();
+                scene.CameraFollow.EndEnding(); // ending camera off, stage view on at once
+            }
 
             // 2. Item-by-item comparison.
             match = OutfitComparer.Compare(current.TargetLook, player.DollOutfit, MakeupOf(player));
