@@ -18,6 +18,12 @@ namespace Game.Hurdles
 
         [SerializeField] private OutfitItem item;
 
+        [Header("Score")]
+        [Tooltip("Score for picking the right item (green gate / part of the target look).")]
+        [SerializeField] private int correctScore = 1;
+        [Tooltip("Score for picking a wrong item (red gate). Negative takes score away (never below 0).")]
+        [SerializeField] private int wrongScore = -1;
+
         [Tooltip("Auto = a 3D model of the item on floor rings (no preview anchor), the 2D icon on gates.")]
         [SerializeField] private PreviewStyle previewStyle = PreviewStyle.Auto;
 
@@ -113,9 +119,9 @@ namespace Game.Hurdles
 
             outfit.Equip(item);
 
-            // The item's value (its Style Score) is paid out in coins: plus for good picks, minus for bad.
+            // Right gate +1, wrong gate -1 (Correct Score / Wrong Score).
             if (item != null && player.Score != null)
-                player.Score.AddCoins(item.StyleScore);
+                player.Score.AddCoins(MatchesTarget() ? correctScore : wrongScore);
         }
 
         // Shows the item's 2D icon (OutfitItem.Icon) on the gate. Icons are made with

@@ -14,6 +14,9 @@ namespace _Core._UI._Views
         [SerializeField] private Button retryButton;
         [SerializeField] private Button homeButton;
         [SerializeField] private Button nextLevelButton;
+        [Tooltip("On: Next opens the level map (Main Menu) with the next level as the current one; Play Now starts it. " +
+                 "Off: Next loads the next level straight away.")]
+        [SerializeField] private bool nextOpensLevelMap = true;
         [SerializeField] private TMP_Text outfitMatchText;
 
         [Header("Special outfit progress")]
@@ -150,6 +153,13 @@ namespace _Core._UI._Views
 
         private void OnHomeButtonClick() => GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
 
-        private void OnNextLevelButtonClick() => GameEvents.GameplayEvents.RequestNextLevel.Raise();
+        // The level just passed is already saved, so the map's current level is the next one.
+        private void OnNextLevelButtonClick()
+        {
+            if (nextOpensLevelMap)
+                GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
+            else
+                GameEvents.GameplayEvents.RequestNextLevel.Raise();
+        }
     }
 }
