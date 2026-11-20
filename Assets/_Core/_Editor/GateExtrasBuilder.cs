@@ -12,7 +12,7 @@ namespace Game.EditorTools
     /// Builds the extra track pieces Level 1 uses (20 Nov 2026):
     /// - _Kit/Kit_Scissors: lane-sized scissors standing on the track. Hitting them cuts her HAIR off
     ///   (PenaltyItem removesItem, slot Hair) + stumble + coin cost. Too tall to jump, so you steer round them.
-    ///   Uses the Scissor.fbx model (Assets/_ART/_3D/_Hurdles); stood up blade-tip up, scaled to ScissorsHeight, spinning.
+    ///   Uses the Scissor.fbx model (Assets/_ART/_3D/_Hurdles), scaled to ScissorsHeight: slides left-right and the two blades snip round the screw.
     ///   Falls back to a primitive placeholder if the model is missing.
     /// - _Gates/CoinGate_SingleMoving: one cash gate (from CoinGatePair's right gate) sliding left/right across
     ///   both lanes. Amount comes from the level entry (plan section "coinmoving:+50").
@@ -28,7 +28,7 @@ namespace Game.EditorTools
         private static string GateFolder => EditorPaths.HurdlePrefabs + "/_Gates";
 
         // Scissors size: about one lane (gate lanes are ±2.25, track half width 4), taller than a jump clears.
-        private const float ScissorsHeight = 2.2f;
+        private const float ScissorsHeight = 2.4f;
         private const float ScissorsWidth = 1.6f;
 
         // Moving cash gate: slides from one gate lane to the other.
@@ -50,6 +50,9 @@ namespace Game.EditorTools
             var skin = BuildSkinGatePair(warnings);
             if (skin != null) made.Add(Save(skin, GateFolder));
 
+            var ad = BuildRewardedAdGate(warnings);
+            if (ad != null) made.Add(Save(ad, GateFolder));
+
             AssetDatabase.SaveAssets();
             var summary = made.Count > 0 ? "Built: " + string.Join(", ", made) : "Nothing built.";
             if (warnings.Count > 0) summary += "\n\n" + string.Join("\n", warnings);
@@ -57,30 +60,155 @@ namespace Game.EditorTools
             EditorUtility.DisplayDialog(Title, summary, "OK");
         }
 
+        // Builds _Gates/RewardedAdGate and puts one in Level_02 (76 m, right lane) if it isn't there yet.
+        [MenuItem("Build A Doll/Hurdles/Build Rewarded Ad Gate (+ add to Level 2)")]
+        public static void BuildRewardedAdGateOnly()
+        {
+            var warnings = new List<string>();
+            var gate = BuildRewardedAdGate(warnings);
+            var summary = "Nothing built.";
+            if (gate != null)
+            {
+                var name = Save(gate, GateFolder);
+                AssetDatabase.SaveAssets();
+                summary = $"Built {name}.";
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{GateFolder}/{name}.prefab");
+                summary += "\n" + AddEntryIfMissing("Level_02", prefab, 76f, 2.25f);
+            }
+
+            if (warnings.Count > 0) summary += "\n\n" + string.Join("\n", warnings);
+            Debug.Log("[GateExtras] " + summary);
+            EditorUtility.DisplayDialog(Title, summary, "OK");
+        }
+
+        // Single gate (CoinGatePair's right frame, green) with an "AD" sign: RewardedAdGate gives back what scissors cut.
+        private static GameObject BuildRewardedAdGate(List<string> warnings)
+        {
+            var source = AssetDatabase.LoadAssetAtPath<GameObject>(GateFolder + "/CoinGatePair.prefab");
+            if (source == null)
+            {
+                warnings.Add($"CoinGatePair.prefab not found in {GateFolder}; rewarded ad gate skipped.");
+                return null;
+            }
+
+            var root = (GameObject)PrefabUtility.InstantiatePrefab(source);
+            PrefabUtility.UnpackPrefabInstance(root, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
+            root.name = "RewardedAdGate";
+
+            var coins = root.GetComponentsInChildren<CoinGate>(true);
+            if (coins.Length == 0)
+            {
+                Object.DestroyImmediate(root);
+                warnings.Add("CoinGatePair has no CoinGate; rewarded ad gate skipped.");
+                return null;
+            }
+
+            var keep = coins.OrderByDescending(g => g.transform.localPosition.x).First();
+            foreach (var c in coins)
+                if (c != keep) Object.DestroyImmediate(c.gameObject);
+
+            var go = keep.gameObject;
+            go.name = "Gate";
+            var p = go.transform.localPosition;
+            go.transform.localPosition = new Vector3(0f, p.y, p.z);
+            var hitSound = new SerializedObject(keep).FindProperty("hitSound").objectReferenceValue;
+            Object.DestroyImmediate(keep);
+
+            // "AD" sign in the gate (TextMeshPro, editable in the prefab).
+            var sign = new GameObject("AdSign").transform;
+            sign.SetParent(go.transform, false);
+            sign.localPosition = new Vector3(0f, 0.3f, -0.05f);
+            var text = sign.gameObject.AddComponent<TMPro.TextMeshPro>();
+            text.text = "<size=140%>AD</size>\n+50"; // RewardedAdGate switches it to HAIR BACK after a cut
+            text.fontSize = 4f;
+            text.alignment = TMPro.TextAlignmentOptions.Center;
+            text.color = Color.white;
+            text.rectTransform.sizeDelta = new Vector2(3.5f, 2f);
+
+            var gate = go.AddComponent<RewardedAdGate>();
+            var so = new SerializedObject(gate);
+            so.FindProperty("redVisual").objectReferenceValue = ChildNamed(go.transform, "Red");
+            so.FindProperty("greenVisual").objectReferenceValue = ChildNamed(go.transform, "Green");
+            so.FindProperty("hitSound").objectReferenceValue = hitSound;
+            so.FindProperty("sign").objectReferenceValue = text;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            return root;
+        }
+
+        // Adds an entry for 'prefab' to a level asset (sorted by distance) unless that level already uses the prefab.
+        private static string AddEntryIfMissing(string levelName, GameObject prefab, float distance, float lateral)
+        {
+            var level = AssetDatabase.LoadAssetAtPath<Game.Level.LevelData>($"{EditorPaths.Levels}/{levelName}.asset");
+            if (level == null || prefab == null)
+                return $"{levelName} not found: add the gate to a level by hand.";
+
+            var so = new SerializedObject(level);
+            var entries = so.FindProperty("entries");
+            for (var i = 0; i < entries.arraySize; i++)
+                if (entries.GetArrayElementAtIndex(i).FindPropertyRelative("prefab").objectReferenceValue == prefab)
+                    return $"{levelName} already has it.";
+
+            var index = 0;
+            while (index < entries.arraySize && entries.GetArrayElementAtIndex(index).FindPropertyRelative("distance").floatValue <= distance)
+                index++;
+            entries.InsertArrayElementAtIndex(index);
+            var e = entries.GetArrayElementAtIndex(index);
+            e.FindPropertyRelative("prefab").objectReferenceValue = prefab;
+            e.FindPropertyRelative("distance").floatValue = distance;
+            e.FindPropertyRelative("lateral").floatValue = lateral;
+            e.FindPropertyRelative("gateItems").arraySize = 0;
+            e.FindPropertyRelative("greenSide").enumValueIndex = 0;
+            e.FindPropertyRelative("paintGates").arraySize = 0;
+            e.FindPropertyRelative("coinGates").arraySize = 0;
+            e.FindPropertyRelative("skinGates").arraySize = 0;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(level);
+            AssetDatabase.SaveAssets();
+            return $"Added to {levelName} at {distance} m, lateral {lateral}.";
+        }
+
+        [MenuItem("Build A Doll/Hurdles/Rebuild Kit_Scissors Only")]
+        public static void BuildScissorsOnly()
+        {
+            var warnings = new List<string>();
+            var scissors = BuildScissors(warnings);
+            var summary = scissors != null ? "Rebuilt " + Save(scissors, KitFolder) + "." : "Nothing built.";
+            AssetDatabase.SaveAssets();
+            if (warnings.Count > 0) summary += "\n\n" + string.Join("\n", warnings);
+            Debug.Log("[GateExtras] " + summary);
+            EditorUtility.DisplayDialog(Title, summary, "OK");
+        }
+
         // ---------- Scissors ----------
+        // Scissors: slide left-right across the lane, and the two blades open and close round the screw like real
+        // scissors cutting (each blade on its own pivot at the screw, turning the opposite way). All motion is DOTween.
+        // Hierarchy: Kit_Scissors > Slide (moves; trigger + PenaltyItem) > Model > Blade_A / Blade_B (pivots at the screw).
+        private const float ScissorsSlide = 1.5f;      // ± sideways, world units
+        private const float ScissorsSlideSpeed = 0.3f; // cycles per second
+        private const float SnipAngle = 14f;           // each blade turns this far open/closed
+        private const float SnipTime = 0.3f;           // seconds per open (and per close)
+
         private static GameObject BuildScissors(List<string> warnings)
         {
             var root = new GameObject("Kit_Scissors");
+            var slide = new GameObject("Slide").transform;
+            slide.SetParent(root.transform, false);
             var model = new GameObject("Model").transform;
-            model.SetParent(root.transform, false);
+            model.SetParent(slide, false);
 
             var art = FindModel("Scissor") ?? FindModel("Scissors");
             var width = ScissorsWidth;
             if (art != null)
             {
-                // Spin pivot at the track centre, model under it.
-                var spin = new GameObject("Spin").transform;
-                spin.SetParent(model, false);
                 var instance = (GameObject)PrefabUtility.InstantiatePrefab(art);
                 PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
                 instance.name = "Scissor";
-                instance.transform.SetParent(spin, false);
+                instance.transform.SetParent(model, false);
                 foreach (var c in instance.GetComponentsInChildren<Collider>(true)) Object.DestroyImmediate(c);
-                StandUp(instance.transform);
-                FitToHeight(instance.transform, ScissorsHeight);
+                FitToHeight(instance.transform, ScissorsHeight); // the model is already upright, facing the runner
                 var b = WorldBounds(instance.transform);
-                width = Mathf.Clamp(Mathf.Max(b.size.x, b.size.z), 1f, 2.2f);
-                Mover(spin.gameObject, spin: 90f); // turns on the spot so it reads from any angle
+                width = Mathf.Clamp(b.size.x, 1f, 2.6f);
+                RigBlades(instance.transform, warnings);
             }
             else
             {
@@ -88,28 +216,125 @@ namespace Game.EditorTools
                 PlaceholderScissors(model);
             }
 
-            // Gentle bob so it reads as a hazard, not scenery.
-            Mover(model.gameObject, bob: 0.15f, bobSpeed: 0.8f);
+            // Left-right across the lane.
+            Mover(slide.gameObject, slide: ScissorsSlide, slideSpeed: ScissorsSlideSpeed);
 
-            // Trigger: lane-sized, full height (no jumping over it: steer round).
-            var box = root.AddComponent<BoxCollider>();
+            // Trigger moves with the scissors. Full height: steer round, no jumping over.
+            var box = slide.gameObject.AddComponent<BoxCollider>();
             box.isTrigger = true;
             box.center = new Vector3(0f, ScissorsHeight * 0.5f, 0f);
-            box.size = new Vector3(width * 0.85f, ScissorsHeight, Mathf.Min(width, 1f) * 0.6f);
+            box.size = new Vector3(width * 0.8f, ScissorsHeight, 0.6f);
 
-            var penalty = root.AddComponent<PenaltyItem>();
+            var penalty = slide.gameObject.AddComponent<PenaltyItem>();
             var so = new SerializedObject(penalty);
             so.FindProperty("aiAvoid").enumValueIndex = (int)PenaltyItem.AiAvoidance.SteerAround;
             so.FindProperty("coinCost").intValue = 2;
             so.FindProperty("stumbleDuration").floatValue = 0.5f;
             so.FindProperty("removesItem").boolValue = true;
             so.FindProperty("slotToRemove").intValue = (int)OutfitSlot.Hair;
+            so.FindProperty("activeVisual").objectReferenceValue = model.gameObject; // one use: the scissors vanish after cutting
             so.ApplyModifiedPropertiesWithoutUndo();
 
-            var body = root.AddComponent<Rigidbody>();
+            var body = slide.gameObject.AddComponent<Rigidbody>();
             body.isKinematic = true;
             body.useGravity = false;
             return root;
+        }
+
+        // Puts each blade mesh on a pivot at the screw and makes them snip in opposite directions.
+        private static void RigBlades(Transform scissor, List<string> warnings)
+        {
+            var blades = scissor.GetComponentsInChildren<Renderer>(true).Where(r => MeshOf(r) != null).ToList();
+            if (blades.Count < 2)
+            {
+                warnings.Add($"Scissor model has {blades.Count} mesh(es); the blades need to be two separate meshes to snip. Kit_Scissors only slides.");
+                return;
+            }
+
+            // Two biggest meshes = the blades.
+            blades = blades.OrderByDescending(r => r.bounds.size.sqrMagnitude).Take(2).ToList();
+            var screw = FindScrew(blades);
+            var all = WorldBounds(scissor);
+            // The blades turn in the scissors' flat plane: axis = its thinnest side.
+            var size = all.size;
+            var axis = size.z <= size.x && size.z <= size.y ? Vector3.forward : size.x <= size.y ? Vector3.right : Vector3.up;
+
+            for (var i = 0; i < 2; i++)
+            {
+                var blade = blades[i].transform;
+                var pivot = new GameObject(i == 0 ? "Blade_A" : "Blade_B").transform;
+                pivot.SetParent(blade.parent, false);
+                pivot.position = screw;
+                pivot.rotation = Quaternion.identity;
+                blade.SetParent(pivot, true);
+
+                var localAxis = pivot.InverseTransformDirection(axis).normalized;
+                DOTweenMotion.AddTween(pivot.gameObject, DG.Tweening.DOTweenAnimation.AnimationType.LocalRotate, SnipTime,
+                    localAxis * (i == 0 ? SnipAngle : -SnipAngle), DG.Tweening.Ease.InOutSine, DG.Tweening.LoopType.Yoyo,
+                    DG.Tweening.RotateMode.LocalAxisAdd, relative: false);
+            }
+        }
+
+        // The screw: the smallest separate piece inside the blade meshes (the model has a small screw part).
+        // Fallback: the middle of where the two blades' boxes overlap.
+        private static Vector3 FindScrew(List<Renderer> blades)
+        {
+            Bounds? best = null;
+            var bestCount = int.MaxValue;
+            foreach (var r in blades)
+            {
+                var mesh = MeshOf(r);
+                foreach (var (bounds, count) in MeshParts(mesh, r.transform.localToWorldMatrix))
+                {
+                    if (count < bestCount && count < mesh.vertexCount * 0.4f)
+                    {
+                        best = bounds;
+                        bestCount = count;
+                    }
+                }
+            }
+
+            if (best.HasValue)
+                return best.Value.center;
+
+            var a = blades[0].bounds;
+            var b = blades[1].bounds;
+            var min = Vector3.Max(a.min, b.min);
+            var max = Vector3.Min(a.max, b.max);
+            return (min + max) * 0.5f;
+        }
+
+        private static Mesh MeshOf(Renderer r) =>
+            r is SkinnedMeshRenderer skinned ? skinned.sharedMesh : r.TryGetComponent<MeshFilter>(out var f) ? f.sharedMesh : null;
+
+        // Connected pieces of a mesh (vertices joined by triangles or at the same position), as world bounds + vertex count.
+        private static List<(Bounds bounds, int count)> MeshParts(Mesh mesh, Matrix4x4 toWorld)
+        {
+            var verts = mesh.vertices;
+            var parent = new int[verts.Length];
+            for (var i = 0; i < parent.Length; i++) parent[i] = i;
+            int Find(int x) { while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+            void Join(int x, int y) { x = Find(x); y = Find(y); if (x != y) parent[x] = y; }
+
+            var tris = mesh.triangles;
+            for (var t = 0; t + 2 < tris.Length; t += 3) { Join(tris[t], tris[t + 1]); Join(tris[t], tris[t + 2]); }
+            var seen = new Dictionary<Vector3Int, int>();
+            for (var i = 0; i < verts.Length; i++)
+            {
+                var key = Vector3Int.RoundToInt(verts[i] * 1000f);
+                if (seen.TryGetValue(key, out var other)) Join(i, other); else seen[key] = i;
+            }
+
+            var groups = new Dictionary<int, (Bounds b, int n)>();
+            for (var i = 0; i < verts.Length; i++)
+            {
+                var p = toWorld.MultiplyPoint3x4(verts[i]);
+                var root = Find(i);
+                if (groups.TryGetValue(root, out var g)) { g.b.Encapsulate(p); g.n++; groups[root] = g; }
+                else groups[root] = (new Bounds(p, Vector3.zero), 1);
+            }
+
+            return groups.Values.Select(g => (g.b, g.n)).ToList();
         }
 
         // Two crossed blades that snip open/closed + two ring handles, standing up and facing the runner.

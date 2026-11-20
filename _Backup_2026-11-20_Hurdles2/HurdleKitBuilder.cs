@@ -80,11 +80,11 @@ namespace Game.EditorTools
                 case 4: return Spinner("Kit_SweepArm_Long", asset, s, 140f);
                 case 5: return Spinner("Kit_SweepArm_Short", asset, s, 160f);
                 case 18: return Spinner("Kit_Paddles", asset, s, 110f);
-                case 23: return Spinner("Kit_Puncher", asset, s, 130f);
+                case 23: return Hammer("Kit_Puncher", asset, s);
 
                 case 6: return Roller("Kit_SpikeRoller", asset, s);
                 case 7: return Static("Kit_SlimeTray", asset, s, Avoid.SteerAround, 2, 0.6f, 0.5f);
-                case 8: return Static("Kit_LowBlock", asset, s, Avoid.Jump, 2, 0.5f, JumpTop);
+                case 8: return LowBlock("Kit_LowBlock", asset, s);
                 case 11: return Static("Kit_Hurdle", asset, s, Avoid.Jump, 2, 0.5f, JumpTop);
                 case 12: return Static("Kit_Bollard", asset, s * 1.6f, Avoid.SteerAround, 1, 0.4f);
                 case 13: return Static("Kit_Cone", asset, s * 2f, Avoid.SteerAround, 1, 0.4f);
@@ -99,7 +99,7 @@ namespace Game.EditorTools
                 case 17: return Doors("Kit_ClosingPillars", asset, s, 0.3f, 180f);
 
                 case 21: return Pendulum("Kit_Pendulum", asset, s);
-                case 22: return Crusher("Kit_Crusher", asset, s * 1.5f);
+                // 22 (Kit_Crusher) removed 20 Nov 2026.
                 case 24: return Fan("Kit_Fan", asset, s);
                 case 25: return RollerGate("Kit_RollerGate", asset, s);
                 case 26: return SlideGate("Kit_SlideGate", asset, s);
@@ -223,28 +223,119 @@ namespace Game.EditorTools
             return root;
         }
 
-        // Goes up and down; run under it while it's up.
-        private static GameObject Crusher(string name, GameObject asset, float s)
+        // Low block the doll jumps over by herself: a trigger in front of it (AutoJumpPad) starts a normal jump,
+        // timed so the top of the jump is over the block. The block still hurts if she somehow runs into it.
+        private static GameObject LowBlock(string name, GameObject asset, float s)
         {
             var (root, _, parts) = Spawn(name, asset, s);
-            Box(root, BoundsOf(parts), 0.85f);
-            Penalty(root, Avoid.SteerAround, 3, 0.8f);
-            Mover(root, bob: 2.4f, bobSpeed: 0.4f);
+            var b = BoundsOf(parts);
+            Box(root, b, 0.85f, 0f, JumpTop);
+            Penalty(root, Avoid.Jump, 2, 0.5f);
+
+            // Half a jump's run before the block's centre = apex over the block.
+            var config = EditorPaths.FindAsset<Game.Player.Config.RunnerMovementConfig>();
+            var speed = config != null ? config.ForwardSpeed : 6f;
+            var air = config != null ? config.JumpAirTime : 0.7f;
+            var lead = speed * air * 0.5f;
+
+            var pad = Child(root.transform, "AutoJump", new Vector3(b.center.x, 0f, b.center.z - lead));
+            BoxLocal(pad.gameObject, new Vector3(0f, 1f, 0f), new Vector3(Mathf.Max(b.size.x, 1.6f), 2f, 0.6f));
+            pad.gameObject.AddComponent<AutoJumpPad>();
+            var body = pad.gameObject.AddComponent<Rigidbody>();
+            body.isKinematic = true;
+            body.useGravity = false;
+            return root;
+        }
+
+        // Hammer: the drum on its arm is lifted high next to the post, then slams down onto the track and lifts again.
+        // Pivot = top of the post, swing across the track (the arm's side). Dodge to the other side, or pass while it's up.
+        private static GameObject Hammer(string name, GameObject asset, float s)
+        {
+            var (root, model, parts) = Spawn(name, asset, s);
+            var post = parts.OrderBy(r => r.bounds.size.x * r.bounds.size.z).First();
+            var head = parts.Where(r => r != post).ToList();
+            if (head.Count == 0)
+                head = parts;
+
+            var pb = post.bounds;
+            var hb = BoundsOf(head);
+            var pivotPoint = new Vector3(pb.center.x, pb.max.y, pb.center.z);
+
+            // Arm direction (flat) and the axis that lifts it: rotating +angle about Cross(dir, up) raises the arm.
+            var flat = new Vector3(hb.center.x - pivotPoint.x, 0f, hb.center.z - pivotPoint.z);
+            var dir = flat.sqrMagnitude > 1e-4f ? flat.normalized : Vector3.left;
+            var axis = Vector3.Cross(dir, Vector3.up).normalized;
+            var armLength = Mathf.Max(0.1f, flat.magnitude);
+
+            var pivot = Child(root.transform, "Hammer", pivotPoint);
+            foreach (var r in head)
+                r.transform.SetParent(pivot, true);
+
+            // Hit box on the head (it moves with the pivot).
+            Box(pivot.gameObject, hb, 0.85f);
+            Penalty(pivot.gameObject, Avoid.SteerAround, 3, 0.7f);
+
+            // Slam: from raised (75° up) to just touching the track.
+            var drop = Mathf.Max(0f, hb.min.y - 0.05f);
+            var slam = Mathf.Clamp(Mathf.Asin(Mathf.Clamp01(drop / armLength)) * Mathf.Rad2Deg, 0f, 35f);
+            const float raised = 75f;
+            pivot.localRotation = Quaternion.AngleAxis(raised, axis);
+            var local = pivot.InverseTransformDirection(axis);
+            // InCubic: slow start, fast hit (Yoyo plays it back for the lift).
+            DOTweenMotion.AddTween(pivot.gameObject, DG.Tweening.DOTweenAnimation.AnimationType.LocalRotate, 0.75f,
+                local * -(raised + slam), DG.Tweening.Ease.InCubic, DG.Tweening.LoopType.Yoyo, DG.Tweening.RotateMode.LocalAxisAdd, relative: false);
             return root;
         }
 
         // Big blades turning like a fan facing the runner. Covers half the track: go around it.
+        // The blades and hub are one mesh, so the hub is found as the centre of all vertices (the blades are
+        // symmetric round it), and the fan is lifted so the blade tips clear the track.
         private static GameObject Fan(string name, GameObject asset, float s)
         {
             var (root, model, parts) = Spawn(name, asset, s);
-            var b = BoundsOf(parts);
-            Box(root, b, 0.8f);
-            Penalty(root, Avoid.SteerAround, 3, 0.7f);
+            var (hubPoint, radius) = SpinCentre(parts, Vector3.forward);
+            var lift = Mathf.Max(0f, radius + 0.1f - hubPoint.y);
+            model.position += Vector3.up * lift;
+            hubPoint += Vector3.up * lift;
 
-            var hub = Child(root.transform, "Spin", b.center);
+            var hub = Child(root.transform, "Spin", hubPoint);
             model.SetParent(hub, true);
             Mover(hub.gameObject, spin: 90f, spinAxis: Vector3.forward);
+
+            var depth = Mathf.Max(BoundsOf(parts).size.z, 0.6f);
+            BoxLocal(root, root.transform.InverseTransformPoint(hubPoint), new Vector3(radius * 2f * 0.8f, radius * 2f * 0.8f, depth));
+            Penalty(root, Avoid.SteerAround, 3, 0.7f);
             return root;
+        }
+
+        // Centre of all mesh vertices (world space) and the largest distance from it, measured across 'axis'.
+        private static (Vector3 centre, float radius) SpinCentre(List<Renderer> parts, Vector3 axis)
+        {
+            var points = new List<Vector3>();
+            foreach (var r in parts)
+            {
+                Mesh mesh = null;
+                if (r is SkinnedMeshRenderer skinned) mesh = skinned.sharedMesh;
+                else if (r.TryGetComponent<MeshFilter>(out var filter)) mesh = filter.sharedMesh;
+                if (mesh == null) continue;
+                var m = r.transform.localToWorldMatrix;
+                foreach (var v in mesh.vertices) points.Add(m.MultiplyPoint3x4(v));
+            }
+
+            if (points.Count == 0)
+            {
+                var b = BoundsOf(parts);
+                return (b.center, Mathf.Max(b.extents.x, b.extents.y));
+            }
+
+            var centre = Vector3.zero;
+            foreach (var p in points) centre += p;
+            centre /= points.Count;
+
+            var radius = 0f;
+            foreach (var p in points)
+                radius = Mathf.Max(radius, Vector3.ProjectOnPlane(p - centre, axis).magnitude);
+            return (centre, radius);
         }
 
         // A frame with two spinning spiked rollers: go through the middle or round the outside.

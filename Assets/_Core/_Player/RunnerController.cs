@@ -60,6 +60,7 @@ namespace _Core._Player
         private float _distance;
         private bool _isStumbling;
         private float _stumbleSpeedFactor = 1f;
+        private float _airSpeedFactor; // > 0 while in the air: keeps (or boosts) forward speed even without holding
 
         private Vector3 _startPosition;
         private Vector3 _trackForward;
@@ -137,7 +138,19 @@ namespace _Core._Player
         public void Jump()
         {
             if (config != null)
-                _vertical.Jump(config.JumpHeight, config.JumpAirTime);
+                Jump(config.JumpHeight, config.JumpAirTime, 1f);
+        }
+
+        /// <summary>
+        /// Jump with its own height and air time (e.g. a ramp launch). She keeps running forward through the whole jump,
+        /// at forwardSpeed × speedFactor, even if the finger is lifted. Ignored while in the air.
+        /// </summary>
+        public void Jump(float height, float airTime, float speedFactor)
+        {
+            if (!_vertical.IsGrounded)
+                return;
+            _vertical.Jump(height, airTime);
+            _airSpeedFactor = Mathf.Max(0.01f, speedFactor);
         }
 
         /// <summary>
@@ -317,7 +330,7 @@ namespace _Core._Player
                 return;
 
             if (_actions.JumpRequested)
-                _vertical.Jump(config.JumpHeight, config.JumpAirTime);
+                Jump(config.JumpHeight, config.JumpAirTime, 1f);
             else if (_actions.SlideRequested)
                 _vertical.Slide(config.SlideDuration, config.FastFallSpeed);
         }
@@ -355,6 +368,12 @@ namespace _Core._Player
         {
             if (!canControl)
                 return 0f;
+
+            // In the air: carry on forward (a jump never stops mid-air), boosted by a ramp if it asked for it.
+            if (_vertical.IsGrounded)
+                _airSpeedFactor = 0f;
+            else if (_airSpeedFactor > 0f)
+                return config.ForwardSpeed * _airSpeedFactor * (_isStumbling ? _stumbleSpeedFactor : 1f);
 
             var wantsToRun = !config.RunOnlyWhileHolding || _input.IsHolding;
             if (!wantsToRun)

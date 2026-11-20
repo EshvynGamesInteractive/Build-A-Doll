@@ -69,6 +69,29 @@ namespace Game.EditorTools
             EditorUtility.DisplayDialog(Title, summary, "OK");
         }
 
+        // Rebuilds one kit prefab only (the others, and any hand edits on them, stay as they are).
+        [MenuItem("Build A Doll/Hurdles/Rebuild Kit_LowBlock Only")]
+        public static void BuildLowBlockOnly() => BuildOne(8);
+
+        private static void BuildOne(int id)
+        {
+            var models = FindModels();
+            if (!models.TryGetValue("Hurdle16", out var reference) || !models.TryGetValue($"Hurdle{id}", out var model))
+            {
+                EditorUtility.DisplayDialog(Title, $"Hurdle16.fbx or Hurdle{id}.fbx not found under Assets/_ART.", "OK");
+                return;
+            }
+
+            var scale = FullWidth / Mathf.Max(0.0001f, MeasureWidth(reference));
+            EditorPaths.EnsureFolder(KitFolder);
+            var root = BuildHurdle(id, model, scale);
+            if (root == null) return;
+            var name = Save(root);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[HurdleKit] Rebuilt {name}.");
+            EditorUtility.DisplayDialog(Title, $"Rebuilt {name}.", "OK");
+        }
+
         // ---------- Hurdles ----------
         private static GameObject BuildHurdle(int id, GameObject asset, float s)
         {
@@ -223,23 +246,17 @@ namespace Game.EditorTools
             return root;
         }
 
-        // Low block the doll jumps over by herself: a trigger in front of it (AutoJumpPad) starts a normal jump,
-        // timed so the top of the jump is over the block. The block still hurts if she somehow runs into it.
+        // Low wedge = jump ramp. Turned 180° so the slope faces the runner. Running onto its front edge
+        // (AutoJumpPad) launches her up and forward over it; it doesn't hurt, so there's no PenaltyItem.
         private static GameObject LowBlock(string name, GameObject asset, float s)
         {
-            var (root, _, parts) = Spawn(name, asset, s);
+            var (root, model, parts) = Spawn(name, asset, s);
+            var b0 = BoundsOf(parts);
+            model.RotateAround(new Vector3(b0.center.x, 0f, b0.center.z), Vector3.up, 180f);
             var b = BoundsOf(parts);
-            Box(root, b, 0.85f, 0f, JumpTop);
-            Penalty(root, Avoid.Jump, 2, 0.5f);
 
-            // Half a jump's run before the block's centre = apex over the block.
-            var config = EditorPaths.FindAsset<Game.Player.Config.RunnerMovementConfig>();
-            var speed = config != null ? config.ForwardSpeed : 6f;
-            var air = config != null ? config.JumpAirTime : 0.7f;
-            var lead = speed * air * 0.5f;
-
-            var pad = Child(root.transform, "AutoJump", new Vector3(b.center.x, 0f, b.center.z - lead));
-            BoxLocal(pad.gameObject, new Vector3(0f, 1f, 0f), new Vector3(Mathf.Max(b.size.x, 1.6f), 2f, 0.6f));
+            var pad = Child(root.transform, "AutoJump", new Vector3(b.center.x, 0f, b.min.z));
+            BoxLocal(pad.gameObject, new Vector3(0f, 1f, 0.3f), new Vector3(Mathf.Max(b.size.x, 1.6f), 2f, 0.6f));
             pad.gameObject.AddComponent<AutoJumpPad>();
             var body = pad.gameObject.AddComponent<Rigidbody>();
             body.isKinematic = true;

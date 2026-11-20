@@ -44,6 +44,7 @@ namespace Game.Outfit
 
         private readonly Dictionary<OutfitSlot, OutfitItem> _worn = new();
         private readonly Dictionary<OutfitSlot, GameObject> _spawned = new();
+        private readonly Dictionary<OutfitSlot, OutfitItem> _cut = new(); // taken off by hurdles (scissors), can be given back
         private Dictionary<string, Transform> _bonesByName;
 
         public IReadOnlyDictionary<OutfitSlot, OutfitItem> Worn => _worn;
@@ -79,6 +80,9 @@ namespace Game.Outfit
         {
             if (item == null)
                 return;
+
+            if (_cut.Remove(item.Slot)) // she picked a new one: nothing to give back for this slot
+                RaiseCutChanged();
 
             if (item.AlsoClears != null)
             {
@@ -155,8 +159,39 @@ namespace Game.Outfit
                 Unequip(slot);
         }
 
+        /// <summary>True while something cut off by a hurdle can still be given back (e.g. by a rewarded-ad gate).</summary>
+        public bool HasCutItems => _cut.Count > 0;
+
+        /// <summary>Takes the item in this slot off and remembers it, so RestoreCutItems can put it back.</summary>
+        public void CutOff(OutfitSlot slot)
+        {
+            if (_worn.TryGetValue(slot, out var item) && item != null)
+                _cut[slot] = item;
+            Unequip(slot);
+            RaiseCutChanged();
+        }
+
+        private void RaiseCutChanged()
+        {
+            if (raiseEvents)
+                GameEvents.GameplayEvents.CutItemsChanged.Raise(_cut.Count > 0);
+        }
+
+        /// <summary>Puts back everything cut off by hurdles this run. Returns how many items came back.</summary>
+        public int RestoreCutItems()
+        {
+            var items = new List<OutfitItem>(_cut.Values);
+            _cut.Clear();
+            foreach (var item in items)
+                Equip(item);
+            RaiseCutChanged();
+            return items.Count;
+        }
+
         private void WearStartingItems()
         {
+            _cut.Clear();
+            RaiseCutChanged();
             ClearAll();
 
             if (startingItems == null)

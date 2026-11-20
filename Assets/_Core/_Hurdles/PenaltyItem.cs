@@ -49,7 +49,7 @@ namespace Game.Hurdles
             {
                 var outfit = player.DollOutfit;
                 if (outfit != null)
-                    outfit.Unequip(slotToRemove);
+                    outfit.CutOff(slotToRemove); // remembered, so a rewarded-ad gate can give it back
             }
 
             var score = player.Score;
