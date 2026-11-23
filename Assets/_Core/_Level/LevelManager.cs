@@ -75,6 +75,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestRestartLevel.Register(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Register(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Register(OnTargetLookIntroDone);
+            GameEvents.GameplayEvents.OutfitItemEquipped.Register(OnPlayerEquipped);
         }
 
         private void OnDisable()
@@ -86,6 +87,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestRestartLevel.Unregister(RestartCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Unregister(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Unregister(OnTargetLookIntroDone);
+            GameEvents.GameplayEvents.OutfitItemEquipped.Unregister(OnPlayerEquipped);
         }
 
         // Cache scene references so the Home screen can start the saved level on demand.
@@ -256,6 +258,9 @@ namespace _Core._Level
 
         private void Build(LevelData level)
         {
+            _freeStyleGates = 0;
+            _freeStyleScore = 0;
+            _freeStyleOutfitGates.Clear();
             _finishDistance = TrackDistanceTo(scene.PlayerEndPoint, level.FinishDistance, "Player End Point");
 
             var hasAi = GetAiProfile(level) != null && scene.AiStartPoint != null;
@@ -312,7 +317,12 @@ namespace _Core._Level
                 var instance = Instantiate(entry.prefab, start + rotation * local, rotation * entry.prefab.transform.localRotation, parent);
                 _spawned.Add(instance);
 
-                ConfigureGates(instance, entry.gateItems, level.TargetOutfit);
+                if (ConfigureGates(instance, entry.gateItems, level.TargetOutfit, level.IsFreeStyle) && warn)
+                {
+                    _freeStyleGates++; // gate choices on the player's ramp (free style: best possible score)
+                    if (level.IsFreeStyle)
+                        CountFreeStyleOutfits(instance);
+                }
                 ConfigureCoinGates(instance, entry.coinGates);
                 ConfigurePaintGates(instance, entry.paintGates, level.TargetLook);
                 ConfigureSkinGates(instance, entry.skinGates, level);
@@ -511,14 +521,16 @@ namespace _Core._Level
                 aiInput.Go();
         }
 
-        private static void ConfigureGates(GameObject instance, OutfitItem[] items, IReadOnlyList<OutfitItem> targetItems)
+        // Returns true when the hurdle has item gates (one choice).
+        private static bool ConfigureGates(GameObject instance, OutfitItem[] items, IReadOnlyList<OutfitItem> targetItems, bool freeStyle)
         {
             var gates = instance.GetComponentsInChildren<ItemGate>();
             for (var i = 0; i < gates.Length; i++)
             {
                 var itemOverride = items != null && i < items.Length ? items[i] : null;
-                gates[i].Configure(itemOverride, targetItems);
+                gates[i].Configure(itemOverride, targetItems, freeStyle);
             }
+            return gates.Length > 0;
         }
 
         // Every paint gate learns the target look (green / red); the entry's settings, if any, replace the prefab's.
@@ -567,7 +579,8 @@ namespace _Core._Level
 
             var prefab = level.DemoPrefab != null ? level.DemoPrefab : database.DefaultDemoPrefab;
             var point = scene.DemoSpawnPoint;
-            if (!level.HasTarget || prefab == null || point == null)
+            // Free style: the card shows her in her starting clothes, and the corner image follows what she picks (OnPlayerEquipped).
+            if ((!level.HasTarget && !level.IsFreeStyle) || prefab == null || point == null)
             {
                 if (level.HasTarget && prefab == null)
                     Debug.LogWarning($"'{level.name}' has a target look but no demo doll prefab (set Default Demo Prefab on the {nameof(LevelDatabase)}).", level);
@@ -587,7 +600,10 @@ namespace _Core._Level
 
             var demoOutfit = demo.GetComponentInChildren<DollOutfit>();
             if (demoOutfit != null)
-                demoOutfit.SetStartingItems(level.TargetOutfit); // worn in its Start
+            {
+                demoOutfit.RaiseEvents = false;
+                demoOutfit.SetStartingItems(level.IsFreeStyle ? level.StartingOutfit : level.TargetOutfit); // worn in its Start
+            }
             else
                 Debug.LogWarning($"Demo prefab '{prefab.name}' has no {nameof(DollOutfit)}, so it can't show the look.", prefab);
 
@@ -637,6 +653,16 @@ namespace _Core._Level
             // With a Demo Camera the Gameplay UI says when its intro is over (the player pressed PLAY), so no timer.
             if (!onStage)
                 Invoke(nameof(HideTargetLook), database.DemoShowTime);
+        }
+
+        // Free style: the demo doll in the corner image copies every item the player picks.
+        private void OnPlayerEquipped(OutfitItem item)
+        {
+            if (current == null || !current.IsFreeStyle || demo == null || item == null)
+                return;
+            var demoOutfit = demo.GetComponentInChildren<DollOutfit>();
+            if (demoOutfit != null)
+                demoOutfit.Equip(item);
         }
 
         private void OnTargetLookIntroDone()
@@ -861,7 +887,17 @@ namespace _Core._Level
             SetDemoViewActive(false);
 
             GameEvents.GameplayEvents.ComparisonStarted.Raise(match, aiMatch);
-            GameEvents.GameplayEvents.StageComparisonStarted.Raise(player, hasAi ? ai : null);
+
+            // Free style: no comparison (no labels over the dolls). She shows her final look on the stage, then the win animation.
+            if (current.IsFreeStyle)
+            {
+                _freeStyleScore = FreeStyleScore(FreeStylePicks());
+                yield return new WaitForSeconds(freeStyleShowTime);
+            }
+            else
+            {
+                GameEvents.GameplayEvents.StageComparisonStarted.Raise(player, hasAi ? ai : null);
+            }
 
             if (current.HasTarget)
                 yield return CompareItems(hasAi);
@@ -935,6 +971,98 @@ namespace _Core._Level
             }
         }
 
+        // ---------- Free style ----------
+
+        private int _freeStyleGates;   // item-gate choices on the player's ramp this level
+        private int _freeStyleScore;   // Style %, worked out at the finish
+        private readonly Dictionary<string, int> _freeStyleOutfitGates = new(); // outfit -> how many gate choices offer one of its items
+
+        private void CountFreeStyleOutfits(GameObject instance)
+        {
+            var offered = new HashSet<string>();
+            foreach (var gate in instance.GetComponentsInChildren<ItemGate>())
+                if (gate.Item != null)
+                    offered.Add(OutfitKey(gate.Item));
+            foreach (var key in offered)
+            {
+                _freeStyleOutfitGates.TryGetValue(key, out var n);
+                _freeStyleOutfitGates[key] = n + 1;
+            }
+        }
+
+        // Items she wears now that she didn't start in (picked from gates), in gate order.
+        private List<OutfitItem> FreeStylePicks()
+        {
+            var picks = new List<OutfitItem>();
+            if (player == null || player.DollOutfit == null)
+                return picks;
+
+            var start = current.StartingOutfit;
+            foreach (var item in player.DollOutfit.Worn.Values)
+            {
+                if (item == null)
+                    continue;
+                var wasStart = false;
+                if (start != null)
+                    foreach (var s in start)
+                        if (s == item) { wasStart = true; break; }
+                if (!wasStart)
+                    picks.Add(item);
+            }
+
+            var gateOrder = current.GateOrder;
+            int Rank(OutfitSlot slot)
+            {
+                for (var k = 0; k < gateOrder.Count; k++)
+                    if (gateOrder[k] == slot) return k;
+                return gateOrder.Count + SlotRank(slot);
+            }
+            picks.Sort((a, b) => Rank(a.Slot).CompareTo(Rank(b.Slot)));
+            return picks;
+        }
+
+        // Style % = (items picked + same-outfit bonus) / best possible on this level.
+        // Bonus: the biggest group of picked items from one outfit adds (group size - 1). Best possible = every gate picked and
+        // the outfit offered on the most gates picked every time, so the most complete set scores 100%.
+        private int FreeStyleScore(List<OutfitItem> picks)
+        {
+            var gates = Mathf.Max(_freeStyleGates, picks.Count);
+            if (gates <= 0)
+                return 100;
+
+            var groups = new Dictionary<string, int>();
+            var largest = 0;
+            foreach (var item in picks)
+            {
+                var key = OutfitKey(item);
+                groups.TryGetValue(key, out var n);
+                groups[key] = ++n;
+                largest = Mathf.Max(largest, n);
+            }
+
+            var points = picks.Count + Mathf.Max(0, largest - 1);
+            var mostOffered = 0;
+            foreach (var offeredCount in _freeStyleOutfitGates.Values)
+                mostOffered = Mathf.Max(mostOffered, offeredCount);
+            var best = gates + Mathf.Max(0, Mathf.Max(mostOffered, largest) - 1);
+            return Mathf.Clamp(Mathf.RoundToInt(100f * points / best), 0, 100);
+        }
+
+        private string OutfitKey(OutfitItem item)
+        {
+            var catalog = database != null ? database.OutfitCatalog : null;
+            var set = catalog != null ? catalog.FindSetOf(item) : null;
+            if (set != null)
+                return set.name;
+            var name = item.name;
+            var cut = name.IndexOf('_');
+            return cut > 0 ? name.Substring(0, cut) : name;
+        }
+
+        // Free style: seconds she stands on the stage showing her final look before the win animation.
+        [SerializeField, Min(0f), Tooltip("Free style: seconds she shows her final look on the stage before the win animation.")]
+        private float freeStyleShowTime = 1.2f;
+
         private static int RunningPercent(int itemsMatched, OutfitMatch final, float shareDone)
         {
             if (final.AllChecks <= 0)
@@ -1004,7 +1132,17 @@ namespace _Core._Level
             if (!hasAi)
             {
                 playerSpot = FromTrack(new Vector3(centreX, top, middleZ));
-                return ApplyStageSpots(false, ref playerSpot, ref aiSpot);
+                var shown = ApplyStageSpots(false, ref playerSpot, ref aiSpot);
+
+                // Free style: she's alone on the stage, so she stands in the middle (between the stage's two spots).
+                if (current != null && current.IsFreeStyle && _stageLayout != null && _stageLayout.PlayerSpot != null && _stageLayout.AiSpot != null)
+                {
+                    playerSpot = (_stageLayout.PlayerSpot.position + _stageLayout.AiSpot.position) * 0.5f;
+                    var face = FlatForward(_stageLayout.PlayerSpot, _stagePlayerFacing) + FlatForward(_stageLayout.AiSpot, _stagePlayerFacing);
+                    if (face.sqrMagnitude > 0.0001f)
+                        _stagePlayerFacing = face.normalized;
+                }
+                return shown;
             }
 
             // Each doll takes the side nearer her own ramp.
@@ -1144,8 +1282,8 @@ namespace _Core._Level
             if (scene == null || scene.CameraFollow == null)
                 return;
 
-            // The stage's own camera point, if it has one.
-            if (_stageLayout != null && _stageLayout.CameraPoint != null)
+            // The stage's own camera point, if it has one. Free style frames her alone, centred (the camera point is set up for two dolls).
+            if (_stageLayout != null && _stageLayout.CameraPoint != null && (current == null || !current.IsFreeStyle))
             {
                 scene.CameraFollow.ShowStagePose(_stageLayout.CameraPoint.position, _stageLayout.CameraPoint.rotation);
                 return;
@@ -1165,7 +1303,10 @@ namespace _Core._Level
             var coins = runScore != null ? runScore.Coins : 0;
 
             // With a target look the result is how well she copied it (0..100); otherwise the coins gained this run.
-            var score = current.HasTarget ? match.Percent : coins;
+            // Free style: the Style % (always passed, stars from the level's free style thresholds).
+            if (current.IsFreeStyle && _freeStyleScore <= 0)
+                _freeStyleScore = FreeStyleScore(FreeStylePicks());
+            var score = current.IsFreeStyle ? _freeStyleScore : current.HasTarget ? match.Percent : coins;
 
             // The level pass mark applies in every race. Against AI, ties also fail.
             var hasAi = ai != null;

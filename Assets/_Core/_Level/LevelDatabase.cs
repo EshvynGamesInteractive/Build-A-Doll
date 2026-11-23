@@ -76,6 +76,11 @@ namespace Game.Level
         [Tooltip("Level number (1-based) from which regular levels fill the special-outfit progress bar. Levels before it (the first outfits) don't count.")]
         [SerializeField, Min(1)] private int specialProgressFrom = 9;
 
+        [Header("Free style")]
+        [Tooltip("Free style levels use it to find which outfit each picked item comes from (same-outfit bonus). Empty = worked out from the item's asset name.")]
+        [SerializeField] private Game.Outfit.OutfitCatalog outfitCatalog;
+        public Game.Outfit.OutfitCatalog OutfitCatalog => outfitCatalog;
+
         public int Count => levels.Count;
 
         /// <summary>Progress toward the next special outfit level, as seen after finishing a level.</summary>
@@ -104,7 +109,8 @@ namespace Game.Level
         public bool TryGetSpecialProgress(int index, out SpecialProgress progress)
         {
             progress = default;
-            if (index < 0 || index >= levels.Count || levels[index] == null || levels[index].IsSpecial)
+            // Special and free style levels don't count toward the bar.
+            if (index < 0 || index >= levels.Count || levels[index] == null || levels[index].IsSpecial || levels[index].IsFreeStyle)
                 return false;
 
             var from = Mathf.Max(0, specialProgressFrom - 1);
@@ -125,11 +131,19 @@ namespace Game.Level
                 if (levels[i] != null && levels[i].IsSpecial) { start = i + 1; break; }
             }
 
-            var needed = next - start;
+            int needed = 0, done = 0;
+            for (var i = start; i < next; i++)
+            {
+                if (levels[i] == null || levels[i].IsFreeStyle)
+                    continue;
+                needed++;
+                if (i <= index)
+                    done++;
+            }
             if (needed <= 0)
                 return false;
 
-            progress = new SpecialProgress(levels[next], next + 1, Mathf.Clamp(index - start + 1, 0, needed), needed);
+            progress = new SpecialProgress(levels[next], next + 1, Mathf.Clamp(done, 0, needed), needed);
             return true;
         }
 

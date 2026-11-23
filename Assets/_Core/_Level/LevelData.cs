@@ -66,6 +66,13 @@ namespace Game.Level
         [Tooltip("Optional: use this item's icon as the special picture (e.g. the Umbrella being unlocked). Used when Special Icon is empty.")]
         [SerializeField] private OutfitItem specialIconItem;
 
+        [Header("Free style")]
+        [Tooltip("Free style level: no target look. Both gates of every pair are good picks (shown green), so she designs her own look. " +
+                 "Always passed; stars come from the Style score (every gate picked + items from the same outfit). No AI rival, no demo comparison.")]
+        [SerializeField] private bool isFreeStyle;
+        [Tooltip("Free style: Style % for 1, 2 and 3 stars. Style % = (gates picked + same-outfit bonus) / best possible.")]
+        [SerializeField] private int[] freeStyleStarPercents = { 40, 70, 100 };
+
         [Tooltip("Length the level was designed for. The real finish is the ramp's End Point in the Gameplay scene; hurdles at or past it are skipped. Used only when the scene has no End Point.")]
         [SerializeField, Min(1f)] private float finishDistance = 120f;
 
@@ -131,6 +138,8 @@ namespace Game.Level
         public string Brief => brief;
         public bool ShowSwipeGuide => showSwipeGuide;
         public bool IsSpecial => isSpecial;
+        /// <summary>Free style: the player designs her own look; no target, no AI, always passed.</summary>
+        public bool IsFreeStyle => isFreeStyle;
         public string SpecialTitle => !string.IsNullOrEmpty(specialTitle) ? specialTitle : Outfit != null ? Outfit.DisplayName : DisplayName;
 
         /// <summary>Special icon, else the icon of the outfit's dress, top, or first part that has one.</summary>
@@ -160,11 +169,11 @@ namespace Game.Level
         }
         public float FinishDistance => finishDistance;
         public GameObject PlayerPrefab => playerPrefab;
-        public TargetLook TargetLook => targetLook != null ? targetLook : GetOutfitLook();
+        public TargetLook TargetLook => isFreeStyle ? null : targetLook != null ? targetLook : GetOutfitLook();
 
         /// <summary>The variant this level completes: Outfit, or the Target Look's variant.</summary>
         public OutfitVariant Outfit => outfit != null ? outfit : targetLook != null ? targetLook.Variant : null;
-        public bool HasAiOpponent => hasAiOpponent;
+        public bool HasAiOpponent => hasAiOpponent && !isFreeStyle;
         public Game.AI.AiProfile AiProfile => aiProfile;
         public bool HasTarget => TargetLook != null && TargetLook.HasAnything;
         public IReadOnlyList<OutfitItem> TargetOutfit => HasTarget && TargetLook.HasItems ? TargetLook.Items : null;
@@ -183,6 +192,8 @@ namespace Game.Level
         /// <summary>With a target look 'score' is the match % and the look judges it; otherwise Star Scores.</summary>
         public int GetStars(int score)
         {
+            if (isFreeStyle)
+                return CountStars(score, freeStyleStarPercents);
             if (HasTarget)
                 return TargetLook.GetStars(score);
 
@@ -199,7 +210,18 @@ namespace Game.Level
             return stars;
         }
 
-        public bool IsPass(int score) => HasTarget ? TargetLook.IsPass(score) : score >= scoreToPass;
+        public bool IsPass(int score) => isFreeStyle || (HasTarget ? TargetLook.IsPass(score) : score >= scoreToPass);
+
+        private static int CountStars(int score, int[] thresholds)
+        {
+            var stars = 0;
+            if (thresholds == null)
+                return stars;
+            foreach (var threshold in thresholds)
+                if (score >= threshold)
+                    stars++;
+            return stars;
+        }
 
         private TargetLook GetOutfitLook()
         {

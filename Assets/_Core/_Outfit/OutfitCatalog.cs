@@ -37,6 +37,38 @@ namespace Game.Outfit
             return result;
         }
 
+        /// <summary>The outfit an item belongs to (shared or variant part), or null.</summary>
+        public OutfitSet FindSetOf(OutfitItem item)
+        {
+            if (item == null)
+                return null;
+
+            foreach (var outfit in outfits)
+            {
+                if (outfit == null)
+                    continue;
+                if (Contains(outfit.SharedParts, item))
+                    return outfit;
+                if (outfit.Variants == null)
+                    continue;
+                foreach (var variant in outfit.Variants)
+                    if (variant != null && Contains(variant.OwnParts, item))
+                        return outfit;
+            }
+
+            return null;
+        }
+
+        private static bool Contains(IReadOnlyList<OutfitItem> parts, OutfitItem item)
+        {
+            if (parts == null)
+                return false;
+            foreach (var part in parts)
+                if (part == item)
+                    return true;
+            return false;
+        }
+
         public OutfitVariant FindVariant(string id)
         {
             foreach (var outfit in outfits)

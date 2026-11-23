@@ -190,6 +190,8 @@ namespace _Core._Player
             _walkArrived = null;
             _walkSpeedNow = 0f;
             _phase = Phase.Placed;
+            _forward.Reset();  // no run speed left over, so the run animation stops
+            _vertical.Reset();
             transform.position = position;
             var face = Vector3.ProjectOnPlane(faceDirection, Vector3.up);
             if (face.sqrMagnitude > 1e-4f)

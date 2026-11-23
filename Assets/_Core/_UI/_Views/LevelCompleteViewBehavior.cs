@@ -59,8 +59,11 @@ namespace _Core._UI._Views
             if (outfitMatchText == null)
                 return;
 
-            outfitMatchText.gameObject.SetActive(result.Level.HasTarget);
-            if (result.Level.HasTarget)
+            var show = result.Level.HasTarget || result.Level.IsFreeStyle;
+            outfitMatchText.gameObject.SetActive(show);
+            if (result.Level.IsFreeStyle)
+                outfitMatchText.text = $"Style {result.Score}%";
+            else if (result.Level.HasTarget)
                 outfitMatchText.text = $"Outfit Match {result.Match.Percent}%";
         }
 

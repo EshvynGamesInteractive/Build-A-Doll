@@ -67,6 +67,7 @@ namespace Game.Hurdles
         private OutfitItem _modelItem;  // item the model was built for
         private bool _modelHasMesh;
         private IReadOnlyList<OutfitItem> _targetItems;
+        private bool _freeStyle;
         private bool _started;
 
         public OutfitItem Item => item;
@@ -80,9 +81,11 @@ namespace Game.Hurdles
             Refresh();
         }
 
-        public void Configure(OutfitItem itemOverride, IReadOnlyList<OutfitItem> targetItems)
+        /// <param name="freeStyle">Free style level: every item is a good pick (green, Correct Score).</param>
+        public void Configure(OutfitItem itemOverride, IReadOnlyList<OutfitItem> targetItems, bool freeStyle = false)
         {
             _targetItems = targetItems;
+            _freeStyle = freeStyle;
             SetItem(itemOverride != null ? itemOverride : item);
         }
 
@@ -96,6 +99,8 @@ namespace Game.Hurdles
 
         private bool MatchesTarget()
         {
+            if (_freeStyle)
+                return item != null;
             if (item == null || _targetItems == null)
                 return false;
 
