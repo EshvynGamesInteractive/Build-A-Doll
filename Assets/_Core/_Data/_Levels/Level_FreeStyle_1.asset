@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
   m_Name: Level_FreeStyle_1
   m_EditorClassIdentifier: 
-  displayName: 'Free Style: Tea Garden'
-  brief: FREE STYLE! Design your own look!
+  displayName: 'Free Style: Night Nurse'
+  brief: FREE STYLE! Style your NURSE look!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -61,13 +61,26 @@ MonoBehaviour:
     distance: 44
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 8c2518389d9644203b4e0f0403882e84, type: 2}
-    - {fileID: 11400000, guid: 7d949bc3bec6e434ba5c50b3290e9524, type: 2}
+    - {fileID: 11400000, guid: 278a87f527cdd4fb1bab29834be2fcb4, type: 2}
+    - {fileID: 11400000, guid: 278a87f527cdd4fb1bab29834be2fcb4, type: 2}
     greenSide: 0
     paintGates: []
     coinGates: []
     skinGates: []
     dressColorGates: []
+  - prefab: {fileID: 2086152964585181846, guid: 3b3f7bb5b7de94d3098ef70afb80b309, type: 3}
+    distance: 53
+    lateral: 0
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates:
+    - colorName: White
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - colorName: Pink
+      color: {r: 1, g: 0.6, b: 0.8, a: 1}
   - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
     distance: 64.5
     lateral: 0
@@ -81,7 +94,7 @@ MonoBehaviour:
     distance: 85
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: b11e3a414916840c797e3ddd782768c5, type: 2}
+    - {fileID: 11400000, guid: 7566cdc1b4d0b4b3187cd1647cb01469, type: 2}
     - {fileID: 11400000, guid: 582236bea26bf4c7f981c17dbe8dd4b2, type: 2}
     greenSide: 0
     paintGates: []
@@ -102,7 +115,7 @@ MonoBehaviour:
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: da5d85409632e4077ba4e45eac66ca4d, type: 2}
-    - {fileID: 11400000, guid: 9d768d56205254ae1aa7d1f8b5a35aa2, type: 2}
+    - {fileID: 11400000, guid: 4334cb1c80ef94ff4b393cc268901072, type: 2}
     greenSide: 0
     paintGates: []
     coinGates: []
@@ -121,7 +134,7 @@ MonoBehaviour:
     distance: 167
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 34f8b9fbc0b11451f8649103f1d59fd4, type: 2}
+    - {fileID: 11400000, guid: bb042e74f0b0e4bfe9c4630c33845fc6, type: 2}
     - {fileID: 11400000, guid: 100aea69a398449b1a39da0bbf8c9ffa, type: 2}
     greenSide: 0
     paintGates: []

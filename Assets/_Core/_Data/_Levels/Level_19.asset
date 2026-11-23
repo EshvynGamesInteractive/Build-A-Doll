@@ -19,6 +19,8 @@ MonoBehaviour:
   specialTitle: 
   specialIcon: {fileID: 0}
   specialIconItem: {fileID: 0}
+  isFreeStyle: 0
+  freeStyleStarPercents: 280000004600000064000000
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   outfit: {fileID: 11400000, guid: 91b5eb8f2664f4eb5a5981e95c003752, type: 2}

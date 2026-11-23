@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
   m_Name: Level_FreeStyle_3
   m_EditorClassIdentifier: 
-  displayName: 'Free Style: School Days'
-  brief: FREE STYLE! Design your own look!
+  displayName: 'Free Style: On Patrol'
+  brief: FREE STYLE! Style your POLICE look!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -61,7 +61,7 @@ MonoBehaviour:
     distance: 44
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: a068a5fd24a6449139aa0888facb5939, type: 2}
+    - {fileID: 11400000, guid: 2dd8a7b55098142b08b97875640ea500, type: 2}
     - {fileID: 11400000, guid: 344d39c41e12449f99f07f6dbdc78fe2, type: 2}
     greenSide: 0
     paintGates: []
@@ -81,13 +81,26 @@ MonoBehaviour:
     distance: 85
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 1c27d8168d16d488696a9706fa94b03f, type: 2}
-    - {fileID: 11400000, guid: 15a0955f357c342d0a77bd19dc33cef8, type: 2}
+    - {fileID: 11400000, guid: 85781a1b6c3724e159042931f44c652d, type: 2}
+    - {fileID: 11400000, guid: 85781a1b6c3724e159042931f44c652d, type: 2}
     greenSide: 0
     paintGates: []
     coinGates: []
     skinGates: []
     dressColorGates: []
+  - prefab: {fileID: 2086152964585181846, guid: 3b3f7bb5b7de94d3098ef70afb80b309, type: 3}
+    distance: 94
+    lateral: 0
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates:
+    - colorName: Blue
+      color: {r: 0.45, g: 0.6, b: 1, a: 1}
+    - colorName: Lilac
+      color: {r: 0.8, g: 0.65, b: 1, a: 1}
   - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
     distance: 105.5
     lateral: 0
@@ -102,7 +115,7 @@ MonoBehaviour:
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 422f64af387114ed5862358639fd831a, type: 2}
-    - {fileID: 11400000, guid: d33f0f51f68cd47a08f7c5282a2b8340, type: 2}
+    - {fileID: 11400000, guid: 07d54d2d9beaa461eaffd19a88af9df5, type: 2}
     greenSide: 0
     paintGates: []
     coinGates: []
@@ -121,7 +134,7 @@ MonoBehaviour:
     distance: 167
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: fcf1286fd4d704598a08d8000ce0be62, type: 2}
+    - {fileID: 11400000, guid: 53833a21a04fc436d929a6e6a6b71285, type: 2}
     - {fileID: 11400000, guid: f8bd62448b0f34047a69aab918916c92, type: 2}
     greenSide: 0
     paintGates: []

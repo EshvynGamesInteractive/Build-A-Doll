@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Game.Outfit;
 using UnityEngine;
 
 namespace Game.Level
@@ -81,6 +83,85 @@ namespace Game.Level
         [SerializeField] private Game.Outfit.OutfitCatalog outfitCatalog;
         public Game.Outfit.OutfitCatalog OutfitCatalog => outfitCatalog;
 
+        [Serializable]
+        public class OutfitReward
+        {
+            [Tooltip("Outfit unlocked at the end of a loop (Claim / Skip on Level Complete).")]
+            public OutfitVariant outfit;
+            [Tooltip("Name on the bar and the claim popup, e.g. \"Rain Outfit\". Empty = the outfit's name.")]
+            public string title;
+            [Tooltip("Optional picture. Empty = the icon of the outfit's dress or top.")]
+            public Sprite icon;
+            [Tooltip("Free style level played right after the outfit is claimed. Its track is also used for the Your Look level.")]
+            public LevelData freeStyleLevel;
+
+            public string Title => !string.IsNullOrEmpty(title) ? title : outfit != null ? outfit.DisplayName : "New Outfit";
+
+            public Sprite Icon
+            {
+                get
+                {
+                    if (icon != null || outfit == null)
+                        return icon;
+                    Sprite fallback = null;
+                    foreach (var part in outfit.AllParts)
+                    {
+                        if (part == null || part.Icon == null)
+                            continue;
+                        if (part.Slot == OutfitSlot.Dress || part.Slot == OutfitSlot.Top)
+                            return part.Icon;
+                        if (fallback == null)
+                            fallback = part.Icon;
+                    }
+                    return fallback;
+                }
+            }
+        }
+
+        [Header("Outfit flow (tutorial → unlock loops → claim → free style → Your Look)")]
+        [Tooltip("On: Levels is the main track (tutorial levels first, then the unlock levels). Free style levels come only after a claim, " +
+                 "Your Look levels at random. Off: the old fixed order with special levels.")]
+        [SerializeField] private bool useOutfitFlow;
+        [Tooltip("First levels of the list that teach the controls. They don't count toward the unlock bar.")]
+        [SerializeField, Min(0)] private int tutorialLevels = 3;
+        [Tooltip("Main levels (and Your Look levels) per unlocked outfit.")]
+        [SerializeField, Min(1)] private int levelsPerUnlock = 3;
+        [Tooltip("Outfits unlocked in this order, one per loop.")]
+        [SerializeField] private List<OutfitReward> outfitRewards = new();
+        [SerializeField] private int flowSeed = 1301;
+
+        [Header("Your Look (her free style design as a level)")]
+        [SerializeField] private bool yourLookEnabled = true;
+        [Tooltip("Levels after its free style before a design can come back.")]
+        [SerializeField, Min(1)] private int yourLookMinGap = 2;
+        [Tooltip("Levels after its free style when it's forced (on the next progress slot 1 or 2).")]
+        [SerializeField, Min(1)] private int yourLookMaxGap = 6;
+        [SerializeField, Range(0f, 1f)] private float yourLookChance = 0.4f;
+        [Tooltip("Chance per eligible level that an already played design comes back.")]
+        [SerializeField, Range(0f, 1f)] private float yourLookThrowbackChance = 0.15f;
+        [SerializeField] private Game.AI.AiProfile yourLookAi;
+        [SerializeField] private Game.AI.AiProfile yourLookAiLate;
+        [Tooltip("Loop number (1-based) from which Your Look Ai Late is used.")]
+        [SerializeField, Min(1)] private int yourLookLateFromLoop = 4;
+        [Tooltip("Your Look completion coins = the next main level's coins × this.")]
+        [SerializeField, Min(0f)] private float yourLookCoinFactor = 1.5f;
+
+        public bool UseOutfitFlow => useOutfitFlow;
+        public int TutorialLevels => tutorialLevels;
+        public int LevelsPerUnlock => levelsPerUnlock;
+        public IReadOnlyList<OutfitReward> OutfitRewards => outfitRewards;
+        public OutfitReward GetReward(int index) => index >= 0 && index < outfitRewards.Count ? outfitRewards[index] : null;
+        public int FlowSeed => flowSeed;
+        public bool YourLookEnabled => yourLookEnabled;
+        public int YourLookMinGap => yourLookMinGap;
+        public int YourLookMaxGap => Mathf.Max(yourLookMinGap, yourLookMaxGap);
+        public float YourLookChance => yourLookChance;
+        public float YourLookThrowbackChance => yourLookThrowbackChance;
+        public Game.AI.AiProfile YourLookAi => yourLookAi;
+        public Game.AI.AiProfile YourLookAiLate => yourLookAiLate;
+        public int YourLookLateFromLoop => yourLookLateFromLoop;
+        public float YourLookCoinFactor => yourLookCoinFactor;
+
         public int Count => levels.Count;
 
         /// <summary>Progress toward the next special outfit level, as seen after finishing a level.</summary>
@@ -109,6 +190,8 @@ namespace Game.Level
         public bool TryGetSpecialProgress(int index, out SpecialProgress progress)
         {
             progress = default;
+            if (useOutfitFlow)
+                return false; // the outfit flow has its own bar (OutfitFlow.TryGetProgress)
             // Special and free style levels don't count toward the bar.
             if (index < 0 || index >= levels.Count || levels[index] == null || levels[index].IsSpecial || levels[index].IsFreeStyle)
                 return false;
@@ -151,6 +234,8 @@ namespace Game.Level
         public bool IsSpecialAt(int index)
         {
             var level = GetLevel(index);
+            if (useOutfitFlow)
+                return level != null && (level.IsFreeStyle || level.IsYourLook);
             return level != null && level.IsSpecial;
         }
         public GameObject DefaultPlayerPrefab => defaultPlayerPrefab;
@@ -174,6 +259,22 @@ namespace Game.Level
         /// The same index always gives the same level, so Retry replays it and the level map stays consistent.
         /// </summary>
         public LevelData GetLevel(int index)
+        {
+            if (useOutfitFlow && levels.Count > 0)
+                return OutfitFlow.Resolve(this, index, false);
+            return GetMainLevel(index);
+        }
+
+        /// <summary>Level about to be played at this index. With the outfit flow this decides it (free style / Your Look / main) and saves it.</summary>
+        public LevelData GetLevelForPlay(int index)
+        {
+            if (useOutfitFlow && levels.Count > 0)
+                return OutfitFlow.Resolve(this, index, true);
+            return GetMainLevel(index);
+        }
+
+        /// <summary>Main-track level: the list in order, then random from Loop From Level on.</summary>
+        public LevelData GetMainLevel(int index)
         {
             if (levels.Count == 0)
                 return null;

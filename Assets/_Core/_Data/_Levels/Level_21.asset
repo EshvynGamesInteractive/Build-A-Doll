@@ -15,10 +15,12 @@ MonoBehaviour:
   displayName: Maid Cafe
   brief: SPECIAL! Design a MAID outfit!
   showSwipeGuide: 0
-  isSpecial: 1
+  isSpecial: 0
   specialTitle: Maid Outfit
   specialIcon: {fileID: 0}
   specialIconItem: {fileID: 0}
+  isFreeStyle: 0
+  freeStyleStarPercents: 280000004600000064000000
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   outfit: {fileID: 11400000, guid: 79de341d190d84f3aae7163f7c7f160a, type: 2}

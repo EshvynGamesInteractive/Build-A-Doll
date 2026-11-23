@@ -139,7 +139,8 @@ namespace _Core._Level
             CancelInvoke();
             StopFinishSequence();
 
-            var level = database.GetLevel(index);
+            // Outfit flow: a new index is decided here (free style / Your Look / main) and saved. Test levels only look.
+            var level = testLevelNumber > 0 ? database.GetLevel(index) : database.GetLevelForPlay(index);
             if (level == null)
             {
                 Debug.LogError("Level database is empty.", database);
@@ -1321,7 +1322,15 @@ namespace _Core._Level
                     // Picked-up coins were saved the moment they were collected; only the bonus is added here.
                     LevelProgress.AddCoins(result.CompletionCoins);
                     if (testLevelNumber == 0)
+                    {
                         LevelProgress.CurrentLevelIndex = currentIndex + 1;
+                        if (database.UseOutfitFlow)
+                        {
+                            if (current.IsFreeStyle)
+                                SaveFreeStyleDesign();
+                            OutfitFlow.OnLevelPassed(database, currentIndex); // before LevelCompleted: the panel reads the bar
+                        }
+                    }
                 }
 
                 GameEvents.GameplayEvents.LevelCompleted.Raise(result);
@@ -1333,6 +1342,18 @@ namespace _Core._Level
             }
 
             return passed;
+        }
+
+        // Outfit flow: the look she designed on a free style level, saved for a later "Your Look" level.
+        private void SaveFreeStyleDesign()
+        {
+            if (player == null || player.DollOutfit == null)
+                return;
+            var picks = FreeStylePicks();
+            var skin = player.GetComponentInChildren<DollSkin>();
+            var hasDress = player.DollOutfit.TryGetColor(OutfitSlot.Dress, out var dressColor)
+                           || player.DollOutfit.TryGetColor(OutfitSlot.Top, out dressColor);
+            OutfitFlow.SaveDesign(currentIndex, picks, skin != null, skin != null ? skin.Color : Color.white, hasDress, hasDress ? dressColor : Color.white);
         }
 
         private int GetAiScore()

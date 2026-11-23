@@ -15,10 +15,12 @@ MonoBehaviour:
   displayName: Police Officer
   brief: SPECIAL! Design a POLICE outfit!
   showSwipeGuide: 0
-  isSpecial: 1
+  isSpecial: 0
   specialTitle: Police Outfit
   specialIcon: {fileID: 0}
   specialIconItem: {fileID: 0}
+  isFreeStyle: 0
+  freeStyleStarPercents: 280000004600000064000000
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   outfit: {fileID: 11400000, guid: d001fe8af4db0449c815932d577a8c98, type: 2}

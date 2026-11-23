@@ -110,6 +110,7 @@ namespace Game.Level
         [SerializeField] private TargetLook targetLook;
 
         [NonSerialized] private TargetLook _outfitLook;
+        [NonSerialized] private bool _isYourLook;
 
         [Header("AI opponent")]
         [Tooltip("Race an AI on a second ramp. The player wins only by matching the target look better than the AI.")]
@@ -140,6 +141,8 @@ namespace Game.Level
         public bool IsSpecial => isSpecial;
         /// <summary>Free style: the player designs her own look; no target, no AI, always passed.</summary>
         public bool IsFreeStyle => isFreeStyle;
+        /// <summary>Runtime level built from the player's own free style design (outfit flow).</summary>
+        public bool IsYourLook => _isYourLook;
         public string SpecialTitle => !string.IsNullOrEmpty(specialTitle) ? specialTitle : Outfit != null ? Outfit.DisplayName : DisplayName;
 
         /// <summary>Special icon, else the icon of the outfit's dress, top, or first part that has one.</summary>
@@ -233,6 +236,45 @@ namespace Game.Level
                 _outfitLook = TargetLook.CreateFor(outfit, outfitPassPercent, outfitStarPercents, outfitMakeup);
 
             return _outfitLook;
+        }
+
+        /// <summary>
+        /// "Your Look" level (outfit flow): the free style level's track, with her saved design as the target.
+        /// Every gate pair already holds the item she picked and the one she didn't, so the other one is the decoy.
+        /// Gate sides are shuffled. Pass % = all but one item.
+        /// </summary>
+        public static LevelData CreateYourLook(LevelData freeStyleTemplate, IReadOnlyList<OutfitItem> design, bool hasSkin, Color skin,
+            bool hasDressColor, Color dressColor, Game.AI.AiProfile ai, int coins, int seed)
+        {
+            var level = Instantiate(freeStyleTemplate);
+            level.name = freeStyleTemplate.name + "_YourLook";
+            level.hideFlags = HideFlags.DontSave;
+            level._isYourLook = true;
+            level.isFreeStyle = false;
+            level.isSpecial = false;
+            level.showSwipeGuide = false;
+            level.outfit = null;
+            level.displayName = "Your Look";
+            level.brief = "YOUR STYLE IS BACK! Can you recreate it?";
+
+            var count = design.Count;
+            var pass = count <= 1 ? 100 : Mathf.RoundToInt(100f * (count - 1) / count);
+            level.targetLook = TargetLook.CreateForItems(design, pass, new[] { pass, pass, 100 });
+            level.hasAiOpponent = true; // empty profile = the database's default AI
+            level.aiProfile = ai;
+            level.completionCoins = coins;
+            level.hasTargetSkin = hasSkin;
+            level.targetSkin = skin;
+            level.hasTargetDressColor = hasDressColor;
+            level.targetDressColor = dressColor;
+
+            var random = new System.Random(seed);
+            foreach (var entry in level.entries)
+            {
+                if (entry.gateItems != null && entry.gateItems.Length == 2 && random.Next(2) == 0)
+                    entry.gateItems = new[] { entry.gateItems[1], entry.gateItems[0] };
+            }
+            return level;
         }
 
         [ContextMenu("Sort Entries By Distance")]

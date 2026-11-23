@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
   m_Name: Level_FreeStyle_5
   m_EditorClassIdentifier: 
-  displayName: 'Free Style: Fashion Show'
-  brief: FREE STYLE! Design your own look!
+  displayName: 'Free Style: Maid Cafe'
+  brief: FREE STYLE! Style your MAID CAFE look!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -62,12 +62,25 @@ MonoBehaviour:
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 7fb6ae88d65414feabe4904927421f11, type: 2}
-    - {fileID: 11400000, guid: 1cb40c368f3554c7da5fb51be6629c16, type: 2}
+    - {fileID: 11400000, guid: 7fb6ae88d65414feabe4904927421f11, type: 2}
     greenSide: 0
     paintGates: []
     coinGates: []
     skinGates: []
     dressColorGates: []
+  - prefab: {fileID: 2086152964585181846, guid: 3b3f7bb5b7de94d3098ef70afb80b309, type: 3}
+    distance: 49
+    lateral: 0
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates:
+    - colorName: Pink
+      color: {r: 1, g: 0.6, b: 0.8, a: 1}
+    - colorName: Mint
+      color: {r: 0.6, g: 1, b: 0.8, a: 1}
   - prefab: {fileID: 8944613449996735016, guid: b2aa747aed715406ea60ab5b826b5753, type: 3}
     distance: 57.2
     lateral: 0

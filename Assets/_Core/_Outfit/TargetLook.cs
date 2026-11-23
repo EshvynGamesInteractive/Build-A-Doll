@@ -79,6 +79,21 @@ namespace Game.Outfit
             return look;
         }
 
+        /// <summary>A look made at runtime from a list of items (e.g. the player's own free style design).</summary>
+        public static TargetLook CreateForItems(IReadOnlyList<OutfitItem> lookItems, int pass, int[] stars, string lookName = "Your Look")
+        {
+            var look = CreateInstance<TargetLook>();
+            look.name = "Look_Runtime_" + lookName;
+            look.hideFlags = HideFlags.DontSave;
+            look.displayName = lookName;
+            look.items = new OutfitItem[lookItems.Count];
+            for (var i = 0; i < lookItems.Count; i++)
+                look.items[i] = lookItems[i];
+            look.passPercent = pass;
+            look.starPercents = stars;
+            return look;
+        }
+
         public int GetStars(int matchPercent)
         {
             var stars = 0;

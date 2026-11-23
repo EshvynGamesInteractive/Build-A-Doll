@@ -38,6 +38,19 @@ namespace _Core._UI._Views
         [SerializeField] private string specialUnlockedFormat = "{0} UNLOCKED!";
         [SerializeField, Min(0f)] private float specialFillTime = 0.6f;
 
+        [Header("Outfit flow: claim the unlocked outfit")]
+        [Tooltip("Shown when an outfit was just unlocked (outfit flow). Holds the Claim / Skip buttons. Built in the prefab.")]
+        [SerializeField] private GameObject claimRoot;
+        [SerializeField] private Button claimButton;
+        [Tooltip("Skip = the outfit goes into the Gift Box on Home (claimable later).")]
+        [SerializeField] private Button skipButton;
+        [SerializeField] private Image claimIcon;
+        [Tooltip("{0} = outfit name.")]
+        [SerializeField] private TMP_Text claimTitle;
+        [SerializeField] private string claimTitleFormat = "{0} UNLOCKED!";
+        [Tooltip("On: Claim plays a rewarded ad first (placement \"claim_outfit\").")]
+        [SerializeField] private bool claimNeedsAd;
+
         private bool _hasSpecial;
         private float _fillFrom, _fillTo;
         private Coroutine _fill;
@@ -50,6 +63,7 @@ namespace _Core._UI._Views
         {
             SetOutfitMatch(result);
             SetSpecialProgress(result);
+            SetClaim();
             if (spinWheel != null)
                 spinWheel.Prepare(result.CompletionCoins);
         }
@@ -71,33 +85,96 @@ namespace _Core._UI._Views
         private void SetSpecialProgress(LevelResult result)
         {
             var database = FindDatabase();
-            _hasSpecial = database != null && database.TryGetSpecialProgress(result.LevelNumber - 1, out var progress) && Fill(progress);
+            if (database != null && database.UseOutfitFlow)
+            {
+                // Outfit flow: main / Your Look levels fill the bar toward the next outfit reward.
+                _hasSpecial = OutfitFlow.TryGetProgress(result.LevelNumber - 1, out var rewardIndex, out var done, out var needed);
+                var reward = _hasSpecial ? database.GetReward(rewardIndex) : null;
+                _hasSpecial = reward != null && Fill(reward.Title, reward.Icon, done, needed);
+            }
+            else
+            {
+                _hasSpecial = database != null && database.TryGetSpecialProgress(result.LevelNumber - 1, out var progress) && Fill(progress);
+            }
 
             if (specialProgressRoot != null)
                 specialProgressRoot.SetActive(_hasSpecial);
         }
 
-        private bool Fill(LevelDatabase.SpecialProgress progress)
+        private bool Fill(LevelDatabase.SpecialProgress progress) =>
+            Fill(progress.Special.SpecialTitle, progress.Special.SpecialIcon, progress.Done, progress.Needed);
+
+        private bool Fill(string title, Sprite icon, int done, int needed)
         {
-            var title = progress.Special.SpecialTitle;
-            _fillFrom = (float)(progress.Done - 1) / progress.Needed;
-            _fillTo = (float)progress.Done / progress.Needed;
+            if (needed <= 0)
+                return false;
+            _fillFrom = (float)(done - 1) / needed;
+            _fillTo = (float)done / needed;
+            var unlocked = done >= needed;
 
             if (specialProgressFill != null)
                 specialProgressFill.fillAmount = _fillFrom;
             if (specialProgressText != null)
-                specialProgressText.text = progress.Unlocked
+                specialProgressText.text = unlocked
                     ? string.Format(specialUnlockedFormat, title)
-                    : string.Format(specialProgressFormat, title, progress.Done, progress.Needed);
+                    : string.Format(specialProgressFormat, title, done, needed);
             if (specialIcon != null)
             {
-                specialIcon.sprite = progress.Special.SpecialIcon;
+                specialIcon.sprite = icon;
                 specialIcon.enabled = specialIcon.sprite != null;
             }
             if (specialUnlockedObject != null)
                 specialUnlockedObject.SetActive(false); // shown when the fill arrives
-            _unlocked = progress.Unlocked;
+            _unlocked = unlocked;
             return true;
+        }
+
+        // Outfit flow: an outfit was just unlocked → Claim (free style comes next) or Skip (Gift Box).
+        private void SetClaim()
+        {
+            var database = FindDatabase();
+            var pending = database != null && database.UseOutfitFlow ? OutfitFlow.PendingUnlock : -1;
+            var reward = database != null ? database.GetReward(pending) : null;
+            if (claimRoot != null)
+                claimRoot.SetActive(reward != null);
+            if (reward == null)
+                return;
+            if (claimTitle != null)
+                claimTitle.text = string.Format(claimTitleFormat, reward.Title);
+            if (claimIcon != null)
+            {
+                claimIcon.sprite = reward.Icon;
+                claimIcon.enabled = claimIcon.sprite != null;
+            }
+        }
+
+        private void OnClaimClick()
+        {
+            if (claimNeedsAd)
+                Game.Ads.RewardedAds.Show("claim_outfit", DoClaim);
+            else
+                DoClaim();
+        }
+
+        private void DoClaim()
+        {
+            OutfitFlow.ClaimPending();
+            if (claimRoot != null)
+                claimRoot.SetActive(false);
+        }
+
+        private void OnSkipClick()
+        {
+            OutfitFlow.SkipPending();
+            if (claimRoot != null)
+                claimRoot.SetActive(false);
+        }
+
+        // Leaving the panel without choosing = Skip (the outfit waits in the Gift Box).
+        private static void SkipIfUndecided()
+        {
+            if (OutfitFlow.PendingUnlock >= 0)
+                OutfitFlow.SkipPending();
         }
 
         private bool _unlocked;
@@ -154,15 +231,28 @@ namespace _Core._UI._Views
             UIPanelButtonUtility.Bind(retryButton, OnRetryCurrentLevelButtonClick);
             UIPanelButtonUtility.Bind(homeButton, OnHomeButtonClick);
             UIPanelButtonUtility.Bind(nextLevelButton, OnNextLevelButtonClick);
+            if (claimButton != null)
+                UIPanelButtonUtility.Bind(claimButton, OnClaimClick);
+            if (skipButton != null)
+                UIPanelButtonUtility.Bind(skipButton, OnSkipClick);
         }
 
-        private void OnRetryCurrentLevelButtonClick() => GameEvents.GameplayEvents.RequestRestartLevel.Raise();
+        private void OnRetryCurrentLevelButtonClick()
+        {
+            SkipIfUndecided();
+            GameEvents.GameplayEvents.RequestRestartLevel.Raise();
+        }
 
-        private void OnHomeButtonClick() => GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
+        private void OnHomeButtonClick()
+        {
+            SkipIfUndecided();
+            GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
+        }
 
         // The level just passed is already saved, so the map's current level is the next one.
         private void OnNextLevelButtonClick()
         {
+            SkipIfUndecided();
             if (nextOpensLevelMap)
                 GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
             else
