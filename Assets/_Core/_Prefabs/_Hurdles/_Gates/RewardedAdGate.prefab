@@ -69,12 +69,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6164bc1cd3cfb4b54a082626921e8f9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeVisual: {fileID: 0}
+  activeVisual: {fileID: 2249852021731334408}
   redVisual: {fileID: 9124051480571633523}
   greenVisual: {fileID: 2249852021731334408}
   hitEffect: {fileID: 0}
   hitSound: {fileID: 8300000, guid: 4be8e7410b184f079dac50b00f8c0d5b, type: 3}
-  placement: restore_hair
+  restorePlacement: restore_hair
+  restoreText: '<size=140%>AD</size>
+
+    HAIR BACK'
+  coinsPlacement: bonus_coins
+  coinReward: 50
+  coinsText: '<size=140%>AD</size>
+
+    +{0}'
+  sign: {fileID: 0}
 --- !u!1 &5384185534890156574
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,7 +210,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -310,6 +319,10 @@ PrefabInstance:
     - target: {fileID: 6849684579402603512, guid: db690802887314baba2a4af5b68673d3, type: 3}
       propertyPath: m_Name
       value: RedVisual
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849684579402603512, guid: db690802887314baba2a4af5b68673d3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8855282279031586234, guid: db690802887314baba2a4af5b68673d3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -420,7 +433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8749058662255991076, guid: c508721dab37b4f1fa348fe989da2065, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -70,9 +70,6 @@ namespace Game.EditorTools
         }
 
         // Rebuilds one kit prefab only (the others, and any hand edits on them, stay as they are).
-        [MenuItem("Build A Doll/Hurdles/Rebuild Kit_SlideGate Only")]
-        public static void BuildSlideGateOnly() => BuildOne(26);
-
         [MenuItem("Build A Doll/Hurdles/Rebuild Kit_LowBlock Only")]
         public static void BuildLowBlockOnly() => BuildOne(8);
 
@@ -116,7 +113,7 @@ namespace Game.EditorTools
                 case 13: return Static("Kit_Cone", asset, s * 2f, Avoid.SteerAround, 1, 0.4f);
                 case 14: return Static("Kit_Puddle", asset, s * 2f, Avoid.SteerAround, 2, 0.6f, 0.3f);
                 // 19 (Kit_BrickWall) removed 20 Nov 2026: not used.
-                case 20: return Static("Kit_ToyWall", asset, s, Avoid.SteerAround, 3, 0.8f);
+                // 20 (Kit_ToyWall) removed 23 Nov 2026: walls taken out of the levels (ConeHurdle group instead).
 
                 case 9: return Slider("Kit_SlideBlock", asset, s, Avoid.SteerAround, 0.3f, false, false);
                 case 15: return Slider("Kit_SpikeRail_Low", asset, s, Avoid.Jump, 0.5f, true, false);
@@ -128,7 +125,7 @@ namespace Game.EditorTools
                 // 22 (Kit_Crusher) removed 20 Nov 2026.
                 case 24: return Fan("Kit_Fan", asset, s);
                 case 25: return RollerGate("Kit_RollerGate", asset, s);
-                case 26: return SlideGate("Kit_SlideGate", asset, s);
+                // 26 (Kit_SlideGate) removed 23 Nov 2026: replaced by the SlideHurdle group (slide gate + side spike rollers), not rebuilt here.
             }
 
             return null;

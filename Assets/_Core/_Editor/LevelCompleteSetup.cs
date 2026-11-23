@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace Game.EditorTools
 {
     /// <summary>
-    /// Builds the special-outfit progress bar (e.g. "Umbrella 2/3" → "Umbrella UNLOCKED!") into
+    /// Builds the special-outfit progress bar (e.g. "Rain Outfit 2/3" → "Rain Outfit UNLOCKED!") into
     /// LevelCompletePanel > Container > Centre, under the outfit match text, and wires it to LevelCompleteViewBehavior
     /// (specialProgressRoot / Fill / Text / Icon / UnlockedObject). Re-runnable: rebuilds its own "SpecialProgress" object.
     /// Menu: Build A Doll > UI > Add Special Progress Bar To Level Complete.
@@ -42,7 +42,7 @@ namespace Game.EditorTools
                 Place(bar, new Vector2(0.5f, 1f), new Vector2(0f, -190f), new Vector2(620f, 230f));
 
                 var text = NewUi("Text", bar).gameObject.AddComponent<TextMeshProUGUI>();
-                text.text = "Umbrella  1/3";
+                text.text = "Rain Outfit  1/3";
                 text.fontSize = 44f;
                 text.fontStyle = FontStyles.Bold;
                 text.alignment = TextAlignmentOptions.Center;

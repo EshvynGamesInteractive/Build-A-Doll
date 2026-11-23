@@ -1,0 +1,19 @@
+S=[
+dict(num=10,name='City Stroll',outfit='Citizen_V01',brief='Design a CITY outfit!',tier=1,ai='Easy',pass_=75,coins=95,intro='toy_walls',moving=[1],gaps=[['cones'],['coin_gate'],['coins_wave']]),
+dict(num=11,name='Snow Day',outfit='Winter_V01',brief='Design a WINTER outfit!',tier=1,ai='Normal',pass_=80,coins=100,intro='slime_pair',moving=[1],gaps=[['hurdle_row'],['coin_gate'],['slide_gate'],['spinner_bar']]),
+dict(num=12,name='Coffee Date',outfit='Date_V03',brief='Design a COFFEE DATE outfit!',tier=1,ai='Normal',pass_=66,coins=105,intro='puddles',moving=[2],gaps=[['toy_walls','coins_wave'],['coin_gate','hurdle_double']]),
+dict(num=13,name='Night Nurse',outfit='Nurse_V01',brief='SPECIAL! Design a NURSE outfit!',special='Nurse Outfit',tier=2,ai='Normal',pass_=75,coins=150,intro='spinner_bar',moving=[0,2],gaps=[['closing_doors','slide_gate'],['coin_gate','spinner_cross'],['coins_wave']]),
+dict(num=14,name='Class President',outfit='Uniform_V01',brief='Design a SCHOOL UNIFORM outfit!',tier=2,ai='Normal',pass_=80,coins=110,intro='sweep_long',moving=[1,3],gaps=[['spinner_cross'],['coin_gate'],['hurdle_row'],['paddles']]),
+dict(num=15,name='Hero Time',outfit='Heroine_V01',brief='Design a SUPERHERO outfit!',tier=2,ai='Normal',pass_=75,coins=115,intro='paddles',moving=[0,2],gaps=[['spike_roller','slide_gate'],['coin_gate','spinner_tri'],['punchers']]),
+dict(num=16,name='Sleepover',outfit='Sleep_V03',brief='Design a PYJAMA PARTY outfit!',tier=2,ai='Normal',pass_=66,coins=120,intro='slime_pair',moving=[0,2],gaps=[['roller_gate','sweep_short','spinner_bar'],['coin_gate','spike_rail_wide','closing_doors']]),
+dict(num=17,name='Police Officer',outfit='Police_V01',brief='SPECIAL! Design a POLICE outfit!',special='Police Outfit',tier=2,ai='Hard',pass_=80,coins=160,intro='bollard_gate',moving=[1,3],guard_chunks={0:'roadblock',2:'roadblock'},gaps=[[],['coin_gate'],[],['hurdle_row']]),
+dict(num=18,name='Undercover',outfit='Killer_V01',brief='Design a SPY outfit!',tier=3,ai='Normal',pass_=80,coins=125,intro='closing_pillars',moving=[1,3],gaps=[['slide_block'],['coin_gate'],['pendulum'],['spinner_tri']]),
+dict(num=19,name='Neon City',outfit='Futuristic_V01',brief='Design a FUTURISTIC outfit!',tier=3,ai='Hard',pass_=66,coins=130,intro='spike_roller',moving=[0,2],gaps=[['closing_pillars','pendulum_pair','slide_gate'],['coin_gate','hurdle_double','slide_block']]),
+dict(num=20,name='Game On',outfit='Squid_V01',brief='Design a GAME SHOW outfit!',tier=3,ai='Hard',pass_=75,coins=135,intro='spinner_cross',moving=[0,1,3],gaps=[['punchers'],['coin_gate','pendulum'],['spike_rail_wide']]),
+dict(num=21,name='Maid Cafe',outfit='Maid_V01',brief='SPECIAL! Design a MAID outfit!',special='Maid Outfit',tier=3,ai='Hard',pass_=80,coins=170,intro='coins_wave',moving=[0,2,3],gaps=[['closing_doors'],['coin_gate'],['slide_gate'],['pendulum']]),
+dict(num=22,name='Skate Park',outfit='Skate_V05',brief='Design a SKATER outfit!',tier=3,ai='Hard',pass_=80,coins=140,first=40,last=212,intro='sweep_short',moving=[0,1,3],guard_chunks={0:'hurdle_row',2:'spike_rail_wide',4:'hurdle_row'},gaps=[]),
+dict(num=23,name='Tennis Club',outfit='Tennis_V01',brief='Design a TENNIS outfit!',tier=3,ai='Hard',pass_=80,coins=145,first=40,last=212,intro='spinner_tri',moving=[0,1,3],guard_chunks={1:'closing_pillars',3:'slide_block',4:'pendulum'},gaps=[]),
+dict(num=24,name='Beach Day',outfit='Bikini_V01',brief='Design a BEACH outfit!',tier=3,ai='Hard',pass_=80,coins=150,intro='puddles',moving=[0,1,3],guard_chunks={2:'slime_pair'},gaps=[['spinner_cross'],['coin_gate'],[],['slide_gate']]),
+dict(num=25,name='Basketball Star',outfit='Basketball_V01',brief='SPECIAL! Design a BASKETBALL outfit!',special='Basketball Outfit',tier=3,ai='Expert',pass_=80,coins=200,first=40,last=212,intro='coins_wave',moving=[0,1,3],guard_chunks={0:'hurdle_row',2:'closing_doors',4:'hurdle_row'},gaps=[]),
+]
+for s in S: s['pass']=s.pop('pass_')

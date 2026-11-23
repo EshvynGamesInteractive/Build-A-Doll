@@ -22,6 +22,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4eddb6a1ae114039a6ddc239a8fecbf0, type: 2}
   - {fileID: 11400000, guid: cc456298da304403827b5a533605ebf1, type: 2}
   - {fileID: 11400000, guid: e6531f2f01404c7ea5de4e738015acc5, type: 2}
+  - {fileID: 11400000, guid: aa0c69e83efa4c46b29c83acab5654a3, type: 2}
+  - {fileID: 11400000, guid: 6f7bda5f1a70465482298e1d7194c257, type: 2}
+  - {fileID: 11400000, guid: 2b8c914704da443287dd836fe757ed77, type: 2}
+  - {fileID: 11400000, guid: 21f82aa6d8a049159dd8e7c2aac81ea2, type: 2}
+  - {fileID: 11400000, guid: 0543191fbc08411c81cc2351c41b7fed, type: 2}
+  - {fileID: 11400000, guid: 9ed252bd4eb24c69bc7860ec728cb495, type: 2}
+  - {fileID: 11400000, guid: 6e6cd227b06643f99a5e187b6420550c, type: 2}
+  - {fileID: 11400000, guid: 31618b89fc864917a432d0ab3db6b53b, type: 2}
+  - {fileID: 11400000, guid: 7f5c62f0f08d471eb547ea2573cb02d6, type: 2}
+  - {fileID: 11400000, guid: 56af6c4e225f48a09d3403e24cba99d5, type: 2}
+  - {fileID: 11400000, guid: 39a0684572034ffc8e4e7c5931caaf1c, type: 2}
+  - {fileID: 11400000, guid: e473d225a3484ba2832b3bc8bda0e8c7, type: 2}
+  - {fileID: 11400000, guid: 3d508c49b1fc49178ea5f71618d14977, type: 2}
+  - {fileID: 11400000, guid: f868fc1794604a4c951940396204ebc9, type: 2}
+  - {fileID: 11400000, guid: 5c7bebf418c7445a9b3949268baf6a4a, type: 2}
+  - {fileID: 11400000, guid: 048517520bd04db5a378e739eb5533fc, type: 2}
   defaultPlayerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   defaultDemoPrefab: {fileID: 7866513120635556711, guid: f5a4dad8c9f104806989a095d5f710b4, type: 3}
   demoShowTime: 3
