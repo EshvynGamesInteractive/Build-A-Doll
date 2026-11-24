@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
   m_Name: Level_07
   m_EditorClassIdentifier: 
-  displayName: Cherry Blossom
-  brief: Design a KIMONO outfit!
+  displayName: Puppet Show
+  brief: Design a PUPPET SHOW outfit!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -21,16 +21,19 @@ MonoBehaviour:
   specialIconItem: {fileID: 0}
   isFreeStyle: 0
   freeStyleStarPercents: 280000004600000064000000
+  themeName: ''
+  themeLook: {fileID: 0}
+  styledLookOf: {fileID: 0}
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
-  outfit: {fileID: 11400000, guid: fc52a7b6916db4b6ba5165fcaaea0388, type: 2}
+  outfit: {fileID: 11400000, guid: bdfdcb10d738f4b088e3137d2fab91f6, type: 2}
   outfitPassPercent: 75
   outfitStarPercents: 4b0000004b00000064000000
   outfitMakeup:
   - zone: 0
     name: Red
     color: {r: 0.85, g: 0.1, b: 0.15, a: 1}
-  gateOrder: 040000000000000005000000
+  gateOrder: 030000000200000000000000050000000c000000
   hasTargetSkin: 0
   targetSkin: {r: 1, g: 1, b: 1, a: 1}
   hasTargetDressColor: 0
@@ -39,10 +42,10 @@ MonoBehaviour:
   hasAiOpponent: 1
   aiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
   startingOutfit:
-  - {fileID: 11400000, guid: efe9b8640e9404d42847392346e1d73d, type: 2}
-  - {fileID: 11400000, guid: 5de59415d3d84417693b07aec5c60d82, type: 2}
-  - {fileID: 11400000, guid: 2a6d757d5327141f2807acec29d91b9a, type: 2}
-  - {fileID: 11400000, guid: a157d8f47896b47e684d6889d2801a38, type: 2}
+  - {fileID: 11400000, guid: 95867919c50c94401866fc54e53ac0eb, type: 2}
+  - {fileID: 11400000, guid: fd638087c0a744707990c3e66e76d3f9, type: 2}
+  - {fileID: 11400000, guid: 5ea5d4d6f2c04462180c3deb9b6e5399, type: 2}
+  - {fileID: 11400000, guid: 75ce5c24abf6944e3bf4ccf9efe92caa, type: 2}
   entries:
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
     distance: 10
@@ -66,8 +69,8 @@ MonoBehaviour:
     distance: 42
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: fb568f20399504030aefe8d06b393856, type: 2}
-    - {fileID: 11400000, guid: 8c2518389d9644203b4e0f0403882e84, type: 2}
+    - {fileID: 11400000, guid: 1049a2949f67b4e3caa8ec04994aced8, type: 2}
+    - {fileID: 11400000, guid: 43f792f392504451f89b85bafa7fcddb, type: 2}
     greenSide: 1
     paintGates: []
     coinGates: []
@@ -100,12 +103,23 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 81
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: 5ebc01de88e494641ab4bf5f8d3cc415, type: 2}
+    - {fileID: 11400000, guid: 07040d03f37ef4fc080ccac8227e2ca5, type: 2}
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates: []
   - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
     distance: 90
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 582236bea26bf4c7f981c17dbe8dd4b2, type: 2}
-    - {fileID: 11400000, guid: 980be92cb416746a9b865ddde0046eca, type: 2}
+    - {fileID: 11400000, guid: 10d16a6f45bc3422bb03146dd4650d11, type: 2}
+    - {fileID: 11400000, guid: a0c538734c7f04e24afcfcb67c2d6fc4, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []
@@ -175,11 +189,22 @@ MonoBehaviour:
     skinGates: []
     dressColorGates: []
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 157
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: 3a0eaef2c495d405fa27e9b1e764322f, type: 2}
+    - {fileID: 11400000, guid: b45797d9cf1934ed6ba65398dbc72848, type: 2}
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates: []
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
     distance: 166
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: da5d85409632e4077ba4e45eac66ca4d, type: 2}
-    - {fileID: 11400000, guid: ed39ca7df8bca45f0980153d1baaa9e8, type: 2}
+    - {fileID: 11400000, guid: 453764254a1e544258f79b6ca8da296b, type: 2}
+    - {fileID: 11400000, guid: b56716b78f00f491ca2b5bc1dd51c6ee, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []

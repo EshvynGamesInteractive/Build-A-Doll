@@ -916,6 +916,15 @@ namespace _Core._Level
             // 3. Result: saves progress and fires LevelCompleted / LevelFailed, which starts the win / lose animations.
             var passed = DecideResult();
 
+            // Comparison over: confetti on the winner's side of the stage (free style: she stands in the middle, so both).
+            if (_stageLayout != null)
+            {
+                if (current.IsFreeStyle)
+                    _stageLayout.PlayConfetti(true, true);
+                else
+                    _stageLayout.PlayConfetti(passed, !passed && hasAi);
+            }
+
             var playerAnimator = player.Animator != null ? player.Animator : player.GetComponentInChildren<Game.Player.RunnerAnimator>();
             if (playerAnimator != null)
                 yield return playerAnimator.WaitForResultAnimation(database.ResultAnimMaxTime);
@@ -1125,6 +1134,8 @@ namespace _Core._Level
 
             SetSceneStagesActive(stage);
             stage.TryGetComponent(out _stageLayout);
+            if (_stageLayout != null)
+                _stageLayout.StopConfetti();
 
             if (!TryGetTrackBounds(stage.transform, out var min, out var max))
             {
@@ -1343,6 +1354,10 @@ namespace _Core._Level
                         }
                     }
                 }
+
+                // Theme plan: her design is saved on every pass, replays included, so its styled level follows the latest look.
+                if (database.UseThemePlan && current.IsFreeStyle)
+                    ThemeDesigns.Save(current, FreeStylePicks());
 
                 GameEvents.GameplayEvents.LevelCompleted.Raise(result);
             }

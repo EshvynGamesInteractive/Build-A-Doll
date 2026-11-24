@@ -21,6 +21,9 @@ MonoBehaviour:
   specialIconItem: {fileID: 0}
   isFreeStyle: 0
   freeStyleStarPercents: 280000004600000064000000
+  themeName: ''
+  themeLook: {fileID: 0}
+  styledLookOf: {fileID: 0}
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   outfit: {fileID: 11400000, guid: 62cff47d297a0486bb520bad71acdac9, type: 2}
@@ -36,8 +39,10 @@ MonoBehaviour:
   hasAiOpponent: 1
   aiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
   startingOutfit:
-  - {fileID: 11400000, guid: 832b10d8c20e04a8abb729a67a9ac22e, type: 2}
-  - {fileID: 11400000, guid: e979a7ae83ca6413c917f29e1aafabdc, type: 2}
+  - {fileID: 11400000, guid: 1cab2222202994e8e9ce282a9a5aa94f, type: 2}
+  - {fileID: 11400000, guid: ef8b7c2d3664c43ddb343b894b0e71ce, type: 2}
+  - {fileID: 11400000, guid: 5ea5d4d6f2c04462180c3deb9b6e5399, type: 2}
+  - {fileID: 11400000, guid: 75ce5c24abf6944e3bf4ccf9efe92caa, type: 2}
   entries:
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
     distance: 10
@@ -61,7 +66,7 @@ MonoBehaviour:
     distance: 46
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: fae4c54d5cf584e26a5cf27644848e74, type: 2}
+    - {fileID: 11400000, guid: fe27a16f481724677bb200091767d5fb, type: 2}
     - {fileID: 11400000, guid: a068a5fd24a6449139aa0888facb5939, type: 2}
     greenSide: 1
     paintGates: []
@@ -91,7 +96,7 @@ MonoBehaviour:
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 15a0955f357c342d0a77bd19dc33cef8, type: 2}
-    - {fileID: 11400000, guid: bc8ab9152914c4611b68f886d9f6a25c, type: 2}
+    - {fileID: 11400000, guid: 853b8facca69042fab978b1f3cc19644, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []
@@ -123,7 +128,7 @@ MonoBehaviour:
     distance: 128
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: d6051a5a4b6eb4d1a8f1a5118354079b, type: 2}
+    - {fileID: 11400000, guid: 55834a8d0a3ce456c808e2e27328a01f, type: 2}
     - {fileID: 11400000, guid: 422f64af387114ed5862358639fd831a, type: 2}
     greenSide: 1
     paintGates: []
@@ -152,7 +157,7 @@ MonoBehaviour:
     distance: 169
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 33a89507a71144aecb0be815b175e547, type: 2}
+    - {fileID: 11400000, guid: 8203914c5170b4897b1c9eb40c6436a9, type: 2}
     - {fileID: 11400000, guid: f8bd62448b0f34047a69aab918916c92, type: 2}
     greenSide: 1
     paintGates: []

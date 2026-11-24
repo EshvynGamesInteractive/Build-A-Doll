@@ -1,0 +1,190 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Game.Level
+{
+    /// <summary>
+    /// Goes on the root of a finish stage prefab. Marks where the player and the AI stand on this stage
+    /// (and, optionally, where the camera sits), so every stage can have its own layout.
+    /// Each spot's blue (forward) arrow is the way the doll faces. Any spot left empty is worked out
+    /// automatically, as before. Spots are children of the stage, so they follow its Stage Size resize.
+    /// </summary>
+    [DisallowMultipleComponent]
+    public class FinishStage : MonoBehaviour
+    {
+        [Tooltip("Where the player stands. Blue arrow = the way she faces.")]
+        [SerializeField] private Transform playerSpot;
+        
+        [Tooltip("Where the AI stands. Blue arrow = the way she faces.")]
+        [SerializeField] private Transform aiSpot;
+        
+        [Tooltip("Optional. The camera moves to this exact position and rotation for the comparison. Empty = it frames the two spots automatically.")]
+        [SerializeField] private Transform cameraPoint;
+        
+        [SerializeField] private ParticleSystem confettiPlayerSideParticles;
+        [SerializeField] private ParticleSystem confettiAISideParticles;
+
+        [Header("Walk paths (optional)")]
+        [Tooltip("Points the player walks through, in order, from her finish line to her spot. Empty = the path is worked out automatically.")]
+        [SerializeField] private List<Transform> playerWaypoints = new();
+
+        [Tooltip("Points the AI walks through, in order, from its finish line to its spot. Empty = the path is worked out automatically.")]
+        [SerializeField] private List<Transform> aiWaypoints = new();
+
+        public Transform PlayerSpot => playerSpot;
+        public Transform AiSpot => aiSpot;
+        public Transform CameraPoint => cameraPoint;
+        public IReadOnlyList<Transform> PlayerWaypoints => playerWaypoints;
+        public IReadOnlyList<Transform> AiWaypoints => aiWaypoints;
+
+        /// <summary>Adds a waypoint child to the end of the player's path (in front of her spot, or after the last waypoint).</summary>
+        [ContextMenu("Add Player Waypoint")]
+        public void AddPlayerWaypoint() => AddWaypoint(playerWaypoints, playerSpot, "PlayerWaypoint");
+
+        /// <summary>Adds a waypoint child to the end of the AI's path (in front of its spot, or after the last waypoint).</summary>
+        [ContextMenu("Add AI Waypoint")]
+        public void AddAiWaypoint() => AddWaypoint(aiWaypoints, aiSpot, "AiWaypoint");
+
+        private void AddWaypoint(List<Transform> list, Transform spot, string prefix)
+        {
+            list.RemoveAll(t => t == null);
+            Vector3 local;
+            if (list.Count > 0)
+                local = transform.InverseTransformPoint(list[list.Count - 1].position) + Vector3.forward * 1f;
+            else if (spot != null)
+                local = transform.InverseTransformPoint(spot.position) + Vector3.back * 2f;
+            else
+                local = Vector3.zero;
+
+            list.Add(CreateChild($"{prefix}_{list.Count + 1}", local, Quaternion.identity));
+        }
+
+        /// <summary>
+        /// Adds PlayerSpot / AiSpot children on top of the stage for any that are empty: player on the left,
+        /// AI on the right (seen from the track), both facing back down the track.
+        /// </summary>
+        [ContextMenu("Create Missing Spots")]
+        public void CreateMissingSpots() => CreateMissingSpots(-1f);
+
+        /// <param name="playerSide">-1 = player on the left, +1 = player on the right (seen from the track).</param>
+        public void CreateMissingSpots(float playerSide)
+        {
+            GetLocalBounds(out var min, out var max);
+            var centre = (min + max) * 0.5f;
+            var offset = (max.x - min.x) * 0.2f;
+            var facing = Quaternion.LookRotation(Vector3.back, Vector3.up);
+
+            if (playerSpot == null)
+                playerSpot = CreateChild("PlayerSpot", new Vector3(centre.x + playerSide * offset, max.y, centre.z), facing);
+            if (aiSpot == null)
+                aiSpot = CreateChild("AiSpot", new Vector3(centre.x - playerSide * offset, max.y, centre.z), facing);
+        }
+
+        /// <summary>Adds a CameraPoint child in front of the stage, looking at its middle, if there isn't one.</summary>
+        [ContextMenu("Create Camera Point")]
+        public void CreateCameraPoint()
+        {
+            if (cameraPoint != null)
+                return;
+
+            GetLocalBounds(out var min, out var max);
+            var look = new Vector3((min.x + max.x) * 0.5f, max.y + 1.2f, (min.z + max.z) * 0.5f);
+            var width = Mathf.Max(max.x - min.x, 2f);
+            var position = new Vector3(look.x, max.y + width * 0.35f, min.z - width * 1.1f);
+            cameraPoint = CreateChild("CameraPoint", position, Quaternion.LookRotation(look - position, Vector3.up));
+        }
+
+        private Transform CreateChild(string childName, Vector3 localPosition, Quaternion localRotation)
+        {
+            var child = new GameObject(childName).transform;
+            child.SetParent(transform, false);
+            child.localPosition = localPosition;
+            child.localRotation = localRotation;
+#if UNITY_EDITOR
+            UnityEditor.Undo.RegisterCreatedObjectUndo(child.gameObject, $"Create {childName}");
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
+            return child;
+        }
+
+        // Bounds of the stage's renderers in its own local space (a 4 x 4 m square if it has none).
+        private void GetLocalBounds(out Vector3 min, out Vector3 max)
+        {
+            min = Vector3.one * float.MaxValue;
+            max = Vector3.one * float.MinValue;
+            var found = false;
+
+            foreach (var r in GetComponentsInChildren<Renderer>(true))
+            {
+                if (r is ParticleSystemRenderer || r is TrailRenderer || r is LineRenderer)
+                    continue;
+
+                var b = r.bounds;
+                for (var i = 0; i < 8; i++)
+                {
+                    var corner = new Vector3(
+                        (i & 1) == 0 ? b.min.x : b.max.x,
+                        (i & 2) == 0 ? b.min.y : b.max.y,
+                        (i & 4) == 0 ? b.min.z : b.max.z);
+                    var local = transform.InverseTransformPoint(corner);
+                    min = Vector3.Min(min, local);
+                    max = Vector3.Max(max, local);
+                }
+                found = true;
+            }
+
+            if (!found)
+            {
+                min = new Vector3(-2f, 0f, -2f);
+                max = new Vector3(2f, 0f, 2f);
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            DrawSpot(playerSpot, new Color(0.2f, 0.6f, 1f));
+            DrawSpot(aiSpot, new Color(1f, 0.35f, 0.35f));
+            DrawPath(playerWaypoints, playerSpot, new Color(0.2f, 0.6f, 1f));
+            DrawPath(aiWaypoints, aiSpot, new Color(1f, 0.35f, 0.35f));
+
+            if (cameraPoint != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireCube(cameraPoint.position, Vector3.one * 0.4f);
+                Gizmos.DrawRay(cameraPoint.position, cameraPoint.forward * 2f);
+            }
+        }
+
+        private static void DrawPath(List<Transform> points, Transform spot, Color color)
+        {
+            if (points == null || points.Count == 0)
+                return;
+
+            Gizmos.color = color;
+            Vector3? previous = null;
+            foreach (var point in points)
+            {
+                if (point == null)
+                    continue;
+                Gizmos.DrawWireCube(point.position + Vector3.up * 0.1f, Vector3.one * 0.25f);
+                if (previous.HasValue)
+                    Gizmos.DrawLine(previous.Value + Vector3.up * 0.1f, point.position + Vector3.up * 0.1f);
+                previous = point.position;
+            }
+
+            if (previous.HasValue && spot != null)
+                Gizmos.DrawLine(previous.Value + Vector3.up * 0.1f, spot.position + Vector3.up * 0.1f);
+        }
+
+        private static void DrawSpot(Transform spot, Color color)
+        {
+            if (spot == null)
+                return;
+
+            Gizmos.color = color;
+            Gizmos.DrawWireSphere(spot.position + Vector3.up * 0.05f, 0.4f);
+            Gizmos.DrawLine(spot.position, spot.position + Vector3.up * 1.6f);
+            Gizmos.DrawRay(spot.position + Vector3.up * 0.05f, Vector3.ProjectOnPlane(spot.forward, Vector3.up).normalized * 0.8f);
+        }
+    }
+}

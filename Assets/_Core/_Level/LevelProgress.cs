@@ -53,6 +53,7 @@ namespace Game.Level
             PlayerPrefs.DeleteKey(GameConstants.CurrentLevelKey);
             PlayerPrefs.DeleteKey(GameConstants.TotalCoinsKey);
             OutfitFlow.Reset();
+            ThemeDesigns.ResetAll();
             PlayerPrefs.Save();
             GameEvents.GameplayEvents.WalletChanged.Raise(0);
         }

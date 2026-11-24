@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
   m_Name: Level_13
   m_EditorClassIdentifier: 
-  displayName: Night Nurse
-  brief: SPECIAL! Design a NURSE outfit!
+  displayName: 'My Nurse Look'
+  brief: YOUR NURSE LOOK! Can you recreate it?
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: Nurse Outfit
@@ -21,6 +21,9 @@ MonoBehaviour:
   specialIconItem: {fileID: 0}
   isFreeStyle: 0
   freeStyleStarPercents: 280000004600000064000000
+  themeName: ''
+  themeLook: {fileID: 0}
+  styledLookOf: {fileID: 11400000, guid: 852f09ad871c48b193f629036f92e8d1, type: 2}
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   outfit: {fileID: 11400000, guid: f66081653a53b4173bf9c8931c331803, type: 2}
@@ -62,7 +65,7 @@ MonoBehaviour:
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 278a87f527cdd4fb1bab29834be2fcb4, type: 2}
-    - {fileID: 11400000, guid: fb568f20399504030aefe8d06b393856, type: 2}
+    - {fileID: 11400000, guid: 5b168ee34359e4009a4d8e3f1c4f7a9b, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []
@@ -99,7 +102,7 @@ MonoBehaviour:
     distance: 100
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 55834a8d0a3ce456c808e2e27328a01f, type: 2}
+    - {fileID: 11400000, guid: 5e5796ecff58d4bd090a1fc337e432cd, type: 2}
     - {fileID: 11400000, guid: 7566cdc1b4d0b4b3187cd1647cb01469, type: 2}
     greenSide: 1
     paintGates: []
@@ -142,7 +145,7 @@ MonoBehaviour:
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 4334cb1c80ef94ff4b393cc268901072, type: 2}
-    - {fileID: 11400000, guid: 14c03cb9447b8436aa66f0b6894d33a0, type: 2}
+    - {fileID: 11400000, guid: c4690742e4f4a42b69069606ee8ad4a5, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []

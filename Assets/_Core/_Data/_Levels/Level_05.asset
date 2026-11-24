@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c96d3c9fc6e46e98cd565346b51770, type: 3}
   m_Name: Level_05
   m_EditorClassIdentifier: 
-  displayName: Bunny Hop
-  brief: Design a COSTUME PARTY outfit!
+  displayName: Court Time
+  brief: Design a BASKETBALL outfit!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -21,13 +21,16 @@ MonoBehaviour:
   specialIconItem: {fileID: 0}
   isFreeStyle: 0
   freeStyleStarPercents: 280000004600000064000000
+  themeName: ''
+  themeLook: {fileID: 0}
+  styledLookOf: {fileID: 0}
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
-  outfit: {fileID: 11400000, guid: 8cd7751c675ee4073af0b98da07d8b79, type: 2}
+  outfit: {fileID: 11400000, guid: dfdab944f840e47fd93af4d2c5567d2d, type: 2}
   outfitPassPercent: 75
   outfitStarPercents: 4b0000004b00000064000000
   outfitMakeup: []
-  gateOrder: 04000000000000000500000008000000
+  gateOrder: 030000000200000000000000050000000800000009000000
   hasTargetSkin: 1
   targetSkin: {r: 0.9764706, g: 0.8627451, b: 0.78039217, a: 1}
   hasTargetDressColor: 0
@@ -63,12 +66,23 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 37
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: 71a20902c1dbb4106b0da53e044b5fec, type: 2}
+    - {fileID: 11400000, guid: 19c8e446ce8fa42929fedd285f797c21, type: 2}
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates: []
   - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
     distance: 46
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 1cb40c368f3554c7da5fb51be6629c16, type: 2}
-    - {fileID: 11400000, guid: 7fb6ae88d65414feabe4904927421f11, type: 2}
+    - {fileID: 11400000, guid: 39dad5c1e8a4746639e521f1c5f9ce60, type: 2}
+    - {fileID: 11400000, guid: 79ab12afbc7564445a1c980324dcc1ff, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []
@@ -87,8 +101,8 @@ MonoBehaviour:
     distance: 76
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: ccbbcc341c9044dc3b4ec2431182241b, type: 2}
-    - {fileID: 11400000, guid: a84d9c3ffad12498993a5610cd88d2f4, type: 2}
+    - {fileID: 11400000, guid: 2426a53df9b0b42c5a79c06a2e9f1fb2, type: 2}
+    - {fileID: 11400000, guid: cc6ec8297f3b249c1ac6f21331dc4c8a, type: 2}
     greenSide: 1
     paintGates: []
     coinGates: []
@@ -122,11 +136,22 @@ MonoBehaviour:
     skinGates: []
     dressColorGates: []
   - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 125
+    lateral: 0
+    gateItems:
+    - {fileID: 11400000, guid: 9481180ac01694b5f80ce3b83694446b, type: 2}
+    - {fileID: 11400000, guid: cdabb5ce8e10644ef9db68d200db1cce, type: 2}
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates: []
+  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
     distance: 134
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: cdabb5ce8e10644ef9db68d200db1cce, type: 2}
-    - {fileID: 11400000, guid: 8d7e6a042cd8c4eafae9e01bd9094017, type: 2}
+    - {fileID: 11400000, guid: a5837a11a6eb2478b88b8daaa70384cf, type: 2}
+    - {fileID: 11400000, guid: 34f8b9fbc0b11451f8649103f1d59fd4, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []
@@ -154,8 +179,8 @@ MonoBehaviour:
     distance: 178
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: 34f8b9fbc0b11451f8649103f1d59fd4, type: 2}
-    - {fileID: 11400000, guid: 90566574da86a4af4b7636f50fe1b6e9, type: 2}
+    - {fileID: 11400000, guid: 870bde2d663bc43e4bed6f5580aab711, type: 2}
+    - {fileID: 11400000, guid: 70f6c70ed52d14711ad2366ffac45caa, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []

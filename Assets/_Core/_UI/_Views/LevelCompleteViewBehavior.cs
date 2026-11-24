@@ -63,7 +63,7 @@ namespace _Core._UI._Views
         {
             SetOutfitMatch(result);
             SetSpecialProgress(result);
-            SetClaim();
+            SetClaim(result);
             if (spinWheel != null)
                 spinWheel.Prepare(result.CompletionCoins);
         }
@@ -85,7 +85,13 @@ namespace _Core._UI._Views
         private void SetSpecialProgress(LevelResult result)
         {
             var database = FindDatabase();
-            if (database != null && database.UseOutfitFlow)
+            if (database != null && database.UseThemePlan)
+            {
+                // Theme plan: levels since the last free style fill the bar toward the next one ("Nurse Free Style 2/3").
+                _hasSpecial = database.TryGetThemeProgress(result.LevelNumber - 1, out var freeStyle, out var done, out var needed)
+                              && Fill(freeStyle.ThemeName + " Free Style", freeStyle.ThemeIcon, done, needed);
+            }
+            else if (database != null && database.UseOutfitFlow)
             {
                 // Outfit flow: main / Your Look levels fill the bar toward the next outfit reward.
                 _hasSpecial = OutfitFlow.TryGetProgress(result.LevelNumber - 1, out var rewardIndex, out var done, out var needed);
@@ -130,9 +136,32 @@ namespace _Core._UI._Views
         }
 
         // Outfit flow: an outfit was just unlocked → Claim (free style comes next) or Skip (gone for good).
-        private void SetClaim()
+        private int _claimIndex = -1;
+        private bool _themeClaimPending;
+
+        private void SetClaim(LevelResult result)
         {
             var database = FindDatabase();
+            if (database != null && database.UseThemePlan)
+            {
+                // Theme plan: the next level is a free style level she hasn't reached yet → Claim (play it next) or Skip.
+                _claimIndex = result.LevelNumber - 1;
+                _themeClaimPending = database.TryGetNextFreeStyle(_claimIndex, out var freeStyle)
+                                     && LevelProgress.CurrentLevelIndex == _claimIndex + 1;
+                if (claimRoot != null)
+                    claimRoot.SetActive(_themeClaimPending);
+                if (!_themeClaimPending)
+                    return;
+                if (claimTitle != null)
+                    claimTitle.text = string.Format(claimTitleFormat, freeStyle.ThemeName + " Free Style");
+                if (claimIcon != null)
+                {
+                    claimIcon.sprite = freeStyle.ThemeIcon;
+                    claimIcon.enabled = claimIcon.sprite != null;
+                }
+                return;
+            }
+            _themeClaimPending = false;
             var pending = database != null && database.UseOutfitFlow ? OutfitFlow.PendingUnlock : -1;
             var reward = database != null ? database.GetReward(pending) : null;
             if (claimRoot != null)
@@ -158,21 +187,41 @@ namespace _Core._UI._Views
 
         private void DoClaim()
         {
-            OutfitFlow.ClaimPending();
+            if (_themeClaimPending)
+                _themeClaimPending = false; // the free style level is simply the next level
+            else
+                OutfitFlow.ClaimPending();
             if (claimRoot != null)
                 claimRoot.SetActive(false);
         }
 
         private void OnSkipClick()
         {
-            OutfitFlow.SkipPending();
+            if (_themeClaimPending)
+                SkipThemeFreeStyle();
+            else
+                OutfitFlow.SkipPending();
             if (claimRoot != null)
                 claimRoot.SetActive(false);
         }
 
-        // Leaving the panel without choosing = Skip (the popup blocks the panel, so this is only a safety net).
-        private static void SkipIfUndecided()
+        // Theme plan Skip: the free style level is passed over (it stays on the map, playable any time; its styled level
+        // uses the theme's default look until she designs one).
+        private void SkipThemeFreeStyle()
         {
+            _themeClaimPending = false;
+            if (LevelProgress.CurrentLevelIndex == _claimIndex + 1)
+                LevelProgress.CurrentLevelIndex = _claimIndex + 2;
+        }
+
+        // Leaving the panel without choosing = Skip (the popup blocks the panel, so this is only a safety net).
+        private void SkipIfUndecided()
+        {
+            if (_themeClaimPending)
+            {
+                SkipThemeFreeStyle();
+                return;
+            }
             if (OutfitFlow.PendingUnlock >= 0)
                 OutfitFlow.SkipPending();
         }

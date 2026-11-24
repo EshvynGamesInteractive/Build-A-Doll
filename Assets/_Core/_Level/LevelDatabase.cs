@@ -146,7 +146,78 @@ namespace Game.Level
         [Tooltip("Your Look completion coins = the next main level's coins × this.")]
         [SerializeField, Min(0f)] private float yourLookCoinFactor = 1.5f;
 
-        public bool UseOutfitFlow => useOutfitFlow;
+        [Header("Theme plan (24 Nov 2026): fixed list with free style + styled levels")]
+        [Tooltip("On: Levels is played in order. A free style level (Is Free Style, Theme Name) is unlocked after the levels " +
+                 "before it (Claim / Skip on Level Complete). A level with Styled Look Of set replays her design from that " +
+                 "free style level; replaying the free style level updates it. Takes priority over Use Outfit Flow.")]
+        [SerializeField] private bool useThemePlan;
+
+        [NonSerialized] private Dictionary<LevelData, KeyValuePair<string, LevelData>> _styledCache;
+
+        public bool UseOutfitFlow => useOutfitFlow && !useThemePlan;
+        public bool UseThemePlan => useThemePlan;
+
+        /// <summary>Theme plan: the styled level built from her latest design (or the theme's default look before she has one).</summary>
+        public LevelData ResolveStyled(LevelData level)
+        {
+            if (level == null || !level.IsStyledLook)
+                return level;
+            var source = level.StyledLookOf;
+            var key = ThemeDesigns.GetRaw(source);
+            _styledCache ??= new Dictionary<LevelData, KeyValuePair<string, LevelData>>();
+            if (_styledCache.TryGetValue(level, out var cached) && cached.Key == key && cached.Value != null)
+                return cached.Value;
+
+            IReadOnlyList<OutfitItem> design = ThemeDesigns.Load(source, outfitCatalog);
+            if (design == null || design.Count == 0)
+                design = source.ThemeLook != null ? source.ThemeLook.AllParts : level.Outfit != null ? level.Outfit.AllParts : null;
+            if (design == null || design.Count == 0)
+                return level;
+
+            var styled = LevelData.CreateStyledLook(level, design, unchecked(randomSeed + levels.IndexOf(level) * 31));
+            _styledCache[level] = new KeyValuePair<string, LevelData>(key, styled);
+            return styled;
+        }
+
+        /// <summary>Theme plan: true when the level after 'index' is a free style level (its unlock popup shows after 'index').</summary>
+        public bool TryGetNextFreeStyle(int index, out LevelData freeStyle)
+        {
+            freeStyle = null;
+            if (!useThemePlan || index < 0 || index + 1 >= levels.Count)
+                return false;
+            freeStyle = levels[index + 1];
+            return freeStyle != null && freeStyle.IsFreeStyle;
+        }
+
+        /// <summary>
+        /// Theme plan bar after finishing 'index': levels done toward the next free style level, counted from the previous
+        /// free style level (or the end of the tutorial). Free style levels themselves and the tutorial don't count.
+        /// </summary>
+        public bool TryGetThemeProgress(int index, out LevelData nextFreeStyle, out int done, out int needed)
+        {
+            nextFreeStyle = null;
+            done = needed = 0;
+            if (!useThemePlan || index < 0 || index >= levels.Count || levels[index] == null || levels[index].IsFreeStyle || index < tutorialLevels)
+                return false;
+            var next = -1;
+            for (var i = index + 1; i < levels.Count; i++)
+                if (levels[i] != null && levels[i].IsFreeStyle) { next = i; break; }
+            if (next < 0)
+                return false;
+            var start = tutorialLevels;
+            for (var i = index - 1; i >= tutorialLevels; i--)
+                if (levels[i] != null && levels[i].IsFreeStyle) { start = i + 1; break; }
+            for (var i = start; i < next; i++)
+            {
+                if (levels[i] == null || levels[i].IsFreeStyle)
+                    continue;
+                needed++;
+                if (i <= index)
+                    done++;
+            }
+            nextFreeStyle = levels[next];
+            return needed > 0;
+        }
         public int TutorialLevels => tutorialLevels;
         public int LevelsPerUnlock => levelsPerUnlock;
         public IReadOnlyList<OutfitReward> OutfitRewards => outfitRewards;
@@ -190,8 +261,8 @@ namespace Game.Level
         public bool TryGetSpecialProgress(int index, out SpecialProgress progress)
         {
             progress = default;
-            if (useOutfitFlow)
-                return false; // the outfit flow has its own bar (OutfitFlow.TryGetProgress)
+            if (useOutfitFlow || useThemePlan)
+                return false; // the outfit flow / theme plan have their own bar
             // Special and free style levels don't count toward the bar.
             if (index < 0 || index >= levels.Count || levels[index] == null || levels[index].IsSpecial || levels[index].IsFreeStyle)
                 return false;
@@ -234,6 +305,8 @@ namespace Game.Level
         public bool IsSpecialAt(int index)
         {
             var level = GetLevel(index);
+            if (useThemePlan)
+                return level != null && (level.IsFreeStyle || level.IsStyledLook);
             if (useOutfitFlow)
                 return level != null && (level.IsFreeStyle || level.IsYourLook);
             return level != null && level.IsSpecial;
@@ -260,6 +333,8 @@ namespace Game.Level
         /// </summary>
         public LevelData GetLevel(int index)
         {
+            if (useThemePlan)
+                return ResolveStyled(GetMainLevel(index));
             if (useOutfitFlow && levels.Count > 0)
                 return OutfitFlow.Resolve(this, index, false);
             return GetMainLevel(index);
@@ -268,6 +343,8 @@ namespace Game.Level
         /// <summary>Level about to be played at this index. With the outfit flow this decides it (free style / Your Look / main) and saves it.</summary>
         public LevelData GetLevelForPlay(int index)
         {
+            if (useThemePlan)
+                return ResolveStyled(GetMainLevel(index));
             if (useOutfitFlow && levels.Count > 0)
                 return OutfitFlow.Resolve(this, index, true);
             return GetMainLevel(index);

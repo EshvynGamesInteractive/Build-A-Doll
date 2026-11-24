@@ -79,6 +79,12 @@ namespace Game.EditorTools
                 EditorUtility.DisplayDialog(Title, "LevelDatabase not found at " + DatabasePath, "OK");
                 return;
             }
+            if (database.UseThemePlan)
+            {
+                EditorUtility.DisplayDialog(Title, "The LevelDatabase uses the 30-level Theme Plan (Use Theme Plan on). " +
+                    "This old menu would overwrite its level list, so it does nothing. Turn Use Theme Plan off first if you really want the old flow.", "OK");
+                return;
+            }
 
             var log = new List<string>();
             var main = new List<LevelData>();

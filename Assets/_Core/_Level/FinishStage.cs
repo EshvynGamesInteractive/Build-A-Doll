@@ -14,12 +14,18 @@ namespace Game.Level
     {
         [Tooltip("Where the player stands. Blue arrow = the way she faces.")]
         [SerializeField] private Transform playerSpot;
-
+        
         [Tooltip("Where the AI stands. Blue arrow = the way she faces.")]
         [SerializeField] private Transform aiSpot;
-
+        
         [Tooltip("Optional. The camera moves to this exact position and rotation for the comparison. Empty = it frames the two spots automatically.")]
         [SerializeField] private Transform cameraPoint;
+        
+        [Header("Confetti")]
+        [Tooltip("Played on the player's side when the comparison is over and she won (both sides on free style levels).")]
+        [SerializeField] private ParticleSystem confettiPlayerSideParticles;
+        [Tooltip("Played on the AI's side when the comparison is over and the AI won.")]
+        [SerializeField] private ParticleSystem confettiAISideParticles;
 
         [Header("Walk paths (optional)")]
         [Tooltip("Points the player walks through, in order, from her finish line to her spot. Empty = the path is worked out automatically.")]
@@ -33,6 +39,33 @@ namespace Game.Level
         public Transform CameraPoint => cameraPoint;
         public IReadOnlyList<Transform> PlayerWaypoints => playerWaypoints;
         public IReadOnlyList<Transform> AiWaypoints => aiWaypoints;
+
+        /// <summary>Restarts the confetti burst on the chosen sides (with child systems).</summary>
+        public void PlayConfetti(bool playerSide, bool aiSide)
+        {
+            if (playerSide)
+                Burst(confettiPlayerSideParticles);
+            if (aiSide)
+                Burst(confettiAISideParticles);
+        }
+
+        /// <summary>Stops and clears both confetti systems (new level on the same stage).</summary>
+        public void StopConfetti()
+        {
+            foreach (var ps in new[] { confettiPlayerSideParticles, confettiAISideParticles })
+                if (ps != null)
+                    ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
+        private static void Burst(ParticleSystem ps)
+        {
+            if (ps == null)
+                return;
+            if (!ps.gameObject.activeSelf)
+                ps.gameObject.SetActive(true);
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ps.Play(true);
+        }
 
         /// <summary>Adds a waypoint child to the end of the player's path (in front of her spot, or after the last waypoint).</summary>
         [ContextMenu("Add Player Waypoint")]

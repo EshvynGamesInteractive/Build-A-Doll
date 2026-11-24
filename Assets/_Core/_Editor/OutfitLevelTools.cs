@@ -189,6 +189,20 @@ namespace Game.EditorTools
         }
 
         // Wrong choices for the same slot from other outfits; Top and Dress stand in for each other.
+        /// <summary>Outfits kept out of every level (user, 24 Nov 2026), including as decoys.</summary>
+        internal static readonly string[] BannedOutfits =
+            { "Bella", "Bikini", "Cinderella", "Citizen", "Forest_Fairy", "Princess", "Snow_White", "Wedding" };
+
+        internal static bool IsBanned(OutfitItem item)
+        {
+            if (item == null)
+                return false;
+            foreach (var prefix in BannedOutfits)
+                if (item.name.StartsWith(prefix, System.StringComparison.OrdinalIgnoreCase))
+                    return true;
+            return false;
+        }
+
         private static List<OutfitItem> PickDecoys(OutfitCatalog catalog, OutfitVariant variant, OutfitItem correct, int count, System.Random random)
         {
             var result = new List<OutfitItem>();
@@ -201,7 +215,7 @@ namespace Game.EditorTools
             else if (correct.Slot == OutfitSlot.Top)
                 pool.AddRange(catalog.GetPartsForSlot(OutfitSlot.Dress));
 
-            pool.RemoveAll(p => p == null || variant.Contains(p));
+            pool.RemoveAll(p => p == null || variant.Contains(p) || IsBanned(p));
 
             while (result.Count < count && pool.Count > 0)
             {

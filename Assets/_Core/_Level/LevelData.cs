@@ -72,6 +72,16 @@ namespace Game.Level
         [SerializeField] private bool isFreeStyle;
         [Tooltip("Free style: Style % for 1, 2 and 3 stars. Style % = (gates picked + same-outfit bonus) / best possible.")]
         [SerializeField] private int[] freeStyleStarPercents = { 40, 70, 100 };
+        [Tooltip("Free style theme, e.g. \"Nurse\". Shown on the unlock popup and the progress bar. Empty = display name.")]
+        [SerializeField] private string themeName;
+        [Tooltip("Free style: the theme's default look. Its styled level uses it until she has designed her own.")]
+        [SerializeField] private OutfitVariant themeLook;
+
+        [Header("Styled look (theme plan)")]
+        [Tooltip("Set = this level replays the look she designed on that free style level: her design is the target, " +
+                 "gates offer each of her items against another item of the same slot. Replaying the free style level and " +
+                 "redesigning updates it. This asset's track (hurdles + gate positions) is used; its gate items are replaced.")]
+        [SerializeField] private LevelData styledLookOf;
 
         [Tooltip("Length the level was designed for. The real finish is the ramp's End Point in the Gameplay scene; hurdles at or past it are skipped. Used only when the scene has no End Point.")]
         [SerializeField, Min(1f)] private float finishDistance = 120f;
@@ -143,6 +153,33 @@ namespace Game.Level
         public bool IsFreeStyle => isFreeStyle;
         /// <summary>Runtime level built from the player's own free style design (outfit flow).</summary>
         public bool IsYourLook => _isYourLook;
+        public string ThemeName => !string.IsNullOrEmpty(themeName) ? themeName : DisplayName;
+        public OutfitVariant ThemeLook => themeLook;
+        /// <summary>The free style level whose saved design this level replays, or null.</summary>
+        public LevelData StyledLookOf => styledLookOf;
+        public bool IsStyledLook => styledLookOf != null;
+
+        /// <summary>Free style theme picture: the theme look's dress or top icon.</summary>
+        public Sprite ThemeIcon
+        {
+            get
+            {
+                var look = themeLook != null ? themeLook : Outfit;
+                if (look == null)
+                    return SpecialIcon;
+                Sprite fallback = null;
+                foreach (var part in look.AllParts)
+                {
+                    if (part == null || part.Icon == null)
+                        continue;
+                    if (part.Slot == OutfitSlot.Dress || part.Slot == OutfitSlot.Top)
+                        return part.Icon;
+                    if (fallback == null)
+                        fallback = part.Icon;
+                }
+                return fallback;
+            }
+        }
         public string SpecialTitle => !string.IsNullOrEmpty(specialTitle) ? specialTitle : Outfit != null ? Outfit.DisplayName : DisplayName;
 
         /// <summary>Special icon, else the icon of the outfit's dress, top, or first part that has one.</summary>
@@ -295,6 +332,124 @@ namespace Game.Level
 
                 entry.gateItems = random.Next(2) == 0 ? new[] { pairItems[1], pairItems[0] } : new[] { pairItems[0], pairItems[1] };
             }
+            return level;
+        }
+
+        private static readonly OutfitSlot[] StyledOrder =
+        {
+            OutfitSlot.Dress, OutfitSlot.Bottom, OutfitSlot.Top, OutfitSlot.Hair, OutfitSlot.Shoes, OutfitSlot.Socks,
+            OutfitSlot.Hat, OutfitSlot.Glasses, OutfitSlot.HandItem, OutfitSlot.Bag, OutfitSlot.Wings, OutfitSlot.Accessory,
+            OutfitSlot.Makeup
+        };
+
+        private static bool IsRingSlot(OutfitSlot slot) =>
+            slot == OutfitSlot.Hair || slot == OutfitSlot.Hat || slot == OutfitSlot.Glasses || slot == OutfitSlot.HandItem ||
+            slot == OutfitSlot.Bag || slot == OutfitSlot.Accessory || slot == OutfitSlot.Wings || slot == OutfitSlot.Makeup;
+
+        /// <summary>
+        /// Theme plan: the styled level built from her free style design. Copy of 'template' (its track and hurdles) whose
+        /// item gates offer each design item (green) against another item of the same slot, preferably from the free style
+        /// theme. Surplus gates are removed; design items without a gate are left out of the target so it stays reachable.
+        /// </summary>
+        public static LevelData CreateStyledLook(LevelData template, IReadOnlyList<OutfitItem> design, int seed)
+        {
+            var level = Instantiate(template);
+            level.name = template.name + "_Styled";
+            level.hideFlags = HideFlags.DontSave;
+            level._isYourLook = true;
+            level.isFreeStyle = false;
+            level.isSpecial = false;
+            level.showSwipeGuide = false;
+            level.outfit = null;
+            level.outfitMakeup = Array.Empty<MakeupColor>();
+            level.hasTargetSkin = false;
+            level.hasTargetDressColor = false;
+            var source = template.styledLookOf;
+            var theme = source != null ? source.ThemeName : "Your";
+            level.displayName = $"My {theme} Look";
+            level.brief = $"YOUR {theme.ToUpperInvariant()} LOOK! Can you recreate it?";
+
+            // One item per slot, in track order.
+            var wanted = new List<OutfitItem>();
+            foreach (var item in design)
+            {
+                if (item == null)
+                    continue;
+                var taken = false;
+                foreach (var w in wanted)
+                    if (w.Slot == item.Slot) { taken = true; break; }
+                if (!taken)
+                    wanted.Add(item);
+            }
+            wanted.Sort((a, b) => Array.IndexOf(StyledOrder, a.Slot).CompareTo(Array.IndexOf(StyledOrder, b.Slot)));
+
+            // Decoys: the theme's items first, then the template's own gate items.
+            var themePool = new List<OutfitItem>();
+            var otherPool = new List<OutfitItem>();
+            void Collect(LevelData from, List<OutfitItem> into)
+            {
+                if (from == null)
+                    return;
+                foreach (var e in from.entries)
+                    if (e?.gateItems != null)
+                        foreach (var i in e.gateItems)
+                            if (i != null && !into.Contains(i))
+                                into.Add(i);
+            }
+            Collect(source, themePool);
+            Collect(template, otherPool);
+
+            var random = new System.Random(seed);
+            OutfitItem Decoy(OutfitItem target)
+            {
+                foreach (var pool in new[] { themePool, otherPool })
+                {
+                    var options = new List<OutfitItem>();
+                    foreach (var i in pool)
+                        if (i != target && !wanted.Contains(i) && (i.Slot == target.Slot ||
+                            (target.Slot == OutfitSlot.Dress && i.Slot == OutfitSlot.Top) ||
+                            (target.Slot == OutfitSlot.Top && i.Slot == OutfitSlot.Dress)))
+                            options.Add(i);
+                    if (options.Count > 0)
+                        return options[random.Next(options.Count)];
+                }
+                return target; // nothing else of that slot: both sides are her item
+            }
+
+            // Gate entries of the track; rings prefer hair / accessories, gates prefer clothes.
+            var gateEntries = new List<Entry>();
+            foreach (var e in level.entries)
+                if (e?.gateItems != null && e.gateItems.Length == 2 && e.prefab != null)
+                    gateEntries.Add(e);
+            var used = new HashSet<Entry>();
+            var offered = new List<OutfitItem>();
+            foreach (var target in wanted)
+            {
+                Entry pick = null;
+                foreach (var e in gateEntries)
+                    if (!used.Contains(e) && e.prefab.name.Contains("Ring") == IsRingSlot(target.Slot)) { pick = e; break; }
+                if (pick == null)
+                    foreach (var e in gateEntries)
+                        if (!used.Contains(e)) { pick = e; break; }
+                if (pick == null)
+                    break; // more design items than gates
+                used.Add(pick);
+                var side = pick.greenSide == GateSide.Right ? 0 : pick.greenSide == GateSide.Left ? 1 : random.Next(2); // right gate first
+                var items = new OutfitItem[2];
+                items[side] = target;
+                items[1 - side] = Decoy(target);
+                pick.gateItems = items;
+                offered.Add(target);
+            }
+            level.entries.RemoveAll(e => gateEntries.Contains(e) && !used.Contains(e));
+
+            var count = offered.Count;
+            var pass = count <= 1 ? 100 : Mathf.RoundToInt(100f * (count - 1) / count);
+            level.targetLook = TargetLook.CreateForItems(offered, pass, new[] { pass, pass, 100 }, level.displayName);
+            var order = new OutfitSlot[count];
+            for (var i = 0; i < count; i++)
+                order[i] = offered[i].Slot;
+            level.gateOrder = order;
             return level;
         }
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_03
   m_EditorClassIdentifier: 
   displayName: Tea Party
-  brief: Design a CHEONGSAM outfit!
+  brief: Design a TEA PARTY outfit!
   showSwipeGuide: 1
   isSpecial: 0
   specialTitle: 
@@ -21,13 +21,16 @@ MonoBehaviour:
   specialIconItem: {fileID: 0}
   isFreeStyle: 0
   freeStyleStarPercents: 280000004600000064000000
+  themeName: ''
+  themeLook: {fileID: 0}
+  styledLookOf: {fileID: 0}
   finishDistance: 268
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   outfit: {fileID: 11400000, guid: edbcdcfd0cf5e463b9ef2c4f456328cf, type: 2}
   outfitPassPercent: 67
   outfitStarPercents: 430000004300000064000000
   outfitMakeup: []
-  gateOrder: 040000000500000000000000
+  gateOrder: 040000000000000005000000
   hasTargetSkin: 0
   targetSkin: {r: 1, g: 1, b: 1, a: 1}
   hasTargetDressColor: 0
@@ -62,7 +65,7 @@ MonoBehaviour:
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 7d949bc3bec6e434ba5c50b3290e9524, type: 2}
-    - {fileID: 11400000, guid: 8c2518389d9644203b4e0f0403882e84, type: 2}
+    - {fileID: 11400000, guid: a204eb10348294909ac92cd2ec95750f, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []
@@ -95,12 +98,12 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
-  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
     distance: 120
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: da5d85409632e4077ba4e45eac66ca4d, type: 2}
-    - {fileID: 11400000, guid: 9d768d56205254ae1aa7d1f8b5a35aa2, type: 2}
+    - {fileID: 11400000, guid: a318b9368f549439393bf00797723052, type: 2}
+    - {fileID: 11400000, guid: b11e3a414916840c797e3ddd782768c5, type: 2}
     greenSide: 1
     paintGates: []
     coinGates: []
@@ -124,12 +127,12 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
-  - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
     distance: 204
     lateral: 0
     gateItems:
-    - {fileID: 11400000, guid: b11e3a414916840c797e3ddd782768c5, type: 2}
-    - {fileID: 11400000, guid: 582236bea26bf4c7f981c17dbe8dd4b2, type: 2}
+    - {fileID: 11400000, guid: 9d768d56205254ae1aa7d1f8b5a35aa2, type: 2}
+    - {fileID: 11400000, guid: b20b4a4adb1414af28e56741ba46a0c2, type: 2}
     greenSide: 2
     paintGates: []
     coinGates: []
