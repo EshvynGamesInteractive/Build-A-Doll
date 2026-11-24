@@ -142,9 +142,10 @@ namespace Game.EditorTools
                                                "Reset saved progress (LevelManager context menu) before testing.", "OK");
         }
 
-        // The new outfit's main piece (dress, else top, else bottom) goes on BOTH gates of its pair: she must wear it.
-        // Other gates of a slot the outfit has: one side becomes the new outfit's part, the other keeps an alternative.
-        // A dress colour gate pair goes 9 m after the mandatory gate.
+        // Free style tracks are authored in the level assets (24 Nov 2026): 11-12 gate pairs, two rounds for hair / top or
+        // dress / pants / shoes, plus hat, hand item, glasses, socks. The second top / dress pair holds two colours of the
+        // new outfit's main piece (both sides), so she always ends in it. No dress colour gate (palette) any more.
+        // Here only the name / brief / flags are set and any old dress colour gate is removed.
         private static string SetUpFreeStyle(LevelData level, OutfitVariant variant, Reward r, GameObject colorGate)
         {
             SetField(level, "displayName", r.freeStyleName);
@@ -152,82 +153,12 @@ namespace Game.EditorTools
             SetField(level, "isFreeStyle", true);
             SetField(level, "hasAiOpponent", false);
 
-            var parts = variant.AllParts.Where(p => p != null).ToList();
-            OutfitItem Part(OutfitSlot slot) => parts.FirstOrDefault(p => p.Slot == slot);
-            var mainPiece = Part(OutfitSlot.Dress) ?? Part(OutfitSlot.Top) ?? Part(OutfitSlot.Bottom);
-
             var entries = GetField<List<LevelData.Entry>>(level, "entries");
-            entries.Sort((a, b) => a.distance.CompareTo(b.distance));
-            LevelData.Entry mandatory = null;
-            int replaced = 0, side = 0;
-            var notOffered = new List<string>();
-
-            // Pick the mandatory gate: first pair whose slot matches the main piece (a dress also fits a top / bottom pair).
-            foreach (var e in entries)
-            {
-                if (e.gateItems == null || e.gateItems.Length != 2 || e.gateItems[0] == null || mainPiece == null)
-                    continue;
-                var slot = e.gateItems[0].Slot;
-                var fits = slot == mainPiece.Slot ||
-                           (mainPiece.Slot == OutfitSlot.Dress && (slot == OutfitSlot.Top || slot == OutfitSlot.Bottom));
-                if (fits) { mandatory = e; break; }
-            }
-
-            foreach (var e in entries)
-            {
-                if (e.gateItems == null || e.gateItems.Length != 2 || e.gateItems[0] == null)
-                    continue;
-                if (e == mandatory)
-                {
-                    e.gateItems = new[] { mainPiece, mainPiece };
-                    replaced++;
-                    continue;
-                }
-                var part = Part(e.gateItems[0].Slot);
-                if (part == null || part == mainPiece || e.gateItems.Contains(part))
-                    continue;
-                e.gateItems = side++ % 2 == 0 ? new[] { part, e.gateItems[1] } : new[] { e.gateItems[0], part };
-                replaced++;
-            }
-
-            // A dress makes a separate top / bottom gate meaningless next to it: those stay as they are (alternatives).
-            foreach (var p in parts)
-                if (p != mainPiece && !entries.Any(e => e.gateItems != null && e.gateItems.Contains(p)))
-                    notOffered.Add(p.name);
-
-            var colors = new[]
-            {
-                new Game.Hurdles.DressColorGate.Setting { colorName = r.colorAName, color = r.colorA },
-                new Game.Hurdles.DressColorGate.Setting { colorName = r.colorBName, color = r.colorB },
-            };
-            foreach (var e in entries)
-                if (colorGate != null && e.prefab == colorGate)
-                    e.dressColorGates = colors;
-
-            if (mandatory != null && colorGate != null && !entries.Any(e => e.prefab == colorGate))
-            {
-                entries.Add(new LevelData.Entry
-                {
-                    prefab = colorGate,
-                    distance = mandatory.distance + 9f,
-                    lateral = 0f,
-                    gateItems = new OutfitItem[0],
-                    dressColorGates = new[]
-                    {
-                        new Game.Hurdles.DressColorGate.Setting { colorName = r.colorAName, color = r.colorA },
-                        new Game.Hurdles.DressColorGate.Setting { colorName = r.colorBName, color = r.colorB },
-                    },
-                    paintGates = new Game.Hurdles.PaintGate.Setting[0],
-                    coinGates = new Game.Hurdles.CoinGate.Setting[0],
-                    skinGates = new Game.Hurdles.SkinGate.Setting[0],
-                });
-                entries.Sort((a, b) => a.distance.CompareTo(b.distance));
-            }
+            var removed = entries.RemoveAll(e => e.prefab != null && (e.prefab == colorGate || e.prefab.name.Contains("DressColorGate")));
+            var gates = entries.Count(e => e.gateItems != null && e.gateItems.Length == 2);
 
             EditorUtility.SetDirty(level);
-            return $"{level.name} → {r.freeStyleName}: mandatory {(mainPiece != null ? mainPiece.name : "none")} " +
-                   $"{(mandatory != null ? "at " + mandatory.distance + " m" : "(no matching gate!)")}, {replaced} gates set" +
-                   (notOffered.Count > 0 ? ", not on a gate: " + string.Join(", ", notOffered) : "");
+            return $"{level.name} → {r.freeStyleName}: {gates} gate pairs" + (removed > 0 ? $", removed {removed} dress colour gate(s)" : "");
         }
 
         // ---------- UI ----------
@@ -263,7 +194,7 @@ namespace Game.EditorTools
                 Place(icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 90f), new Vector2(420f, 420f));
 
                 var claim = MakeButton("ClaimButton", card.transform, box, "CLAIM", new Color(0.35f, 0.8f, 0.3f), new Vector2(0f, -250f), new Vector2(460f, 130f), 60f);
-                var skip = MakeButton("SkipButton", card.transform, box, "Later", new Color(0.7f, 0.7f, 0.75f), new Vector2(0f, -400f), new Vector2(300f, 90f), 44f);
+                var skip = MakeButton("SkipButton", card.transform, box, "SKIP", new Color(0.7f, 0.7f, 0.75f), new Vector2(0f, -400f), new Vector2(300f, 90f), 44f);
 
                 var so = new SerializedObject(view);
                 so.FindProperty("claimRoot").objectReferenceValue = popup.gameObject;
@@ -276,7 +207,7 @@ namespace Game.EditorTools
                 popup.SetAsLastSibling();
                 popup.gameObject.SetActive(false);
                 PrefabUtility.SaveAsPrefabAsset(root, LevelCompletePath);
-                EditorUtility.DisplayDialog(Title, "Added ClaimPopup (title, outfit icon, CLAIM, Later) to Level Complete and wired it.", "OK");
+                EditorUtility.DisplayDialog(Title, "Added ClaimPopup (title, outfit icon, CLAIM, SKIP) to Level Complete and wired it.", "OK");
             }
             finally { PrefabUtility.UnloadPrefabContents(root); }
         }

@@ -42,7 +42,7 @@ namespace _Core._UI._Views
         [Tooltip("Shown when an outfit was just unlocked (outfit flow). Holds the Claim / Skip buttons. Built in the prefab.")]
         [SerializeField] private GameObject claimRoot;
         [SerializeField] private Button claimButton;
-        [Tooltip("Skip = the outfit goes into the Gift Box on Home (claimable later).")]
+        [Tooltip("Skip = the outfit is skipped for good (no free style level, no Gift Box / later).")]
         [SerializeField] private Button skipButton;
         [SerializeField] private Image claimIcon;
         [Tooltip("{0} = outfit name.")]
@@ -129,7 +129,7 @@ namespace _Core._UI._Views
             return true;
         }
 
-        // Outfit flow: an outfit was just unlocked → Claim (free style comes next) or Skip (Gift Box).
+        // Outfit flow: an outfit was just unlocked → Claim (free style comes next) or Skip (gone for good).
         private void SetClaim()
         {
             var database = FindDatabase();
@@ -170,7 +170,7 @@ namespace _Core._UI._Views
                 claimRoot.SetActive(false);
         }
 
-        // Leaving the panel without choosing = Skip (the outfit waits in the Gift Box).
+        // Leaving the panel without choosing = Skip (the popup blocks the panel, so this is only a safety net).
         private static void SkipIfUndecided()
         {
             if (OutfitFlow.PendingUnlock >= 0)

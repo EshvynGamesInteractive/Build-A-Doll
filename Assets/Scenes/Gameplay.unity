@@ -357,6 +357,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1899071458696766875, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2934581419551310362, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3762651307770363510, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
       propertyPath: cameraFollow
       value: 
@@ -385,6 +393,10 @@ PrefabInstance:
       propertyPath: 'sceneStages.Array.data[4]'
       value: 
       objectReference: {fileID: 565029362}
+    - target: {fileID: 5177843817449277764, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.01
+      objectReference: {fileID: 0}
     - target: {fileID: 5931882917187690795, guid: ab2538dbfa0f4458faa3d5b2c9cd97bf, type: 3}
       propertyPath: m_Name
       value: GameplayScene

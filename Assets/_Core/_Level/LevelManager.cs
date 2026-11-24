@@ -262,6 +262,8 @@ namespace _Core._Level
             _freeStyleGates = 0;
             _freeStyleScore = 0;
             _freeStyleOutfitGates.Clear();
+            _freeStyleSlots.Clear();
+            _freeStyleOutfitSlots.Clear();
             _finishDistance = TrackDistanceTo(scene.PlayerEndPoint, level.FinishDistance, "Player End Point");
 
             var hasAi = GetAiProfile(level) != null && scene.AiStartPoint != null;
@@ -320,7 +322,13 @@ namespace _Core._Level
 
                 if (ConfigureGates(instance, entry.gateItems, level.TargetOutfit, level.IsFreeStyle) && warn)
                 {
-                    _freeStyleGates++; // gate choices on the player's ramp (free style: best possible score)
+                    // Free style best possible score: distinct slots offered (two rounds of hair count once:
+                    // the later pick replaces the earlier one).
+                    if (entry.gateItems != null)
+                        foreach (var gateItem in entry.gateItems)
+                            if (gateItem != null)
+                                _freeStyleSlots.Add(gateItem.Slot);
+                    _freeStyleGates = Mathf.Max(1, _freeStyleSlots.Count);
                     if (level.IsFreeStyle)
                         CountFreeStyleOutfits(instance);
                 }
@@ -976,18 +984,21 @@ namespace _Core._Level
 
         private int _freeStyleGates;   // item-gate choices on the player's ramp this level
         private int _freeStyleScore;   // Style %, worked out at the finish
-        private readonly Dictionary<string, int> _freeStyleOutfitGates = new(); // outfit -> how many gate choices offer one of its items
+        private readonly Dictionary<string, int> _freeStyleOutfitGates = new(); // outfit -> how many slots offer one of its items
+        private readonly HashSet<OutfitSlot> _freeStyleSlots = new();
+        private readonly Dictionary<string, HashSet<OutfitSlot>> _freeStyleOutfitSlots = new();
 
         private void CountFreeStyleOutfits(GameObject instance)
         {
-            var offered = new HashSet<string>();
             foreach (var gate in instance.GetComponentsInChildren<ItemGate>())
-                if (gate.Item != null)
-                    offered.Add(OutfitKey(gate.Item));
-            foreach (var key in offered)
             {
-                _freeStyleOutfitGates.TryGetValue(key, out var n);
-                _freeStyleOutfitGates[key] = n + 1;
+                if (gate.Item == null)
+                    continue;
+                var key = OutfitKey(gate.Item);
+                if (!_freeStyleOutfitSlots.TryGetValue(key, out var slots))
+                    _freeStyleOutfitSlots[key] = slots = new HashSet<OutfitSlot>();
+                slots.Add(gate.Item.Slot);
+                _freeStyleOutfitGates[key] = slots.Count;
             }
         }
 

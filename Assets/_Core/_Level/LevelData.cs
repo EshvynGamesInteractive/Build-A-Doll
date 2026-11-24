@@ -271,8 +271,29 @@ namespace Game.Level
             var random = new System.Random(seed);
             foreach (var entry in level.entries)
             {
-                if (entry.gateItems != null && entry.gateItems.Length == 2 && random.Next(2) == 0)
-                    entry.gateItems = new[] { entry.gateItems[1], entry.gateItems[0] };
+                if (entry.gateItems == null || entry.gateItems.Length != 2 || entry.gateItems[0] == null || entry.gateItems[1] == null)
+                    continue;
+
+                // Free style tracks offer some slots twice (the later pick replaces the earlier one). Every pair of a slot in
+                // her design gets her item on one side, so no pair is all red and she can keep her look the whole run.
+                var pairItems = entry.gateItems;
+                if (System.Array.IndexOf(pairItems, null) < 0)
+                {
+                    OutfitItem wanted = null;
+                    foreach (var item in design)
+                        if (item != null && item.Slot == pairItems[0].Slot) { wanted = item; break; }
+                    if (wanted != null && pairItems[0] != wanted && pairItems[1] != wanted)
+                    {
+                        // Keep the side that differs from the other (both sides equal = an old "must wear" pair).
+                        pairItems = random.Next(2) == 0 ? new[] { wanted, pairItems[1] } : new[] { pairItems[0], wanted };
+                    }
+                    else if (pairItems[0] == pairItems[1] && wanted != null)
+                    {
+                        pairItems = new[] { wanted, pairItems[0] };
+                    }
+                }
+
+                entry.gateItems = random.Next(2) == 0 ? new[] { pairItems[1], pairItems[0] } : new[] { pairItems[0], pairItems[1] };
             }
             return level;
         }

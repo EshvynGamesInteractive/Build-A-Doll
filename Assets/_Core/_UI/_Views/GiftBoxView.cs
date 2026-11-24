@@ -8,8 +8,8 @@ using UnityEngine.UI;
 namespace _Core._UI._Views
 {
     /// <summary>
-    /// Outfit flow: Home-screen Gift Box. Outfits the player skipped on Level Complete wait here.
-    /// Pressing it claims the oldest one; its free style level is played next (Play Now).
+    /// Outfit flow: Home-screen Gift Box. Since 24 Nov 2026 Skip on Level Complete is final, so the box stays empty
+    /// and this view stays hidden. Kept so the HomeMenu prefab reference doesn't break.
     /// UI is built in the HomeMenu prefab and assigned here (nothing is created from code).
     /// </summary>
     public class GiftBoxView : MonoBehaviour

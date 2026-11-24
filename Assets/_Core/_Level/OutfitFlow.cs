@@ -10,7 +10,7 @@ namespace Game.Level
     ///   Tutorial levels (first 'Tutorial Levels' of the list) → unlock loops of 'Levels Per Unlock' main levels.
     ///   At the end of a loop the next Outfit Reward is unlocked: the Level Complete panel offers Claim or Skip.
     ///   Claim → that outfit's free style level is played next; the look she designs is saved.
-    ///   Skip  → the outfit goes into the Gift Box (Home), claimable later (then its free style comes next).
+    ///   Skip  → the outfit is skipped for good: no free style level, no Gift Box, no "later" (24 Nov 2026).
     ///   A saved look comes back later as a random "Your Look" level (target = her own design), within limits:
     ///   at least Min Gap levels after its free style, forced by Max Gap, only on progress slot 1 or 2, max one per loop.
     ///   Your Look counts toward the unlock bar; free style and tutorial levels don't.
@@ -54,7 +54,8 @@ namespace Game.Level
             public bool yourLookThisLoop;
             public int pendingUnlock = -1;  // reward waiting for Claim / Skip
             public List<int> claimed = new();
-            public List<int> giftBox = new();
+            public List<int> giftBox = new(); // old saves only: emptied into 'skipped' on load
+            public List<int> skipped = new();
             public List<int> inserts = new(); // free style levels to play next (reward indices)
             public List<Design> designs = new();
             // Bar shown on Level Complete for the level just passed.
@@ -75,6 +76,15 @@ namespace Game.Level
                     return _state;
                 var json = PlayerPrefs.GetString(SaveKey, "");
                 _state = string.IsNullOrEmpty(json) ? new State() : JsonUtility.FromJson<State>(json) ?? new State();
+                _state.skipped ??= new List<int>();
+                // No more "claim later": outfits left in the old Gift Box count as skipped.
+                if (_state.giftBox != null && _state.giftBox.Count > 0)
+                {
+                    foreach (var reward in _state.giftBox)
+                        if (!_state.skipped.Contains(reward) && !_state.claimed.Contains(reward))
+                            _state.skipped.Add(reward);
+                    _state.giftBox.Clear();
+                }
                 return _state;
             }
         }
@@ -100,6 +110,8 @@ namespace Game.Level
         public static IReadOnlyList<int> GiftBox => S.giftBox;
         public static IReadOnlyList<int> Claimed => S.claimed;
         public static bool IsClaimed(int reward) => S.claimed.Contains(reward);
+        public static IReadOnlyList<int> Skipped => S.skipped;
+        public static bool IsSkipped(int reward) => S.skipped.Contains(reward);
 
         /// <summary>What a play-through index is, if it has been played (or committed).</summary>
         public static bool TryGetSlot(int index, out Kind kind, out int slotIndex)
@@ -378,14 +390,15 @@ namespace Game.Level
             var s = S;
             if (s.pendingUnlock < 0)
                 return;
-            if (!s.giftBox.Contains(s.pendingUnlock) && !s.claimed.Contains(s.pendingUnlock))
-                s.giftBox.Add(s.pendingUnlock);
+            // Skipped for good: no Gift Box, no free style level for it.
+            if (!s.skipped.Contains(s.pendingUnlock) && !s.claimed.Contains(s.pendingUnlock))
+                s.skipped.Add(s.pendingUnlock);
             s.pendingUnlock = -1;
             Save();
             Changed?.Invoke();
         }
 
-        /// <summary>Claims an outfit from the Gift Box: its free style level comes next.</summary>
+        /// <summary>Old Gift Box claim. Unused since 24 Nov 2026 (Skip is final); kept so old references compile.</summary>
         public static bool ClaimFromGiftBox(int reward)
         {
             var s = S;
