@@ -5,7 +5,8 @@ using UnityEngine;
 namespace _Core._UI
 {
     /// <summary>
-    /// Shows one screen at a time (GameEvents.UIEvents.ShowByType). Every panel is its own prefab under the Canvas
+    /// Shows one screen at a time, with the comparison panel layered over the gameplay HUD.
+    /// Every panel is its own prefab under the Canvas
     /// with a UIScreen on its root; the root stays active and only its Container is shown / hidden.
     /// </summary>
     public class UIManager : MonoBehaviour
@@ -86,10 +87,12 @@ namespace _Core._UI
                 if (screen == null)
                     continue;
 
-                if (screen.ScreenType == type)
+                var isRequestedScreen = screen.ScreenType == type;
+                var keepGameplayHud = type == ScreenType.ComparisonPanel && screen.ScreenType == ScreenType.Gameplay;
+                if (isRequestedScreen || keepGameplayHud)
                 {
                     screen.Show();
-                    found = true;
+                    found |= isRequestedScreen;
                 }
                 else
                 {

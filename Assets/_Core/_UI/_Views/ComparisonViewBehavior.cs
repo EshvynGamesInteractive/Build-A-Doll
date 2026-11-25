@@ -7,7 +7,8 @@ namespace _Core._UI._Views
     /// <summary>
     /// Finish screen (own panel since 25 Nov 2026, was part of GameplayMenu): the YOU / AI labels over the dolls and
     /// the full-screen touch blocker. The ComparisonHud on the same root drives them.
-    /// Opens when the finish sequence blocks input (GameplayEvents.InputBlocked true) and hands back to the Gameplay HUD
+    /// Opens over the visible, non-interactive gameplay HUD when the finish sequence blocks input,
+    /// then hands back to the Gameplay HUD
     /// when it ends; LevelManager then shows Level Complete / Level Failed.
     /// </summary>
     [RequireComponent(typeof(ComparisonHud))]

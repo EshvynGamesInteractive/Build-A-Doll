@@ -37,6 +37,7 @@ namespace _Core._UI._Views
         private int _runCoins;
         private bool _runStarted;
         private Coroutine _popupTimer;
+        private CanvasGroup _interactionGroup;
 
         private void OnEnable()
         {
@@ -86,6 +87,7 @@ namespace _Core._UI._Views
 
         private void OnResetRun()
         {
+            OnInputBlocked(false);
             _runStarted = false;
             _runCoins = 0;
             ClearPopup();
@@ -110,6 +112,16 @@ namespace _Core._UI._Views
         // No pausing during the finish sequence (the ComparisonPanel's blocker also catches every touch).
         private void OnInputBlocked(bool blocked)
         {
+            if (container != null)
+            {
+                if (_interactionGroup == null)
+                    _interactionGroup = container.GetComponent<CanvasGroup>();
+                // Unity's missing/destroyed objects require its overloaded null comparison, not ??.
+                if (_interactionGroup == null)
+                    _interactionGroup = container.AddComponent<CanvasGroup>();
+                _interactionGroup.interactable = !blocked;
+                _interactionGroup.blocksRaycasts = !blocked;
+            }
             if (pauseButton != null)
                 pauseButton.interactable = !blocked;
         }

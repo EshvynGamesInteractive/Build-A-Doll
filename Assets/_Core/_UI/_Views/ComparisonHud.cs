@@ -135,7 +135,8 @@ namespace _Core._UI._Views
                 // Keep the target between both labels, with enough space for the three frames.
                 playerPoint.x = middle - leftGap;
                 aiPoint.x = middle + rightGap;
-                Place(aiLabel.Rect, parent, new Vector2(aiPoint.x, height));
+                Place(aiLabel.Rect, parent, new Vector2(aiPoint.x,
+                    height + (rowHeight - aiLabel.Rect.rect.height * aiLabel.Rect.localScale.y) * 0.5f));
                 if (targetFrame != null)
                     Place(targetFrame, parent, new Vector2(middle, height));
             }
@@ -147,7 +148,8 @@ namespace _Core._UI._Views
                 Place(targetFrame, parent, new Vector2(playerPoint.x +
                     (playerWidth + frameWidth) * 0.5f + horizontalGap, height));
             }
-            Place(playerLabel.Rect, parent, new Vector2(playerPoint.x, height));
+            Place(playerLabel.Rect, parent, new Vector2(playerPoint.x,
+                height + (rowHeight - playerLabel.Rect.rect.height * playerLabel.Rect.localScale.y) * 0.5f));
         }
 
         private bool HeadPoint(ComparisonLabel label, Camera cam, RectTransform parent,
