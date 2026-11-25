@@ -598,6 +598,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 728935048064116187, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ffb46f828661e40619ad1815de419770, type: 3}
     - target: {fileID: 1393267062866257231, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -714,6 +718,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -190
       objectReference: {fileID: 0}
+    - target: {fileID: 4685702951475349436, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5699211122505355054, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -722,9 +730,21 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6434479153263235021, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6716615938550073639, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
       propertyPath: 'runOnlyObjects.Array.data[1]'
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6729393705688364798, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 602
+      objectReference: {fileID: 0}
+    - target: {fileID: 6729393705688364798, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 839
       objectReference: {fileID: 0}
     - target: {fileID: 8731386704685549068, guid: e227ce44e1b3d4ecda05363ede4d8cf1, type: 3}
       propertyPath: m_Name

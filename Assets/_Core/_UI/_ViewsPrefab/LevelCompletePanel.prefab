@@ -196,7 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1639,6 +1639,7 @@ GameObject:
   - component: {fileID: 6906885428117845123}
   - component: {fileID: 4252174148995779745}
   - component: {fileID: 528924030937128159}
+  - component: {fileID: 2923744351890552783}
   m_Layer: 5
   m_Name: SpinWheel
   m_TagString: Untagged
@@ -1704,6 +1705,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2923744351890552783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5180399027227384969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 810b769471b8143ffb344260fb04bf77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  needle: {fileID: 7596101702405051603}
+  claimButton: {fileID: 977015601479342871}
+  rewardText: {fileID: 8010150088049203874}
+  segments:
+  - label: x2
+    multiplier: 2
+  - label: x3
+    multiplier: 3
+  - label: x5
+    multiplier: 5
+  - label: x4
+    multiplier: 4
+  - label: x2
+    multiplier: 2
+  arc: 180
+  edgePadding: 6
+  swingPeriod: 1.6
+  placement: level_complete_spin
+  rewardFormat: '{0}'
 --- !u!1 &5310467783110599593
 GameObject:
   m_ObjectHideFlags: 0
@@ -2918,10 +2950,13 @@ MonoBehaviour:
   container: {fileID: 3169327651514512965}
   retryButton: {fileID: 0}
   homeButton: {fileID: 0}
-  nextLevelButton: {fileID: 0}
+  nextLevelButton: {fileID: 4889431824810796113}
   nextOpensLevelMap: 1
   outfitMatchText: {fileID: 2052431903}
   spinWheel: {fileID: 0}
+  rewardMultiplier: {fileID: 2923744351890552783}
+  completionCoinsText: {fileID: 2103907044924387327}
+  nextAfterClaimDelay: 1.2
   specialProgressRoot: {fileID: 5175621547477172482}
   specialProgressFill: {fileID: 2311335559031481832}
   specialProgressText: {fileID: 3598851564704183552}
@@ -3172,11 +3207,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2559037201267623759, guid: 88a59c8e316774bf68b9a81e990ede96, type: 3}
       propertyPath: _bursts.Array.data[0].used
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2559037201541945336, guid: 88a59c8e316774bf68b9a81e990ede96, type: 3}
       propertyPath: _bursts.Array.data[0].used
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2559037202506892816, guid: 88a59c8e316774bf68b9a81e990ede96, type: 3}
       propertyPath: m_Name

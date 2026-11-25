@@ -21,6 +21,14 @@ namespace _Core._UI._Views
         [Tooltip("Optional: reward wheel (spin = rewarded ad, the segment under the pin multiplies the completion coins).")]
         [SerializeField] private SpinWheelView spinWheel;
 
+        [Header("Reward")]
+        [Tooltip("Swinging pin over the x2 · x3 · x5 · x4 · x2 arc + green ad button (SpinWheel / Multiplier in the prefab).")]
+        [SerializeField] private RewardMultiplierView rewardMultiplier;
+        [Tooltip("Coins on the Get button (the level's completion coins).")]
+        [SerializeField] private TMP_Text completionCoinsText;
+        [Tooltip("Seconds after the ad reward before going on as if Next was pressed. Negative = stay on the panel.")]
+        [SerializeField] private float nextAfterClaimDelay = 1.2f;
+
         [Header("Special outfit progress")]
         [Tooltip("Parent of the progress bar. Shown after levels that count toward the next special outfit level, hidden otherwise.")]
         [SerializeField] private GameObject specialProgressRoot;
@@ -66,6 +74,32 @@ namespace _Core._UI._Views
             SetClaim(result);
             if (spinWheel != null)
                 spinWheel.Prepare(result.CompletionCoins);
+            if (completionCoinsText != null)
+                completionCoinsText.text = result.CompletionCoins.ToString();
+            // First pass: LevelManager has already put the completion coins in the wallet and moved progress on to this level number.
+            if (rewardMultiplier != null)
+                rewardMultiplier.Prepare(result.CompletionCoins, LevelProgress.CurrentLevelIndex == result.LevelNumber);
+        }
+
+        private Coroutine _autoNext;
+
+        private void OnRewardClaimed(int coins)
+        {
+            if (nextAfterClaimDelay < 0f || !isActiveAndEnabled || container == null || !container.activeInHierarchy)
+                return;
+            if (_autoNext != null)
+                StopCoroutine(_autoNext);
+            _autoNext = StartCoroutine(NextAfterClaim());
+        }
+
+        private IEnumerator NextAfterClaim()
+        {
+            yield return new WaitForSecondsRealtime(nextAfterClaimDelay);
+            _autoNext = null;
+            // The outfit claim popup is still open: let the player choose first.
+            if (claimRoot != null && claimRoot.activeInHierarchy)
+                yield break;
+            OnNextLevelButtonClick();
         }
 
         private void SetOutfitMatch(LevelResult result)
@@ -241,6 +275,11 @@ namespace _Core._UI._Views
 
         public override void Hide()
         {
+            if (_autoNext != null)
+            {
+                StopCoroutine(_autoNext);
+                _autoNext = null;
+            }
             if (_fill != null)
             {
                 StopCoroutine(_fill);
@@ -284,6 +323,8 @@ namespace _Core._UI._Views
                 UIPanelButtonUtility.Bind(claimButton, OnClaimClick);
             if (skipButton != null)
                 UIPanelButtonUtility.Bind(skipButton, OnSkipClick);
+            if (rewardMultiplier != null)
+                rewardMultiplier.Claimed += OnRewardClaimed;
         }
 
         private void OnRetryCurrentLevelButtonClick()

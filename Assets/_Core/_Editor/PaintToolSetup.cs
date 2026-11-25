@@ -21,7 +21,8 @@ namespace Game.EditorTools
     public static class PaintToolSetup
     {
         private const string Title = "Paint Tool Setup";
-        private const string PrefabPath = "Assets/_Core/_UI/_ViewsPrefab/GameplayMenu.prefab";
+        // Own panel since 25 Nov 2026 (Build A Doll > UI > Split Gameplay UI Into Panels).
+        private const string PrefabPath = "Assets/_Core/_UI/_ViewsPrefab/MakeupPanel.prefab";
         private const string PanelName = "MakeupKitPaletteContainer";
 
         private static readonly Color TitleColor = new(1f, 0.72f, 0.16f);
@@ -38,7 +39,7 @@ namespace Game.EditorTools
                 var panel = root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == PanelName);
                 if (panel == null)
                 {
-                    EditorUtility.DisplayDialog(Title, $"{PanelName} not found in GameplayMenu.prefab.", "OK");
+                    EditorUtility.DisplayDialog(Title, $"{PanelName} not found in MakeupPanel.prefab. Run Build A Doll > UI > Split Gameplay UI Into Panels first.", "OK");
                     return;
                 }
 
@@ -129,9 +130,19 @@ namespace Game.EditorTools
                 var buttons = Enumerable.Range(1, 3)
                     .Select(i => panel.Find($"ColorButton ({i})")?.GetComponent<Button>())
                     .Where(b => b != null).ToArray();
+                // Team layout (Nov 2026): Layout > Free / Coins / AdWatch, each with PaintColor, Text (TMP) and an icon Image.
+                var teamLayout = buttons.Length == 0 && panel.Find("Layout") != null;
+                if (teamLayout)
+                    buttons = panel.Find("Layout").GetComponentsInChildren<Button>(true).Where(b => b.transform.parent.name == "Layout").ToArray();
                 var palette = new PaintToolView.PaletteButton[buttons.Length];
                 for (var i = 0; i < buttons.Length; i++)
                 {
+                    if (teamLayout)
+                    {
+                        palette[i] = GameplayPanelsSetup.TeamPaletteButton(buttons[i]);
+                        continue;
+                    }
+
                     var b = buttons[i];
                     var rt = (RectTransform)b.transform;
                     var x = (i - (buttons.Length - 1) * 0.5f) * 270f;

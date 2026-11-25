@@ -1,10 +1,13 @@
-
 using _Core.UI;
 using Core._GameEvent;
 using UnityEngine;
 
 namespace _Core._UI
 {
+    /// <summary>
+    /// Shows one screen at a time (GameEvents.UIEvents.ShowByType). Every panel is its own prefab under the Canvas
+    /// with a UIScreen on its root; the root stays active and only its Container is shown / hidden.
+    /// </summary>
     public class UIManager : MonoBehaviour
     {
         public static UIManager Instance { get; private set; }
@@ -15,6 +18,12 @@ namespace _Core._UI
         private float? resumeTimeScale;
 
         private ScreenType? Current { get; set; }
+
+        /// <summary>The screen shown right now (null before the first one).</summary>
+        public ScreenType? CurrentScreen => Current;
+
+        /// <summary>True when the UIManager exists and is showing this screen.</summary>
+        public static bool IsShowing(ScreenType type) => Instance != null && Instance.Current == type;
 
         private void Awake()
         {
@@ -71,16 +80,25 @@ namespace _Core._UI
                     or ScreenType.MainMenu
             );
 
+            var found = false;
             foreach (var screen in screens)
             {
                 if (screen == null)
                     continue;
 
                 if (screen.ScreenType == type)
+                {
                     screen.Show();
+                    found = true;
+                }
                 else
+                {
                     screen.Hide();
+                }
             }
+
+            if (!found)
+                Debug.LogWarning($"[UIManager] No screen of type {type} in the Screens list (run Build A Doll > UI > Split Gameplay UI Into Panels).", this);
         }
 
         private void CloseSettings() => Show(settingsReturn);

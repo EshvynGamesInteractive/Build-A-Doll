@@ -11,6 +11,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+using _Core._UI;
+using _Core.UI;
+
 namespace Game.UI
 {
     /// <summary>
@@ -48,7 +51,10 @@ namespace Game.UI
         public const string MakeupColorPlacement = "makeup_color";
         private const int GridSize = 12;
         public static PaintToolView Instance { get; private set; }
+        [Tooltip("The makeup screen's container (MakeupKitPaletteContainer).")]
         [SerializeField] private GameObject panel;
+        [Tooltip("On: with a UIScreen (MakeupPanelViewBehavior) on this object, the screen opens / closes through the UIManager (HUD hidden while painting).")]
+        [SerializeField] private bool openThroughUIManager = true;
         [SerializeField] private TMP_Text instruction;
         [SerializeField] private Image progressFill;
         [Tooltip("Optional: a Slider used as the progress bar (instead of, or as well as, a filled Image).")]
@@ -238,7 +244,7 @@ namespace Game.UI
                 instruction.text = zone switch { MakeupZone.EyeShadow => eyeShadowTitle, MakeupZone.Lips => lipsTitle, _ => blushTitle };
             if (progressSlider != null) { progressSlider.interactable = false; progressSlider.minValue = 0f; progressSlider.maxValue = 1f; }
             if (brush != null) brush.gameObject.SetActive(false); // shown while dragging
-            panel.SetActive(true);
+            ShowPanel();
             return true;
         }
 
@@ -472,7 +478,7 @@ namespace Game.UI
             // Hide the view, then wait for release so the last paint drag cannot steer the runner.
             if (!_waitForRelease)
             {
-                panel.SetActive(false);
+                HidePanel();
                 _waitForRelease = true;
             }
             var pointer = UnityEngine.InputSystem.Pointer.current;
@@ -505,8 +511,38 @@ namespace Game.UI
             _preview = false;
             _dragging = false;
             _complete = false;
-            if (panel != null) panel.SetActive(false);
+            HidePanel();
             if (makeupCamera != null) makeupCamera.enabled = false;
+        }
+
+        /// <summary>Retry button on the makeup screen: wipes the paint so far, same colour, bar back to 0.</summary>
+        public void RestartPainting()
+        {
+            if (!IsPainting || _complete) return;
+            _dragging = false;
+            if (brush != null) brush.gameObject.SetActive(false);
+            ClearCoverage();
+        }
+
+        // ---------- Screen ----------
+        // On the MakeupPanel (a UIScreen on this object) the screen is opened / closed through the UIManager, so the
+        // Gameplay HUD hides while painting and comes back afterwards. Without one, the panel is just switched on / off.
+        private void ShowPanel()
+        {
+            var screen = openThroughUIManager ? GetComponent<UIScreen>() : null;
+            if (screen != null && UIManager.Instance != null)
+                GameEvents.UIEvents.ShowByType.Raise(screen.ScreenType);
+            else
+                panel.SetActive(true);
+        }
+
+        private void HidePanel()
+        {
+            var screen = openThroughUIManager ? GetComponent<UIScreen>() : null;
+            if (screen != null && UIManager.IsShowing(screen.ScreenType))
+                GameEvents.UIEvents.ShowByType.Raise(ScreenType.Gameplay);
+            else if (panel != null)
+                panel.SetActive(false);
         }
     }
 }
