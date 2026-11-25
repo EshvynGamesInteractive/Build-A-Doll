@@ -20,9 +20,6 @@ namespace _Core._UI._LevelMap
         }
 
         [SerializeField] private Button button;
-        [Tooltip("Shows the level number (1-based).")]
-        [SerializeField] private TMP_Text numberText;
-
         [SerializeField] private Image stateIcon;
 
         [Header("State visuals (each optional)")]
@@ -30,10 +27,6 @@ namespace _Core._UI._LevelMap
         [SerializeField] private GameObject currentMarker;
         [Tooltip("Shown on special levels (every Nth level, e.g. the skull / boss badge).")]
         [SerializeField] private GameObject specialBadge;
-        [Tooltip("Path from this node to the next one, shown once this level is played (e.g. the yellow path).")]
-        [SerializeField] private GameObject completedPath;
-        [Tooltip("Path from this node to the next one while it's not played yet (e.g. the pale path).")]
-        [SerializeField] private GameObject lockedPath;
 
         private Action<int> _onClick;
         private int _levelIndex;
@@ -55,14 +48,9 @@ namespace _Core._UI._LevelMap
             _levelIndex = levelIndex;
             _state = state;
             _onClick = onClick;
-
-            if (numberText != null)
-                numberText.text = (levelIndex + 1).ToString();
-
+            
             SetActive(currentMarker, state == State.Current);
             SetActive(specialBadge, special);
-            SetActive(completedPath, state == State.Completed);
-            SetActive(lockedPath, state != State.Completed);
 
             if (button != null)
                 button.interactable = state != State.Locked;

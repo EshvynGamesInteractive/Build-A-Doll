@@ -13,6 +13,16 @@ namespace _Core._UI._Views
         [SerializeField] private Button soundsButton;
         [SerializeField] private Button vibrationButton;
         [SerializeField] private Button closeButton;
+        [SerializeField] private Button privacyPolicyButton;
+        [SerializeField] private Button rateUsButton;
+
+        [SerializeField] private Sprite buttonOnIcon;
+        [SerializeField] private Sprite buttonOffIcon;
+        
+        [SerializeField] private Image musicButtonImage;
+        [SerializeField] private Image soundsButtonImage;
+        [SerializeField] private Image vibrationButtonImage;
+        
 
         protected override void Initialize()
         {
