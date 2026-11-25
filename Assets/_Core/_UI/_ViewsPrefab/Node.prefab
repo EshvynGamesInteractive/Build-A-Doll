@@ -184,6 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 144783300554152528}
   stateIcon: {fileID: 739285769332040282}
+  levelText: {fileID: 6380168534925165573}
+  lockedIcon: {fileID: 831586940087213093}
   currentMarker: {fileID: 831586940087213093}
   specialBadge: {fileID: 2674816327829090424}
 --- !u!1 &2674816327829090424
@@ -347,7 +349,7 @@ GameObject:
   - component: {fileID: 734230542776765840}
   - component: {fileID: 5926014169976864467}
   m_Layer: 5
-  m_Name: Layout
+  m_Name: LevelText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

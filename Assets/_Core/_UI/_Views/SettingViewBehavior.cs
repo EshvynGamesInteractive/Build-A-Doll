@@ -31,8 +31,27 @@ namespace _Core._UI._Views
             UIPanelButtonUtility.Bind(soundsButton, OnSoundsButtonClick);
             UIPanelButtonUtility.Bind(vibrationButton, OnVibrationButtonClick);
             UIPanelButtonUtility.Bind(closeButton, GameEvents.UIEvents.CloseSettings.Raise);
+            UIPanelButtonUtility.Bind(privacyPolicyButton, OnPrivacyPolicyButtonClick);
+            UIPanelButtonUtility.Bind(rateUsButton, OnRateUsButtonClick);
             
             RefreshLabels();
+        }
+
+        public override void Show()
+        {
+            base.Show();
+            RefreshLabels();
+        }
+
+        private void OnPrivacyPolicyButtonClick() =>
+            OpenLink(GameConstants.PrivacyPolicyUrl);
+
+        private void OnRateUsButtonClick() =>
+            OpenLink(GameConstants.RateUsUrl);
+
+        private void OpenLink(string configuredUrl)
+        {
+            Application.OpenURL(configuredUrl);
         }
 
         private void OnMusicButtonClick()
@@ -63,6 +82,22 @@ namespace _Core._UI._Views
             SetLabel(musicButton, "Music", GameConstants.MusicKey);
             SetLabel(soundsButton, "Sounds", GameConstants.SoundKey);
             SetLabel(vibrationButton, "Vibration", GameConstants.VibrateKey);
+            SetIcon(musicButtonImage, GameConstants.MusicKey);
+            SetIcon(soundsButtonImage, GameConstants.SoundKey);
+            SetIcon(vibrationButtonImage, GameConstants.VibrateKey);
+        }
+
+        private void SetIcon(Image image, string key)
+        {
+            if (image == null)
+                return;
+
+            var icon = GameSettings.IsEnabled(key) ? buttonOnIcon : buttonOffIcon;
+            if (icon != null)
+            {
+                image.overrideSprite = null;
+                image.sprite = icon;
+            }
         }
 
         private static void SetLabel(Button button, string label, string key)

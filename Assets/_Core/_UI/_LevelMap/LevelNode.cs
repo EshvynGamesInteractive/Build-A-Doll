@@ -21,16 +21,18 @@ namespace _Core._UI._LevelMap
 
         [SerializeField] private Button button;
         [SerializeField] private Image stateIcon;
+        [SerializeField] private GameObject levelText;
+        [SerializeField] private GameObject lockedIcon;
 
         [Header("State visuals (each optional)")]
         [Tooltip("Shown only on the current level (e.g. the green arrow, glow).")]
         [SerializeField] private GameObject currentMarker;
-        [Tooltip("Shown on special levels (every Nth level, e.g. the skull / boss badge).")]
+        [Tooltip("Shown only on locked special levels (e.g. the skull / boss badge).")]
         [SerializeField] private GameObject specialBadge;
 
         private Action<int> _onClick;
         private int _levelIndex;
-        private State _state;
+        private State _state = State.Locked;
 
         public int LevelIndex => _levelIndex;
 
@@ -49,11 +51,18 @@ namespace _Core._UI._LevelMap
             _state = state;
             _onClick = onClick;
             
+            var showSpecialBadge = state == State.Locked && special;
             SetActive(currentMarker, state == State.Current);
-            SetActive(specialBadge, special);
+            SetActive(lockedIcon, state == State.Locked);
+            SetActive(specialBadge, showSpecialBadge);
+            
+            if (levelText != null)
+            {
+                SetActive(levelText.gameObject, !showSpecialBadge);
+            }
 
             if (button != null)
-                button.interactable = state != State.Locked;
+                button.interactable = true;
         }
 
         /// <summary>Swaps the state image's sprite. A null sprite (not set on the map yet) keeps the current one.</summary>

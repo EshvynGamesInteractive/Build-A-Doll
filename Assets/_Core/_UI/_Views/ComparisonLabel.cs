@@ -21,6 +21,7 @@ namespace _Core._UI._Views
         [SerializeField] private Image icon;
         [Tooltip("Optional: hidden until the first item is compared (e.g. the frame + icon group).")]
         [SerializeField] private GameObject itemGroup;
+        [SerializeField] private Slider progressBar;
 
         [SerializeField] private Color matchColor = new(0.35f, 0.85f, 0.35f, 1f);
         [SerializeField] private Color missColor = new(0.95f, 0.3f, 0.3f, 1f);
