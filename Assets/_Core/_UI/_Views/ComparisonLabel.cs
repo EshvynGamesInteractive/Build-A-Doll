@@ -126,6 +126,8 @@ namespace _Core._UI._Views
         {
             if (percentText != null)
                 percentText.text = $"{percent}%";
+            if (progressBar != null)
+                progressBar.normalizedValue = Mathf.Clamp01(percent / 100f);
         }
     }
 }
