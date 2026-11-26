@@ -73,6 +73,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestPlaySavedLevel.Register(LoadCurrent);
             GameEvents.GameplayEvents.RequestPlayLevel.Register(LoadLevel);
             GameEvents.GameplayEvents.RequestRestartLevel.Register(RestartCurrent);
+            GameEvents.GameplayEvents.RequestSkipLevel.Register(SkipCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Register(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Register(OnTargetLookIntroDone);
             GameEvents.GameplayEvents.OutfitItemEquipped.Register(OnPlayerEquipped);
@@ -85,6 +86,7 @@ namespace _Core._Level
             GameEvents.GameplayEvents.RequestPlaySavedLevel.Unregister(LoadCurrent);
             GameEvents.GameplayEvents.RequestPlayLevel.Unregister(LoadLevel);
             GameEvents.GameplayEvents.RequestRestartLevel.Unregister(RestartCurrent);
+            GameEvents.GameplayEvents.RequestSkipLevel.Unregister(SkipCurrent);
             GameEvents.GameplayEvents.GameplaySceneReady.Unregister(OnGameplaySceneReady);
             GameEvents.GameplayEvents.TargetLookIntroDone.Unregister(OnTargetLookIntroDone);
             GameEvents.GameplayEvents.OutfitItemEquipped.Unregister(OnPlayerEquipped);
@@ -132,6 +134,19 @@ namespace _Core._Level
         private void RestartCurrent() => LoadLevel(currentIndex);
 
         private void LoadNext() => LoadLevel(currentIndex + 1);
+
+        // Level Failed "Watch Video To Skip Level": the level counts as passed for progress (no completion coins, no stars).
+        // Replays of older levels and test levels change nothing. The UI opens the map / next level afterwards.
+        private void SkipCurrent()
+        {
+            if (current == null || testLevelNumber > 0 || currentIndex < LevelProgress.CurrentLevelIndex)
+                return;
+
+            LevelProgress.CurrentLevelIndex = currentIndex + 1;
+            // Outfit flow: the loop still moves on; an outfit unlocked here waits for the next Level Complete's Claim / Skip.
+            if (database != null && database.UseOutfitFlow)
+                OutfitFlow.OnLevelPassed(database, currentIndex);
+        }
 
         public void LoadLevel(int index)
         {

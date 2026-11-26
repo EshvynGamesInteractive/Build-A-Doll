@@ -60,6 +60,10 @@ namespace Core._GameEvent
             /// <summary>Request: play the current level again (e.g. "Retry" button).</summary>
             public static readonly GameEvent RequestRestartLevel = new();
 
+            /// <summary>Request: count the current level as passed without playing it ("Watch Video To Skip Level" on Level Failed).
+            /// Saves progress only (no completion coins); the UI then opens the map or the next level.</summary>
+            public static readonly GameEvent RequestSkipLevel = new();
+
             /// <summary>Notification: saved coin total changed. Arg: new total.</summary>
             public static readonly GameEvent<int> WalletChanged = new();
 

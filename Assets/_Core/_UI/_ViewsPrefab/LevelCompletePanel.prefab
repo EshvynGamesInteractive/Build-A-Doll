@@ -4057,7 +4057,9 @@ MonoBehaviour:
   claimIcon: {fileID: 6840815192630700544}
   claimTitle: {fileID: 2000726500824786556}
   claimTitleFormat: '{0} UNLOCKED!'
-  claimNeedsAd: 0
+  claimNeedsAd: 1
+  claimPlacement: claim_outfit
+  claimSettingsButton: {fileID: 3124416180864620005}
 --- !u!1 &8606853751572535457
 GameObject:
   m_ObjectHideFlags: 0

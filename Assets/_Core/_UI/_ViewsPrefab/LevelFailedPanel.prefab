@@ -924,7 +924,10 @@ MonoBehaviour:
   screenType: 6
   container: {fileID: 7040988443485752572}
   retryCurrentLevelButton: {fileID: 2814006052759223176}
-  homeButton: {fileID: 311590352053666808}
+  homeButton: {fileID: 0}
+  skipLevelButton: {fileID: 311590352053666808}
+  skipOpensLevelMap: 1
+  skipPlacement: skip_level
   outfitMatchText: {fileID: 2052431903}
 --- !u!1 &5043712595970363279
 GameObject:

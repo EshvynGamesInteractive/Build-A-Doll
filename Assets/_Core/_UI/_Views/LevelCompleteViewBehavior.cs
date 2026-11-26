@@ -56,8 +56,11 @@ namespace _Core._UI._Views
         [Tooltip("{0} = outfit name.")]
         [SerializeField] private TMP_Text claimTitle;
         [SerializeField] private string claimTitleFormat = "{0} UNLOCKED!";
-        [Tooltip("On: Claim plays a rewarded ad first (placement \"claim_outfit\").")]
-        [SerializeField] private bool claimNeedsAd;
+        [Tooltip("On: Claim plays a rewarded ad first (the Claim button shows an ad icon).")]
+        [SerializeField] private bool claimNeedsAd = true;
+        [SerializeField] private string claimPlacement = Game.Ads.RewardedAds.ClaimOutfit;
+        [Tooltip("Settings (gear) on the claim popup. Settings closes back to this panel with the popup still open.")]
+        [SerializeField] private Button claimSettingsButton;
 
         private bool _hasSpecial;
         private float _fillFrom, _fillTo;
@@ -69,6 +72,10 @@ namespace _Core._UI._Views
 
         private void OnLevelCompleted(LevelResult result)
         {
+            _fillPlayed = false;
+            _claimWaitingForAd = false;
+            if (claimButton != null)
+                claimButton.interactable = true;
             SetOutfitMatch(result);
             SetSpecialProgress(result);
             SetClaim(result);
@@ -97,7 +104,7 @@ namespace _Core._UI._Views
             yield return new WaitForSecondsRealtime(nextAfterClaimDelay);
             _autoNext = null;
             // The outfit claim popup is still open: let the player choose first.
-            if (claimRoot != null && claimRoot.activeInHierarchy)
+            if (_claimOpen)
                 yield break;
             OnNextLevelButtonClick();
         }
@@ -182,8 +189,7 @@ namespace _Core._UI._Views
                 _claimIndex = result.LevelNumber - 1;
                 _themeClaimPending = database.TryGetNextFreeStyle(_claimIndex, out var freeStyle)
                                      && LevelProgress.CurrentLevelIndex == _claimIndex + 1;
-                if (claimRoot != null)
-                    claimRoot.SetActive(_themeClaimPending);
+                SetClaimVisible(_themeClaimPending);
                 if (!_themeClaimPending)
                     return;
                 if (claimTitle != null)
@@ -198,8 +204,7 @@ namespace _Core._UI._Views
             _themeClaimPending = false;
             var pending = database != null && database.UseOutfitFlow ? OutfitFlow.PendingUnlock : -1;
             var reward = database != null ? database.GetReward(pending) : null;
-            if (claimRoot != null)
-                claimRoot.SetActive(reward != null);
+            SetClaimVisible(reward != null);
             if (reward == null)
                 return;
             if (claimTitle != null)
@@ -211,32 +216,60 @@ namespace _Core._UI._Views
             }
         }
 
+        // The popup sits outside Container, so it is hidden / restored with the panel (see Show / Hide).
+        private bool _claimOpen;
+        private bool _claimWaitingForAd;
+
+        private void SetClaimVisible(bool open)
+        {
+            _claimOpen = open;
+            if (claimRoot != null)
+                claimRoot.SetActive(open && container != null && container.activeSelf);
+        }
+
         private void OnClaimClick()
         {
-            if (claimNeedsAd)
-                Game.Ads.RewardedAds.Show("claim_outfit", DoClaim);
-            else
+            if (!_claimOpen || _claimWaitingForAd)
+                return;
+            if (!claimNeedsAd)
+            {
                 DoClaim();
+                return;
+            }
+            _claimWaitingForAd = true;
+            if (claimButton != null)
+                claimButton.interactable = false;
+            Game.Ads.RewardedAds.Show(claimPlacement, DoClaim, OnClaimAdFailed);
+        }
+
+        private void OnClaimAdFailed()
+        {
+            _claimWaitingForAd = false;
+            if (claimButton != null)
+                claimButton.interactable = true;
         }
 
         private void DoClaim()
         {
+            _claimWaitingForAd = false;
+            if (claimButton != null)
+                claimButton.interactable = true;
             if (_themeClaimPending)
                 _themeClaimPending = false; // the free style level is simply the next level
             else
                 OutfitFlow.ClaimPending();
-            if (claimRoot != null)
-                claimRoot.SetActive(false);
+            SetClaimVisible(false);
         }
 
         private void OnSkipClick()
         {
+            if (!_claimOpen || _claimWaitingForAd)
+                return;
             if (_themeClaimPending)
                 SkipThemeFreeStyle();
             else
                 OutfitFlow.SkipPending();
-            if (claimRoot != null)
-                claimRoot.SetActive(false);
+            SetClaimVisible(false);
         }
 
         // Theme plan Skip: the free style level is passed over (it stays on the map, playable any time; its styled level
@@ -251,6 +284,7 @@ namespace _Core._UI._Views
         // Leaving the panel without choosing = Skip (the popup blocks the panel, so this is only a safety net).
         private void SkipIfUndecided()
         {
+            SetClaimVisible(false);
             if (_themeClaimPending)
             {
                 SkipThemeFreeStyle();
@@ -261,12 +295,17 @@ namespace _Core._UI._Views
         }
 
         private bool _unlocked;
+        private bool _fillPlayed;
 
         public override void Show()
         {
             base.Show();
-            if (!_hasSpecial)
+            // Back from Settings with the choice still open: show the popup again.
+            if (claimRoot != null)
+                claimRoot.SetActive(_claimOpen);
+            if (!_hasSpecial || _fillPlayed)
                 return;
+            _fillPlayed = true;
 
             if (_fill != null)
                 StopCoroutine(_fill);
@@ -275,6 +314,9 @@ namespace _Core._UI._Views
 
         public override void Hide()
         {
+            // Outside Container: hide it ourselves so it never covers Settings / the map / the next level.
+            if (claimRoot != null)
+                claimRoot.SetActive(false);
             if (_autoNext != null)
             {
                 StopCoroutine(_autoNext);
@@ -323,8 +365,16 @@ namespace _Core._UI._Views
                 UIPanelButtonUtility.Bind(claimButton, OnClaimClick);
             if (skipButton != null)
                 UIPanelButtonUtility.Bind(skipButton, OnSkipClick);
+            UIPanelButtonUtility.Bind(claimSettingsButton, OnClaimSettingsClick);
             if (rewardMultiplier != null)
                 rewardMultiplier.Claimed += OnRewardClaimed;
+        }
+
+        private void OnClaimSettingsClick()
+        {
+            if (_claimWaitingForAd)
+                return;
+            GameEvents.UIEvents.ShowByType.Raise(ScreenType.Settings);
         }
 
         private void OnRetryCurrentLevelButtonClick()
