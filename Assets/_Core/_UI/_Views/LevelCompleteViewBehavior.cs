@@ -73,6 +73,7 @@ namespace _Core._UI._Views
         private void OnLevelCompleted(LevelResult result)
         {
             _fillPlayed = false;
+            _unlockSoundPlayed = false;
             _claimWaitingForAd = false;
             if (claimButton != null)
                 claimButton.interactable = true;
@@ -296,6 +297,16 @@ namespace _Core._UI._Views
 
         private bool _unlocked;
         private bool _fillPlayed;
+        private bool _unlockSoundPlayed;
+
+        // Once per result: the claim popup and the full progress bar can both show the same unlock.
+        private void PlayUnlockSound()
+        {
+            if (_unlockSoundPlayed)
+                return;
+            _unlockSoundPlayed = true;
+            GameEvents.AudioEvents.PlayCue.Raise(_Core._Audio.SoundCue.OutfitUnlocked);
+        }
 
         public override void Show()
         {
@@ -303,6 +314,8 @@ namespace _Core._UI._Views
             // Back from Settings with the choice still open: show the popup again.
             if (claimRoot != null)
                 claimRoot.SetActive(_claimOpen);
+            if (_claimOpen)
+                PlayUnlockSound();
             if (!_hasSpecial || _fillPlayed)
                 return;
             _fillPlayed = true;
@@ -343,6 +356,8 @@ namespace _Core._UI._Views
                 specialProgressFill.fillAmount = _fillTo;
             if (specialUnlockedObject != null)
                 specialUnlockedObject.SetActive(_unlocked);
+            if (_unlocked)
+                PlayUnlockSound();
             _fill = null;
         }
 

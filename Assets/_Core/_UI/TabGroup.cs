@@ -18,7 +18,11 @@ namespace Core.UI
                 var index = i;
 
                 if (tabs[i] != null && tabs[i].Button != null)
-                    tabs[i].Button.onClick.AddListener(() => SelectTab(index));
+                    tabs[i].Button.onClick.AddListener(() =>
+                    {
+                        Core._GameEvent.GameEvents.AudioEvents.ButtonClicked.Raise();
+                        SelectTab(index);
+                    });
             }
         }
 

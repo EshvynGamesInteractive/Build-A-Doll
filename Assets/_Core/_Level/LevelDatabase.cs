@@ -305,10 +305,9 @@ namespace Game.Level
         public bool IsSpecialAt(int index)
         {
             var level = GetLevel(index);
-            if (useThemePlan)
-                return level != null && (level.IsFreeStyle || level.IsStyledLook);
-            if (useOutfitFlow)
-                return level != null && (level.IsFreeStyle || level.IsYourLook);
+            // Theme plan / outfit flow: only free style levels get the badge (not the styled / Your Look levels that replay her design).
+            if (useThemePlan || useOutfitFlow)
+                return level != null && level.IsFreeStyle;
             return level != null && level.IsSpecial;
         }
         public GameObject DefaultPlayerPrefab => defaultPlayerPrefab;

@@ -41,7 +41,11 @@ namespace _Core._UI._LevelMap
             if (button == null)
                 button = GetComponent<Button>();
             if (button != null)
-                button.onClick.AddListener(OnClicked);
+                button.onClick.AddListener(() =>
+                {
+                    Core._GameEvent.GameEvents.AudioEvents.ButtonClicked.Raise();
+                    OnClicked();
+                });
         }
 
         /// <summary>Shows level 'levelIndex' (0-based) in the given state. 'onClick' gets the level index.</summary>

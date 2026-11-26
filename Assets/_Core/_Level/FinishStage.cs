@@ -43,10 +43,11 @@ namespace Game.Level
         /// <summary>Restarts the confetti burst on the chosen sides (with child systems).</summary>
         public void PlayConfetti(bool playerSide, bool aiSide)
         {
-            if (playerSide)
-                Burst(confettiPlayerSideParticles);
-            if (aiSide)
-                Burst(confettiAISideParticles);
+            Burst(confettiPlayerSideParticles);
+            Burst(confettiAISideParticles);
+            
+            if (playerSide || aiSide)
+                Core._GameEvent.GameEvents.AudioEvents.PlayCue.Raise(_Core._Audio.SoundCue.Confetti);
         }
 
         /// <summary>Stops and clears both confetti systems (new level on the same stage).</summary>

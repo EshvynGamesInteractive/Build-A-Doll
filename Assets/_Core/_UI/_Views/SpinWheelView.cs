@@ -68,7 +68,11 @@ namespace _Core._UI._Views
         private void Awake()
         {
             if (spinButton != null)
-                spinButton.onClick.AddListener(OnSpinPressed);
+                spinButton.onClick.AddListener(() =>
+                {
+                    Core._GameEvent.GameEvents.AudioEvents.ButtonClicked.Raise();
+                    OnSpinPressed();
+                });
         }
 
         /// <summary>Called when the Level Complete panel fills in: resets the wheel for this level's reward.</summary>

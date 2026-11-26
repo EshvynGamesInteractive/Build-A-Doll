@@ -160,7 +160,11 @@ namespace Game.UI
                 {
                     var index = i;
                     if (paletteButtons[i]?.button != null)
-                        paletteButtons[i].button.onClick.AddListener(() => SelectColor(index));
+                        paletteButtons[i].button.onClick.AddListener(() =>
+                        {
+                            Core._GameEvent.GameEvents.AudioEvents.ButtonClicked.Raise();
+                            SelectColor(index);
+                        });
                 }
             }
         }

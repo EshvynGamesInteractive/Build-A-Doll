@@ -72,6 +72,7 @@ namespace _Core._Player
         private float _hitboxHeight;
         private Vector3 _hitboxCenter;
         private float _squash = 1f;
+        private bool _wasSliding;
 
         public bool IsRunning => !MakeupActive && (_phase == Phase.Walking ? _walkSpeedNow > MovingThreshold : _forward.CurrentSpeed > MovingThreshold);
 
@@ -154,6 +155,8 @@ namespace _Core._Player
                 return;
             _vertical.Jump(height, airTime);
             _airSpeedFactor = Mathf.Max(0.01f, speedFactor);
+            if (!IsAI)
+                Core._GameEvent.GameEvents.AudioEvents.PlayCue.Raise(_Core._Audio.SoundCue.Jump);
         }
 
         /// <summary>
@@ -347,6 +350,10 @@ namespace _Core._Player
         private void UpdateSlidePose(float deltaTime)
         {
             var sliding = _vertical.IsSliding;
+            // Slide starts (also a slide queued in mid-air, when she lands): player only, the AI stays quiet.
+            if (sliding && !_wasSliding && !IsAI)
+                Core._GameEvent.GameEvents.AudioEvents.PlayCue.Raise(_Core._Audio.SoundCue.Slide);
+            _wasSliding = sliding;
 
             if (hitbox != null)
             {
