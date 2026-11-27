@@ -107,7 +107,7 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   hitSound: {fileID: 0}
   aiAvoid: 2
-  coinCost: 3
+  coinCost: 2
   stumbleDuration: 0.6
   stumbleSpeedFactor: 0.3
   removesItem: 0

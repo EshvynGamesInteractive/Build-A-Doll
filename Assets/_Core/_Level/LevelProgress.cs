@@ -61,6 +61,14 @@ namespace Game.Level
             return true;
         }
 
+        /// <summary>Starts a fresh level cycle while preserving the wallet and unclaimed completion reward.</summary>
+        public static void RestartLevelCycle(int startIndex)
+        {
+            OutfitFlow.Reset();
+            ThemeDesigns.ResetAll();
+            CurrentLevelIndex = startIndex;
+        }
+
         /// <summary>Wipes all saved progress: level and coins.</summary>
         public static void ResetAll()
         {

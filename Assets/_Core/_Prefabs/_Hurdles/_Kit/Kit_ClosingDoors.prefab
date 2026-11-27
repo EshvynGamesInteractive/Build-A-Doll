@@ -247,7 +247,7 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   hitSound: {fileID: 0}
   aiAvoid: 1
-  coinCost: 3
+  coinCost: 2
   stumbleDuration: 0.7
   stumbleSpeedFactor: 0.3
   removesItem: 0
@@ -646,7 +646,7 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   hitSound: {fileID: 0}
   aiAvoid: 1
-  coinCost: 3
+  coinCost: 2
   stumbleDuration: 0.7
   stumbleSpeedFactor: 0.3
   removesItem: 0

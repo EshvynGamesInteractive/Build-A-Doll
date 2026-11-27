@@ -133,7 +133,15 @@ namespace _Core._Level
 
         private void RestartCurrent() => LoadLevel(currentIndex);
 
-        private void LoadNext() => LoadLevel(currentIndex + 1);
+        private void LoadNext() => LoadLevel(database != null && currentIndex + 1 >= database.Count
+            ? database.CycleStartIndex : currentIndex + 1);
+
+        private void RestartCycleIfComplete()
+        {
+            if (testLevelNumber == 0 && database != null && database.Count > 0
+                && LevelProgress.CurrentLevelIndex >= database.Count)
+                LevelProgress.RestartLevelCycle(database.CycleStartIndex);
+        }
 
         // Level Failed "Watch Video To Skip Level": the level counts as passed for progress (no completion coins, no stars).
         // Replays of older levels and test levels change nothing. The UI opens the map / next level afterwards.
@@ -146,10 +154,18 @@ namespace _Core._Level
             // Outfit flow: the loop still moves on; an outfit unlocked here waits for the next Level Complete's Claim / Skip.
             if (database != null && database.UseOutfitFlow)
                 OutfitFlow.OnLevelPassed(database, currentIndex);
+            RestartCycleIfComplete();
         }
 
         public void LoadLevel(int index)
         {
+            // Also migrate saves that had already advanced beyond the final authored level.
+            if (testLevelNumber == 0 && database != null && database.Count > 0 && index >= database.Count)
+            {
+                RestartCycleIfComplete();
+                index = database.CycleStartIndex;
+            }
+
             // Drop any pending demo / result / auto-continue timers from the previous level.
             CancelInvoke();
             StopFinishSequence();
@@ -331,6 +347,12 @@ namespace _Core._Level
                     pastFinish++;
                     continue;
                 }
+
+                // Freestyle only keeps scissors as a hazard; outfit and reward gates stay available.
+                if (level.IsFreeStyle &&
+                    (entry.prefab.GetComponentInChildren<AutoJumpPad>(true) != null ||
+                     System.Array.Exists(entry.prefab.GetComponentsInChildren<PenaltyItem>(true), penalty => !penalty.CutsHair)))
+                    continue;
 
                 // Spawn straight at the final pose: movers remember where they were in Awake.
                 var local = new Vector3(entry.lateral, 0f, entry.distance) + entry.prefab.transform.localPosition;
@@ -1382,6 +1404,7 @@ namespace _Core._Level
                 if (database.UseThemePlan && current.IsFreeStyle)
                     ThemeDesigns.Save(current, FreeStylePicks());
 
+                RestartCycleIfComplete();
                 GameEvents.GameplayEvents.LevelCompleted.Raise(result);
             }
             else

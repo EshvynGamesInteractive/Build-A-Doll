@@ -63,8 +63,8 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 7425136f1441245288191375523fdfff, type: 3}
   defaultAiProfile: {fileID: 11400000, guid: f06fae1e1c92a40adbe657d1a2fb91cd, type: 2}
   aiPrefab: {fileID: 0}
-  loopFromLevel: 4
-  randomAfterLast: 1
+  loopFromLevel: 3
+  randomAfterLast: 0
   randomSeed: 7919
   specialProgressFrom: 6
   outfitCatalog: {fileID: 11400000, guid: c7485800a4d8b454db4d26152efd7365, type: 2}

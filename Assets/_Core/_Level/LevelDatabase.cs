@@ -66,10 +66,10 @@ namespace Game.Level
 
         [Header("Order")]
         [Tooltip("After the last level, levels are picked from this level number (1-based) onwards. Skips the tutorial levels.")]
-        [SerializeField, Min(1)] private int loopFromLevel = 1;
+        [SerializeField, Min(1)] private int loopFromLevel = 3;
 
         [Tooltip("On: after the last level, a random level is picked each time (shuffled like a deck: no repeats until all have been played, never the same twice in a row). Off: they replay in order.")]
-        [SerializeField] private bool randomAfterLast = true;
+        [SerializeField] private bool randomAfterLast = false;
 
         [Tooltip("Changes the random order after the last level.")]
         [SerializeField] private int randomSeed = 7919;
@@ -236,6 +236,7 @@ namespace Game.Level
         public float YourLookCoinFactor => yourLookCoinFactor;
 
         public int Count => levels.Count;
+        public int CycleStartIndex => Mathf.Clamp(loopFromLevel - 1, 0, Mathf.Max(0, levels.Count - 1));
 
         /// <summary>Progress toward the next special outfit level, as seen after finishing a level.</summary>
         public readonly struct SpecialProgress

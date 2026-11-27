@@ -260,6 +260,8 @@ namespace _Core._UI._Views
             else
                 OutfitFlow.ClaimPending();
             SetClaimVisible(false);
+            LevelProgress.CollectPendingLevelCoins();
+            GameEvents.GameplayEvents.RequestPlaySavedLevel.Raise();
         }
 
         private void OnSkipClick()
@@ -271,6 +273,8 @@ namespace _Core._UI._Views
             else
                 OutfitFlow.SkipPending();
             SetClaimVisible(false);
+            LevelProgress.CollectPendingLevelCoins();
+            GameEvents.GameplayEvents.RequestPlaySavedLevel.Raise();
         }
 
         // Theme plan Skip: the free style level is passed over (it stays on the map, playable any time; its styled level

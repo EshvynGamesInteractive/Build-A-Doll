@@ -41,6 +41,7 @@ namespace Game.Hurdles
         [SerializeField] private OutfitSlot slotToRemove = OutfitSlot.Dress;
 
         public AiAvoidance AiAvoid => aiAvoid;
+        public bool CutsHair => removesItem && slotToRemove == OutfitSlot.Hair;
 
         protected override void OnPlayerHit(RunnerController player)
         {
