@@ -180,7 +180,8 @@ namespace _Core._Audio
 
         private static bool IsPopupPanel(ScreenType type) =>
             type is ScreenType.LevelCompletePanel or ScreenType.LevelFailedPanel or ScreenType.PausePanel
-                or ScreenType.Settings or ScreenType.TargetLook;
+                or ScreenType.Settings or ScreenType.TargetLook
+                or ScreenType.NoInternetView or ScreenType.PrivacyPolicy;
 
         private void PlayMusic(AudioClip clip, float level)
         {

@@ -16,6 +16,7 @@ namespace _Core._UI
         [SerializeField] private UIScreen[] screens;
 
         private ScreenType settingsReturn = ScreenType.MainMenu;
+        private ScreenType? overlayReturn;
         private float? resumeTimeScale;
 
         private ScreenType? Current { get; set; }
@@ -25,6 +26,13 @@ namespace _Core._UI
 
         /// <summary>True when the UIManager exists and is showing this screen.</summary>
         public static bool IsShowing(ScreenType type) => Instance != null && Instance.Current == type;
+
+        /// <summary>
+        /// Overlays open on top of the current screen: that screen stays visible underneath and comes back
+        /// when the overlay closes (UIEvents.CloseOverlay).
+        /// </summary>
+        public static bool IsOverlay(ScreenType type) =>
+            type is ScreenType.NoInternetView or ScreenType.PrivacyPolicy;
 
         private void Awake()
         {
@@ -49,6 +57,7 @@ namespace _Core._UI
 
             GameEvents.UIEvents.ShowByType.Register(Show);
             GameEvents.UIEvents.CloseSettings.Register(CloseSettings);
+            GameEvents.UIEvents.CloseOverlay.Register(CloseOverlay);
         }
 
         private void OnDisable()
@@ -58,6 +67,7 @@ namespace _Core._UI
 
             GameEvents.UIEvents.ShowByType.Unregister(Show);
             GameEvents.UIEvents.CloseSettings.Unregister(CloseSettings);
+            GameEvents.UIEvents.CloseOverlay.Unregister(CloseOverlay);
 
             SetPaused(false);
         }
@@ -70,8 +80,21 @@ namespace _Core._UI
 
         private void Show(ScreenType type)
         {
-            if (type == ScreenType.Settings && Current != ScreenType.Settings)
+            // Coming back from an overlay must not overwrite where Settings / the overlay return to.
+            var fromOverlay = Current.HasValue && IsOverlay(Current.Value);
+
+            if (type == ScreenType.Settings && Current != ScreenType.Settings && !fromOverlay)
                 settingsReturn = Current ?? ScreenType.MainMenu;
+
+            if (IsOverlay(type))
+            {
+                if (!fromOverlay)
+                    overlayReturn = Current;
+            }
+            else
+            {
+                overlayReturn = null;
+            }
 
             Current = type;
 
@@ -79,6 +102,8 @@ namespace _Core._UI
                 type is ScreenType.PausePanel
                     or ScreenType.Settings
                     or ScreenType.MainMenu
+                    or ScreenType.NoInternetView
+                    or ScreenType.PrivacyPolicy
             );
 
             var found = false;
@@ -88,8 +113,10 @@ namespace _Core._UI
                     continue;
 
                 var isRequestedScreen = screen.ScreenType == type;
-                var keepGameplayHud = type == ScreenType.ComparisonPanel && screen.ScreenType == ScreenType.Gameplay;
-                if (isRequestedScreen || keepGameplayHud)
+                var keepGameplayHud = (type == ScreenType.ComparisonPanel || (IsOverlay(type) && overlayReturn == ScreenType.ComparisonPanel))
+                                      && screen.ScreenType == ScreenType.Gameplay;
+                var keepUnderOverlay = IsOverlay(type) && overlayReturn == screen.ScreenType;
+                if (isRequestedScreen || keepGameplayHud || keepUnderOverlay)
                 {
                     screen.Show();
                     found |= isRequestedScreen;
@@ -105,6 +132,12 @@ namespace _Core._UI
         }
 
         private void CloseSettings() => Show(settingsReturn);
+
+        private void CloseOverlay()
+        {
+            if (Current.HasValue && IsOverlay(Current.Value))
+                Show(overlayReturn ?? ScreenType.MainMenu);
+        }
 
         private void SetPaused(bool paused)
         {

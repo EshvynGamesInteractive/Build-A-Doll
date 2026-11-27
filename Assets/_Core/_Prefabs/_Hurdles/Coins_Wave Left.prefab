@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1551118782876164326}
   m_Layer: 0
-  m_Name: Coins_Wave
+  m_Name: Coins_Wave Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,7 +51,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.59833205
+      value: -0.598332
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -175,7 +175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.3633866
+      value: -1.363387
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -237,7 +237,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.3685422
+      value: 1.368542
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -299,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.6195285
+      value: 0.6195285
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -361,7 +361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0966576
+      value: -1.096658
       objectReference: {fileID: 0}
     - target: {fileID: 3530402591543178792, guid: f4ae8a9b026d5435c94ca39172f1029a, type: 3}
       propertyPath: m_LocalPosition.y

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_FreeStyle_3
   m_EditorClassIdentifier: 
   displayName: 'Free Style: Police'
-  brief: FREE STYLE! Design your POLICE look! Swipe up to long jump and skip unwanted item gates.
+  brief: FREE STYLE! Design your POLICE look!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -39,10 +39,9 @@ MonoBehaviour:
   hasAiOpponent: 0
   aiProfile: {fileID: 0}
   startingOutfit:
-  - {fileID: 11400000, guid: b5f79bd04b4ed4de09bc8290e8a8fb31, type: 2}
-  - {fileID: 11400000, guid: 5de59415d3d84417693b07aec5c60d82, type: 2}
-  - {fileID: 11400000, guid: 2a6d757d5327141f2807acec29d91b9a, type: 2}
-  - {fileID: 11400000, guid: a157d8f47896b47e684d6889d2801a38, type: 2}
+  - {fileID: 11400000, guid: 1cab2222202994e8e9ce282a9a5aa94f, type: 2}
+  - {fileID: 11400000, guid: ef8b7c2d3664c43ddb343b894b0e71ce, type: 2}
+  - {fileID: 11400000, guid: 75ce5c24abf6944e3bf4ccf9efe92caa, type: 2}
   entries:
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
     distance: 8

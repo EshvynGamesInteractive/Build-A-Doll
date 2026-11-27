@@ -13,7 +13,7 @@ namespace _Core.Boot
     /// Progress goes out through UIEvents.LoadingProgress for the splash bar.
     /// Home (main menu) only shows once the Gameplay scene has reported in (GameplaySceneReady),
     /// so Play always has a scene to build the level in.
-    /// Flow: Splash -> Gameplay scene loaded -> Home -> Play -> level + player + demo doll -> Gameplay UI
+    /// Flow: Splash -> Gameplay scene loaded -> (first launch: Privacy Policy, Accept) -> Home -> Play -> level + player + demo doll -> Gameplay UI
     /// -> demo intro (pop, hold, move to corner) -> run starts.
     /// </summary>
     public class BootLoader : MonoBehaviour
@@ -43,6 +43,8 @@ namespace _Core.Boot
             if (loadOnStart)
                 StartLoading();
         }
+
+        private static bool PrivacyAccepted() => _Core._UI._Views.PrivacyPolicyViewBehavior.IsAccepted;
 
         public void StartLoading()
         {
@@ -87,6 +89,14 @@ namespace _Core.Boot
 
             if (!_sceneReady)
                 Debug.LogWarning($"'{sceneToLoad}' never raised GameplaySceneReady. Is there a {nameof(Game.Level.GameplayScene)} in it?", this);
+
+            // First launch: the privacy policy has to be accepted before Home.
+            if (!PrivacyAccepted())
+            {
+                GameEvents.UIEvents.ShowByType.Raise(ScreenType.PrivacyPolicy);
+                while (!PrivacyAccepted())
+                    yield return null;
+            }
 
             _isLoading = false;
             GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);

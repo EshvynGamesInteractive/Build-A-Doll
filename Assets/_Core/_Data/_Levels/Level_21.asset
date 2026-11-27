@@ -39,7 +39,6 @@ MonoBehaviour:
   hasAiOpponent: 1
   aiProfile: {fileID: 11400000, guid: 98dcd2fa8e74446938426f01a9b7a722, type: 2}
   startingOutfit:
-  - {fileID: 11400000, guid: efe9b8640e9404d42847392346e1d73d, type: 2}
   - {fileID: 11400000, guid: 5de59415d3d84417693b07aec5c60d82, type: 2}
   - {fileID: 11400000, guid: 2a6d757d5327141f2807acec29d91b9a, type: 2}
   - {fileID: 11400000, guid: a157d8f47896b47e684d6889d2801a38, type: 2}
@@ -176,17 +175,13 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
-  - prefab: {fileID: 5187526501295159265, guid: 5d7a84aadf614dc587ae5f155045d5bc, type: 3}
+  - prefab: {fileID: 4259932239809963813, guid: 3a679a389ed4f4943b8756120adf9657, type: 3}
     distance: 135
     lateral: 0
     gateItems: []
     greenSide: 0
     paintGates: []
-    coinGates:
-    - operation: 2
-      amount: 2
-    - operation: 1
-      amount: 10
+    coinGates: []
     skinGates: []
     dressColorGates: []
   - prefab: {fileID: 8399710652622341666, guid: 7cdf62354723841cda5df600aff9cb39, type: 3}

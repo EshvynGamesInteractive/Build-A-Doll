@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_FreeStyle_2
   m_EditorClassIdentifier: 
   displayName: 'Free Style: Rain'
-  brief: FREE STYLE! Design your RAIN look! Swipe up to long jump and skip unwanted item gates.
+  brief: FREE STYLE! Design your RAIN look!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -39,10 +39,8 @@ MonoBehaviour:
   hasAiOpponent: 0
   aiProfile: {fileID: 0}
   startingOutfit:
-  - {fileID: 11400000, guid: f0cd8699fbcf644379129fd76ff9cac6, type: 2}
-  - {fileID: 11400000, guid: 3b14a8ad51250493199e320a646de631, type: 2}
-  - {fileID: 11400000, guid: 5ea5d4d6f2c04462180c3deb9b6e5399, type: 2}
-  - {fileID: 11400000, guid: 75ce5c24abf6944e3bf4ccf9efe92caa, type: 2}
+  - {fileID: 11400000, guid: 832b10d8c20e04a8abb729a67a9ac22e, type: 2}
+  - {fileID: 11400000, guid: e979a7ae83ca6413c917f29e1aafabdc, type: 2}
   entries:
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
     distance: 8

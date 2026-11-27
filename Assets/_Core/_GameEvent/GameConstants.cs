@@ -13,6 +13,9 @@ namespace Core._GameEvent
         public const string PrivacyPolicyUrl = "privacyPolicyUrl";
         public const string MoreGamesUrl = "moreGamesUrl";
         public const string RateUsUrl = "rateUsUrl";
+
+        /// <summary>PlayerPrefs: 1 once the player pressed Accept on the privacy policy panel.</summary>
+        public const string PrivacyAcceptedKey = "privacy.accepted";
     
         public const string GamePlaySceneName = "Gameplay"; // must match the scene file name
         public const string MainMenuSceneName = "MainMenu";

@@ -43,8 +43,9 @@ namespace _Core._UI._Views
             RefreshLabels();
         }
 
+        // Opens the Privacy Policy panel over Settings (Visit there opens the page; Accept / Close come back here).
         private void OnPrivacyPolicyButtonClick() =>
-            OpenLink(GameConstants.PrivacyPolicyUrl);
+            GameEvents.UIEvents.ShowByType.Raise(ScreenType.PrivacyPolicy);
 
         private void OnRateUsButtonClick() =>
             OpenLink(GameConstants.RateUsUrl);

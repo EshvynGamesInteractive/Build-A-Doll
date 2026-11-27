@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_FreeStyle_6
   m_EditorClassIdentifier: 
   displayName: 'Free Style: Sport'
-  brief: FREE STYLE! Design your SPORT look! Swipe up to long jump and skip unwanted item gates.
+  brief: FREE STYLE! Design your SPORT look!
   showSwipeGuide: 0
   isSpecial: 0
   specialTitle: 
@@ -39,9 +39,9 @@ MonoBehaviour:
   hasAiOpponent: 0
   aiProfile: {fileID: 0}
   startingOutfit:
-  - {fileID: 11400000, guid: 7e26c7dfbff3640bf88a4731eba18308, type: 2}
-  - {fileID: 11400000, guid: 7c1dc02b1d36a452abd568692dfa1ffa, type: 2}
-  - {fileID: 11400000, guid: 9f3bca80ba8c94d598b26b4ccbaaacfd, type: 2}
+  - {fileID: 11400000, guid: 5de59415d3d84417693b07aec5c60d82, type: 2}
+  - {fileID: 11400000, guid: 2a6d757d5327141f2807acec29d91b9a, type: 2}
+  - {fileID: 11400000, guid: a157d8f47896b47e684d6889d2801a38, type: 2}
   entries:
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
     distance: 8
