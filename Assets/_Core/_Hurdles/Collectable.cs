@@ -11,7 +11,7 @@ namespace Game.Hurdles
     /// </summary>
     public class Collectable : TrackHurdle
     {
-        [SerializeField, Min(0)] private int coins = 1;
+        [SerializeField, Min(0)] private int coins = 0;
 
         protected override void OnPlayerHit(RunnerController player)
         {
@@ -22,7 +22,8 @@ namespace Game.Hurdles
                 return;
             }
 
-            score.AddCoins(coins);
+            // Track coins collected in gameplay go into the wallet (user, 26 Nov 2026).
+            score.AddCoins(coins, true);
         }
     }
 }

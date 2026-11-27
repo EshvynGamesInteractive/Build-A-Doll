@@ -113,6 +113,9 @@ namespace Game.Hurdles
             return false;
         }
 
+        // Claim the whole pair when jumping through its tall trigger, so landing cannot equip it.
+        protected override bool ShouldSkip(RunnerController player) => _freeStyle && !player.IsGrounded;
+
         protected override void OnPlayerHit(RunnerController player)
         {
             var outfit = player.DollOutfit;
@@ -123,10 +126,7 @@ namespace Game.Hurdles
             }
 
             outfit.Equip(item);
-
-            // Right gate +1, wrong gate -1 (Correct Score / Wrong Score).
-            if (item != null && player.Score != null)
-                player.Score.AddCoins(MatchesTarget() ? correctScore : wrongScore);
+            // No coins from item gates (user, 26 Nov 2026). Correct Score / Wrong Score are no longer used.
         }
 
         // Shows the item's 2D icon (OutfitItem.Icon) on the gate. Icons are made with

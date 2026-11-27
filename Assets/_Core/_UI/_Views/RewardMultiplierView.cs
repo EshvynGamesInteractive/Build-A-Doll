@@ -143,6 +143,7 @@ namespace _Core._UI._Views
             _swinging = false;
             var total = Total;
             var extra = _baseAlreadyGranted ? total - _baseCoins : total;
+            LevelProgress.PendingLevelCoins = 0; // the multiplied total replaces the Get payout
             if (extra > 0)
             {
                 LevelProgress.AddCoins(extra);

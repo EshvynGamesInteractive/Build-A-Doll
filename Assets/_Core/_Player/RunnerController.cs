@@ -48,6 +48,9 @@ namespace _Core._Player
         /// <summary>While true, touching doesn't start the run (e.g. while the target look is shown).</summary>
         public bool StartLocked { get; set; }
 
+        /// <summary>Free style swipe jumps clear unwanted item gates.</summary>
+        public bool FreeStyleGateSkipping { get; set; }
+
         private const float MovingThreshold = 0.05f;
 
         private readonly ForwardMotion _forward = new();
@@ -142,7 +145,8 @@ namespace _Core._Player
         public void Jump()
         {
             if (config != null)
-                Jump(config.JumpHeight, config.JumpAirTime, config.JumpForwardBoost);
+                Jump(config.JumpHeight * (FreeStyleGateSkipping ? 1.5f : 1f),
+                    config.JumpAirTime * (FreeStyleGateSkipping ? 1.5f : 1f), config.JumpForwardBoost);
         }
 
         /// <summary>
@@ -338,7 +342,7 @@ namespace _Core._Player
                 return;
 
             if (_actions.JumpRequested)
-                Jump(config.JumpHeight, config.JumpAirTime, config.JumpForwardBoost);
+                Jump();
             else if (_actions.SlideRequested)
             {
                 _vertical.Slide(config.SlideDuration, config.FastFallSpeed);

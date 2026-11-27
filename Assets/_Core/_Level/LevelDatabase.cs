@@ -183,9 +183,9 @@ namespace Game.Level
         public bool TryGetNextFreeStyle(int index, out LevelData freeStyle)
         {
             freeStyle = null;
-            if (!useThemePlan || index < 0 || index + 1 >= levels.Count)
+            if (!useThemePlan || index < 0 || levels.Count == 0)
                 return false;
-            freeStyle = levels[index + 1];
+            freeStyle = levels[ThemeListIndex(index + 1)];
             return freeStyle != null && freeStyle.IsFreeStyle;
         }
 
@@ -197,6 +197,8 @@ namespace Game.Level
         {
             nextFreeStyle = null;
             done = needed = 0;
+            if (useThemePlan && index >= levels.Count)
+                index = ThemeListIndex(index);
             if (!useThemePlan || index < 0 || index >= levels.Count || levels[index] == null || levels[index].IsFreeStyle || index < tutorialLevels)
                 return false;
             var next = -1;
@@ -349,11 +351,28 @@ namespace Game.Level
             return GetMainLevel(index);
         }
 
-        /// <summary>Main-track level: the list in order, then random from Loop From Level on.</summary>
+        /// <summary>
+        /// Theme plan: list position for a play-through index. Past the last level the plan restarts from Loop From Level
+        /// and runs in order again (30 → 4, 5, 6 … 30 → 4 …), so the free style / styled pairs keep their order.
+        /// </summary>
+        public int ThemeListIndex(int index)
+        {
+            if (levels.Count == 0)
+                return -1;
+            if (index < levels.Count)
+                return Mathf.Max(0, index);
+            var loopStart = Mathf.Clamp(loopFromLevel - 1, 0, levels.Count - 1);
+            return loopStart + (index - levels.Count) % (levels.Count - loopStart);
+        }
+
+        /// <summary>Main-track level: the list in order, then random from Loop From Level on (theme plan: in order).</summary>
         public LevelData GetMainLevel(int index)
         {
             if (levels.Count == 0)
                 return null;
+
+            if (useThemePlan)
+                return levels[ThemeListIndex(index)];
 
             if (index < levels.Count)
                 return levels[Mathf.Max(0, index)];

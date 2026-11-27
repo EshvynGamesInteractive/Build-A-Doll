@@ -24,7 +24,7 @@ MonoBehaviour:
   themeName: ''
   themeLook: {fileID: 0}
   styledLookOf: {fileID: 0}
-  finishDistance: 268
+  finishDistance: 210
   playerPrefab: {fileID: 5635630314507133769, guid: b6151af2959704b0190626de278d82f3, type: 3}
   outfit: {fileID: 11400000, guid: 2fe25a3cd5d634f47b1dfee2df25ce44, type: 2}
   outfitPassPercent: 75
@@ -45,7 +45,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 75ce5c24abf6944e3bf4ccf9efe92caa, type: 2}
   entries:
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
-    distance: 10
+    distance: 8
     lateral: 0
     gateItems: []
     greenSide: 0
@@ -54,7 +54,7 @@ MonoBehaviour:
     skinGates: []
     dressColorGates: []
   - prefab: {fileID: 2347459780087329176, guid: 86e6add65be86427cb882b96fe9201d7, type: 3}
-    distance: 26
+    distance: 24.4
     lateral: -1.95
     gateItems: []
     greenSide: 0
@@ -62,17 +62,8 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
-  - prefab: {fileID: 2347459780087329176, guid: 86e6add65be86427cb882b96fe9201d7, type: 3}
-    distance: 38
-    lateral: 1.95
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-    skinGates: []
-    dressColorGates: []
-  - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
-    distance: 54
+  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
+    distance: 34
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 0efb9e07b11cb4d1ea30a15e0f2d2162, type: 2}
@@ -82,8 +73,8 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
-  - prefab: {fileID: 879550793050235980, guid: 14c0bcf7eb84c4fe4adae836951a505b, type: 3}
-    distance: 68
+  - prefab: {fileID: 4524392445473975753, guid: 62373e481baad437793931ad24e73a5c, type: 3}
+    distance: 58.3
     lateral: 0
     gateItems: []
     greenSide: 0
@@ -91,8 +82,17 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
+  - prefab: {fileID: 2347459780087329176, guid: 86e6add65be86427cb882b96fe9201d7, type: 3}
+    distance: 82.7
+    lateral: 1.95
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates: []
   - prefab: {fileID: 5187526501295159265, guid: a8d5ab3ed101d47c4a06715e54ef8802, type: 3}
-    distance: 84
+    distance: 107
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 50219c91150964eb8b7a76d7d014f494, type: 2}
@@ -102,26 +102,26 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
+  - prefab: {fileID: 879550793050235980, guid: 14c0bcf7eb84c4fe4adae836951a505b, type: 3}
+    distance: 131.3
+    lateral: 0
+    gateItems: []
+    greenSide: 0
+    paintGates: []
+    coinGates: []
+    skinGates: []
+    dressColorGates: []
   - prefab: {fileID: 8944613449996735016, guid: b2aa747aed715406ea60ab5b826b5753, type: 3}
-    distance: 98
-    lateral: 0
+    distance: 155.7
+    lateral: -0
     gateItems: []
     greenSide: 0
     paintGates: []
     coinGates: []
     skinGates: []
     dressColorGates: []
-  - prefab: {fileID: 8098828531985545220, guid: cc73efeee98e6428c9a52bfc13ae0434, type: 3}
-    distance: 114
-    lateral: 0
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-    skinGates: []
-    dressColorGates: []
-  - prefab: {fileID: 5187526501295159265, guid: 951c87ab2f94446fca42355fc9d473ab, type: 3}
-    distance: 132
+  - prefab: {fileID: 5121484239180086665, guid: 86d14e93d5e0a4792824d526007ef618, type: 3}
+    distance: 180
     lateral: 0
     gateItems:
     - {fileID: 11400000, guid: 2f9bb81b84d4c44458a96db6b5dede71, type: 2}
@@ -131,44 +131,8 @@ MonoBehaviour:
     coinGates: []
     skinGates: []
     dressColorGates: []
-  - prefab: {fileID: 1797441697873796960, guid: 51e33e01cdcab44bc90ccb7df55ec5d3, type: 3}
-    distance: 146
-    lateral: -3
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-    skinGates: []
-    dressColorGates: []
-  - prefab: {fileID: 5808605654352066059, guid: b40e8be2e7f7b415ebe89a02657836f2, type: 3}
-    distance: 160
-    lateral: 0
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-    skinGates: []
-    dressColorGates: []
-  - prefab: {fileID: 5120549408769713660, guid: 01dd75c4d9d064cc4aa3718f102935e2, type: 3}
-    distance: 190
-    lateral: 0
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-    skinGates: []
-    dressColorGates: []
-  - prefab: {fileID: 4524392445473975753, guid: 62373e481baad437793931ad24e73a5c, type: 3}
-    distance: 204
-    lateral: 0
-    gateItems: []
-    greenSide: 0
-    paintGates: []
-    coinGates: []
-    skinGates: []
-    dressColorGates: []
   - prefab: {fileID: 4726182564738698211, guid: 17c944f7859ce443b924692caf444d64, type: 3}
-    distance: 220
+    distance: 190
     lateral: 0
     gateItems: []
     greenSide: 0

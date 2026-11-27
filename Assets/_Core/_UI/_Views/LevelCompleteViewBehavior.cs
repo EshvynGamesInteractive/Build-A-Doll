@@ -84,9 +84,9 @@ namespace _Core._UI._Views
                 spinWheel.Prepare(result.CompletionCoins);
             if (completionCoinsText != null)
                 completionCoinsText.text = result.CompletionCoins.ToString();
-            // First pass: LevelManager has already put the completion coins in the wallet and moved progress on to this level number.
+            // Completion coins are not in the wallet yet: Get pays them, the multiplier pays them × the segment instead.
             if (rewardMultiplier != null)
-                rewardMultiplier.Prepare(result.CompletionCoins, LevelProgress.CurrentLevelIndex == result.LevelNumber);
+                rewardMultiplier.Prepare(result.CompletionCoins, false);
         }
 
         private Coroutine _autoNext;
@@ -408,6 +408,7 @@ namespace _Core._UI._Views
         private void OnNextLevelButtonClick()
         {
             SkipIfUndecided();
+            LevelProgress.CollectPendingLevelCoins(); // Get button (nothing left if the multiplier already paid)
             if (nextOpensLevelMap)
                 GameEvents.UIEvents.ShowByType.Raise(ScreenType.MainMenu);
             else

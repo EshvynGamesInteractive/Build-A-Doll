@@ -181,6 +181,7 @@ namespace _Core._Level
                 Debug.LogError($"{nameof(LevelManager)}: no player. Set a Default Player Prefab on the {nameof(LevelDatabase)} (or a Player Prefab on the level).", this);
                 return;
             }
+            player.FreeStyleGateSkipping = level.IsFreeStyle;
             var outfit = player.DollOutfit;
             if (outfit != null)
                 outfit.SetStartingItems(level.StartingOutfit);
@@ -316,6 +317,7 @@ namespace _Core._Level
         {
             var hurdles = new List<GameObject>();
             int missing = 0, pastFinish = 0;
+            var offeredItems = level.IsFreeStyle ? new HashSet<OutfitItem>() : null;
             foreach (var entry in level.Entries)
             {
                 if (entry.prefab == null)
@@ -335,14 +337,13 @@ namespace _Core._Level
                 var instance = Instantiate(entry.prefab, start + rotation * local, rotation * entry.prefab.transform.localRotation, parent);
                 _spawned.Add(instance);
 
-                if (ConfigureGates(instance, entry.gateItems, level.TargetOutfit, level.IsFreeStyle) && warn)
+                if (ConfigureGates(instance, entry.gateItems, level.TargetOutfit, level.IsFreeStyle, offeredItems) && warn)
                 {
                     // Free style best possible score: distinct slots offered (two rounds of hair count once:
                     // the later pick replaces the earlier one).
-                    if (entry.gateItems != null)
-                        foreach (var gateItem in entry.gateItems)
-                            if (gateItem != null)
-                                _freeStyleSlots.Add(gateItem.Slot);
+                    foreach (var gate in instance.GetComponentsInChildren<ItemGate>())
+                        if (gate.Item != null)
+                            _freeStyleSlots.Add(gate.Item.Slot);
                     _freeStyleGates = Mathf.Max(1, _freeStyleSlots.Count);
                     if (level.IsFreeStyle)
                         CountFreeStyleOutfits(instance);
@@ -546,12 +547,18 @@ namespace _Core._Level
         }
 
         // Returns true when the hurdle has item gates (one choice).
-        private static bool ConfigureGates(GameObject instance, OutfitItem[] items, IReadOnlyList<OutfitItem> targetItems, bool freeStyle)
+        private static bool ConfigureGates(GameObject instance, OutfitItem[] items, IReadOnlyList<OutfitItem> targetItems, bool freeStyle, HashSet<OutfitItem> offeredItems)
         {
             var gates = instance.GetComponentsInChildren<ItemGate>();
             for (var i = 0; i < gates.Length; i++)
             {
                 var itemOverride = items != null && i < items.Length ? items[i] : null;
+                var item = itemOverride != null ? itemOverride : gates[i].Item;
+                if (offeredItems != null && (item == null || !offeredItems.Add(item)))
+                {
+                    gates[i].gameObject.SetActive(false);
+                    continue;
+                }
                 gates[i].Configure(itemOverride, targetItems, freeStyle);
             }
             return gates.Length > 0;
@@ -1351,13 +1358,14 @@ namespace _Core._Level
             var aiScore = hasAi ? GetAiScore() : 0;
             var passed = current.IsPass(score) && (!hasAi || score >= aiScore);
 
+            LevelProgress.PendingLevelCoins = 0;
             if (passed)
             {
                 var result = new LevelResult(current, CurrentLevelNumber, true, score, current.GetStars(score), coins, current.CompletionCoins, match, hasAi, aiScore, aiMatch);
                 if (testLevelNumber > 0 || currentIndex >= LevelProgress.CurrentLevelIndex)
                 {
-                    // Picked-up coins were saved the moment they were collected; only the bonus is added here.
-                    LevelProgress.AddCoins(result.CompletionCoins);
+                    // Completion coins wait for the Get button on Level Complete (or the reward multiplier).
+                    LevelProgress.PendingLevelCoins = result.CompletionCoins;
                     if (testLevelNumber == 0)
                     {
                         LevelProgress.CurrentLevelIndex = currentIndex + 1;

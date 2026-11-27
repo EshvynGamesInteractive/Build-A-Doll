@@ -22,8 +22,13 @@ namespace Game.Score
 
         private void OnDisable() => GameEvents.GameplayEvents.ResetRun.Unregister(ResetCoins);
 
-        /// <summary>Positive adds coins, negative takes them away.</summary>
-        public void AddCoins(int amount)
+        /// <summary>
+        /// Positive adds coins, negative takes them away (run counter, never below 0).
+        /// 'toWallet' = also save the change into the wallet (player only). Coin rule (user, 26 Nov 2026): the wallet only
+        /// gains coins from the Level Complete Get button, the reward multiplier / spin wheel, coin gates and rewarded ads,
+        /// and only loses coins on penalties (see Penalty). Item gates and track coins add nothing.
+        /// </summary>
+        public void AddCoins(int amount, bool toWallet = false)
         {
             if (amount == 0)
                 return;
@@ -31,11 +36,23 @@ namespace Game.Score
             var before = Coins;
             Coins = Mathf.Max(0, Coins + amount);
 
-            // Player only: save straight into the wallet. A minus can only take back coins
-            // gained in this run, never ones saved earlier.
             if (RaiseEvents)
             {
-                LevelProgress.AddCoins(Coins - before);
+                if (toWallet)
+                    LevelProgress.AddCoins(Coins - before);
+                GameEvents.GameplayEvents.CoinsChanged.Raise(Coins);
+            }
+        }
+
+        /// <summary>Penalty hit: takes 'cost' from the run counter and (player only) from the wallet, never below 0.</summary>
+        public void Penalty(int cost)
+        {
+            if (cost <= 0)
+                return;
+            Coins = Mathf.Max(0, Coins - cost);
+            if (RaiseEvents)
+            {
+                LevelProgress.AddCoins(-cost);
                 GameEvents.GameplayEvents.CoinsChanged.Raise(Coins);
             }
         }

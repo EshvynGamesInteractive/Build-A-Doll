@@ -91,7 +91,7 @@ namespace Game.Hurdles
             RewardedAds.Show(coinsPlacement, () =>
             {
                 if (score != null)
-                    score.AddCoins(coinReward);
+                    score.AddCoins(coinReward, true);
             });
         }
     }

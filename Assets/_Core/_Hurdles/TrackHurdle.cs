@@ -69,6 +69,9 @@ namespace Game.Hurdles
                 return;
 
             Use();
+            if (ShouldSkip(player))
+                return;
+
             OnPlayerHit(player);
 
             if (hitEffect != null)
@@ -82,6 +85,9 @@ namespace Game.Hurdles
             if (!player.IsAI && hitSound != null)
                 GameEvents.AudioEvents.PlaySfx.Raise(hitSound);
         }
+
+        /// <summary>Consumes the choice without applying it or playing collection effects.</summary>
+        protected virtual bool ShouldSkip(RunnerController player) => false;
 
         /// <summary>What this hurdle does to the player.</summary>
         protected abstract void OnPlayerHit(RunnerController player);

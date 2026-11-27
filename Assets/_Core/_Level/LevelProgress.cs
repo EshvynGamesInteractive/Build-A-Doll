@@ -36,6 +36,20 @@ namespace Game.Level
             GameEvents.GameplayEvents.WalletChanged.Raise(TotalCoins);
         }
 
+        /// <summary>
+        /// Completion coins of the level just passed, waiting for the Level Complete Get button (or the reward multiplier,
+        /// which pays them multiplied instead). Not saved: leaving without tapping Get loses them.
+        /// </summary>
+        public static int PendingLevelCoins { get; set; }
+
+        /// <summary>Pays out PendingLevelCoins (Get button) and clears it.</summary>
+        public static void CollectPendingLevelCoins()
+        {
+            var coins = PendingLevelCoins;
+            PendingLevelCoins = 0;
+            AddCoins(coins);
+        }
+
         /// <summary>Takes coins from the wallet if there are enough. Returns false (and takes nothing) otherwise.</summary>
         public static bool TrySpendCoins(int amount)
         {

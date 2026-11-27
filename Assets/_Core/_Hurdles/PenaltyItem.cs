@@ -55,7 +55,7 @@ namespace Game.Hurdles
             var score = player.Score;
             if (score != null)
             {
-                score.AddCoins(-coinCost);
+                score.Penalty(coinCost);
             }
 
             if (stumbleDuration > 0f)

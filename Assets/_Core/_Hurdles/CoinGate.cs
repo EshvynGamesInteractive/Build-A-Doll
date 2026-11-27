@@ -67,7 +67,7 @@ namespace Game.Hurdles
                 return;
 
             var before = score.Coins;
-            score.AddCoins(Apply(before) - before);
+            score.AddCoins(Apply(before) - before, true);
         }
 
         /// <summary>What 'coins' becomes after this gate.</summary>
